@@ -64,4 +64,6 @@
 <property><name>fs.defaultFS</name><value>hdfs://496117697d07:8020</value></property>
 <property><name>fs.defaultFS</name><value>hdfs://hadoop:9000</value></property>
 <property><name>fs.defaultFS</name><value>hdfs://hadoop:9000</value></property>
+<property><name>fs.defaultFS</name><value>hdfs://3ce2b7ab729d:8020</value></property>
+<property><name>fs.defaultFS</name><value>hdfs://hadoop:9000</value></property>
 </configuration>
