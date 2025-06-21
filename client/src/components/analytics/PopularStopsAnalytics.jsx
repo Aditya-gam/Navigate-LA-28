@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { createNumberedStopIcon } from '../../utils/mapIcons';
@@ -62,6 +63,12 @@ const PopularStopsAnalytics = ({ data, isLoading, error }) => {
       </MapContainer>
     </div>
   );
+};
+
+PopularStopsAnalytics.propTypes = {
+  data: PropTypes.array,
+  isLoading: PropTypes.bool,
+  error: PropTypes.string
 };
 
 export default PopularStopsAnalytics; 

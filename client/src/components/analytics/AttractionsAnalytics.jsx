@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { createNumberedIcon } from '../../utils/mapIcons';
@@ -71,6 +72,12 @@ const AttractionsAnalytics = ({ data, isLoading, error }) => {
       </MapContainer>
     </div>
   );
+};
+
+AttractionsAnalytics.propTypes = {
+  data: PropTypes.array,
+  isLoading: PropTypes.bool,
+  error: PropTypes.string,
 };
 
 export default AttractionsAnalytics; 

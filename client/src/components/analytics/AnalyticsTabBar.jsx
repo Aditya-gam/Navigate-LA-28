@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const AnalyticsTabBar = ({ activeSubTab, setActiveSubTab }) => {
   const tabs = [
@@ -33,6 +34,11 @@ const AnalyticsTabBar = ({ activeSubTab, setActiveSubTab }) => {
       ))}
     </div>
   );
+};
+
+AnalyticsTabBar.propTypes = {
+  activeSubTab: PropTypes.string.isRequired,
+  setActiveSubTab: PropTypes.func.isRequired
 };
 
 export default AnalyticsTabBar; 

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
 import { getDefaultChartOptions, chartColors } from '../../utils/chartConfig';
 
@@ -75,6 +76,12 @@ const BusRoutesAnalytics = ({ data, isLoading, error }) => {
       </div>
     </div>
   );
+};
+
+BusRoutesAnalytics.propTypes = {
+  data: PropTypes.object,
+  isLoading: PropTypes.bool,
+  error: PropTypes.string
 };
 
 export default BusRoutesAnalytics; 
