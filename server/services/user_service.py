@@ -15,6 +15,11 @@ from models.user import User as UserModel  # Import the User model
 from schemas.user import UserCreate  # Import Pydantic schema for user creation
 
 
+class UserError(Exception):
+    """Custom exception for user service errors."""
+    pass
+
+
 async def create_user(db: AsyncSession, user: UserCreate) -> UserModel:
     """
     Create a new user in the database.
@@ -27,7 +32,7 @@ async def create_user(db: AsyncSession, user: UserCreate) -> UserModel:
         UserModel: The newly created user object with relationships.
 
     Raises:
-        Exception: If an error occurs during the creation process.
+        UserError: If an error occurs during the creation process.
     """
     try:
         # Hash the user's password
@@ -57,7 +62,7 @@ async def create_user(db: AsyncSession, user: UserCreate) -> UserModel:
         return result.scalars().first()  # Return the user object
     except SQLAlchemyError as e:
         await db.rollback()  # Rollback in case of an error
-        raise Exception(f"Error creating user: {str(e)}")
+        raise UserError(f"Error creating user: {str(e)}")
 
 
 async def get_user(db: AsyncSession, user_id: int) -> Optional[UserModel]:
@@ -72,7 +77,7 @@ async def get_user(db: AsyncSession, user_id: int) -> Optional[UserModel]:
         Optional[UserModel]: The user object if found, otherwise None.
 
     Raises:
-        Exception: If an error occurs during retrieval.
+        UserError: If an error occurs during retrieval.
     """
     try:
         # Query the database for the user with the given ID
@@ -82,7 +87,7 @@ async def get_user(db: AsyncSession, user_id: int) -> Optional[UserModel]:
             await db.refresh(user)  # Refresh to explicitly load relationships
         return user
     except SQLAlchemyError as e:
-        raise Exception(f"Error fetching user: {str(e)}")
+        raise UserError(f"Error fetching user: {str(e)}")
 
 
 async def delete_user(db: AsyncSession, user_id: int) -> bool:
@@ -97,7 +102,7 @@ async def delete_user(db: AsyncSession, user_id: int) -> bool:
         bool: True if the user was deleted, False if not found.
 
     Raises:
-        Exception: If an error occurs during deletion.
+        UserError: If an error occurs during deletion.
     """
     try:
         # Retrieve the user to delete
@@ -110,7 +115,7 @@ async def delete_user(db: AsyncSession, user_id: int) -> bool:
         return False  # User not found
     except SQLAlchemyError as e:
         await db.rollback()  # Rollback in case of an error
-        raise Exception(f"Error deleting user: {str(e)}")
+        raise UserError(f"Error deleting user: {str(e)}")
 
 
 async def update_user(
@@ -128,7 +133,7 @@ async def update_user(
         Optional[UserModel]: The updated user object if successful, otherwise None.
 
     Raises:
-        Exception: If an error occurs during the update process.
+        UserError: If an error occurs during the update process.
     """
     try:
         # Retrieve the user to update
@@ -149,4 +154,4 @@ async def update_user(
         return None  # User not found
     except SQLAlchemyError as e:
         await db.rollback()  # Rollback in case of an error
-        raise Exception(f"Error updating user: {str(e)}")
+        raise UserError(f"Error updating user: {str(e)}")

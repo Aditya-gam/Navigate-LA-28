@@ -11,6 +11,31 @@ from models.review import Review as ReviewModel  # Import the Review model
 from schemas.review import ReviewCreate, ReviewUpdate
 
 
+class ReviewError(Exception):
+    """Base exception for review operations"""
+    pass
+
+
+class ReviewCreationError(ReviewError):
+    """Exception raised when review creation fails"""
+    pass
+
+
+class ReviewFetchError(ReviewError):
+    """Exception raised when review fetch fails"""
+    pass
+
+
+class ReviewUpdateError(ReviewError):
+    """Exception raised when review update fails"""
+    pass
+
+
+class ReviewDeletionError(ReviewError):
+    """Exception raised when review deletion fails"""
+    pass
+
+
 async def create_review(db: AsyncSession, review: ReviewCreate) -> ReviewModel:
     """
     Create a new review record in the database.
@@ -23,7 +48,7 @@ async def create_review(db: AsyncSession, review: ReviewCreate) -> ReviewModel:
         ReviewModel: The newly created review object.
 
     Raises:
-        Exception: If an error occurs during the creation process.
+        ReviewCreationError: If an error occurs during the creation process.
     """
     try:
         # Create a new review instance using data from the schema
@@ -36,7 +61,7 @@ async def create_review(db: AsyncSession, review: ReviewCreate) -> ReviewModel:
     except SQLAlchemyError as e:
         # Rollback the transaction in case of an error
         await db.rollback()
-        raise Exception(f"Error creating review: {str(e)}")
+        raise ReviewCreationError(f"Error creating review: {str(e)}")
 
 
 async def get_review(db: AsyncSession, review_id: int) -> ReviewModel:
@@ -51,14 +76,14 @@ async def get_review(db: AsyncSession, review_id: int) -> ReviewModel:
         ReviewModel: The retrieved review object, or None if not found.
 
     Raises:
-        Exception: If an error occurs during retrieval.
+        ReviewFetchError: If an error occurs during retrieval.
     """
     try:
         # Query the database to find the review with the specified ID
         result = await db.execute(select(ReviewModel).filter(ReviewModel.id == review_id))
         return result.scalars().first()  # Return the first matching record or None
     except SQLAlchemyError as e:
-        raise Exception(f"Error fetching review: {str(e)}")
+        raise ReviewFetchError(f"Error fetching review: {str(e)}")
 
 
 async def update_review(db: AsyncSession, review_id: int, review: ReviewUpdate) -> ReviewModel:
@@ -74,7 +99,7 @@ async def update_review(db: AsyncSession, review_id: int, review: ReviewUpdate) 
         ReviewModel: The updated review object, or None if not found.
 
     Raises:
-        Exception: If an error occurs during the update process.
+        ReviewUpdateError: If an error occurs during the update process.
     """
     try:
         # Query the database to find the review with the specified ID
@@ -95,7 +120,7 @@ async def update_review(db: AsyncSession, review_id: int, review: ReviewUpdate) 
     except SQLAlchemyError as e:
         # Rollback the transaction in case of an error
         await db.rollback()
-        raise Exception(f"Error updating review: {str(e)}")
+        raise ReviewUpdateError(f"Error updating review: {str(e)}")
 
 
 async def delete_review(db: AsyncSession, review_id: int) -> bool:
@@ -110,7 +135,7 @@ async def delete_review(db: AsyncSession, review_id: int) -> bool:
         bool: True if the review was deleted successfully, False if not found.
 
     Raises:
-        Exception: If an error occurs during the deletion process.
+        ReviewDeletionError: If an error occurs during the deletion process.
     """
     try:
         # Query the database to find the review with the specified ID
@@ -124,4 +149,4 @@ async def delete_review(db: AsyncSession, review_id: int) -> bool:
     except SQLAlchemyError as e:
         # Rollback the transaction in case of an error
         await db.rollback()
-        raise Exception(f"Error deleting review: {str(e)}")
+        raise ReviewDeletionError(f"Error deleting review: {str(e)}")

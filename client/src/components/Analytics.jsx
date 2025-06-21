@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bar, Pie } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -144,8 +144,8 @@ const Analytics = () => {
     };
 
     switch (activeSubTab) {
-      case 'demographics':
-        if (!currentData || !currentData.age || !currentData.country) return null;
+      case 'demographics': {
+        if (!currentData?.age || !currentData?.country) return null;
 
         const ageReviewsData = {
           labels: currentData.age.reviews.map(item => item.age_group),
@@ -262,6 +262,7 @@ const Analytics = () => {
           countryBusData,
           options: chartOptions
         };
+      }
 
       case 'attractions':
         return {
@@ -278,7 +279,7 @@ const Analytics = () => {
           options: chartOptions
         };
 
-      case 'bus-routes':
+      case 'bus-routes': {
         if (!currentData) return null;
 
         return {
@@ -329,6 +330,7 @@ const Analytics = () => {
           },
           options: chartOptions
         };
+      }
 
       case 'popular-stops':
         return {
@@ -443,7 +445,7 @@ const Analytics = () => {
     }
 
     switch (activeSubTab) {
-      case 'attractions':
+      case 'attractions': {
         if (!data.attractions || !Array.isArray(data.attractions)) {
           return <div>No attraction data available</div>;
         }
@@ -509,6 +511,7 @@ const Analytics = () => {
             </MapContainer>
           </div>
         );
+      }
 
       case 'popular-stops':
         return (
@@ -524,7 +527,7 @@ const Analytics = () => {
               />
               {data['popular-stops']?.map((stop, index) => (
                 <Marker
-                  key={index}
+                  key={`${stop.line}-${stop.stop_name}`}
                   position={[stop.latitude, stop.longitude]}
                   icon={createNumberedStopIcon(index + 1)}
                 >

@@ -1,6 +1,11 @@
 # server/scripts/verify_places.py
 
 import psycopg2  # For connecting to and interacting with the PostgreSQL database
+import os  # For environment variable access
+from dotenv import load_dotenv  # For loading environment variables from a .env file
+
+# Load environment variables from a .env file
+load_dotenv()
 
 
 def verify_data():
@@ -21,13 +26,13 @@ def verify_data():
         Exception: For any errors that occur during database interaction.
     """
     try:
-        # Connect to the database
+        # Connect to the database using environment variables
         connection = psycopg2.connect(
-            dbname="navigate_la28_db",  # Name of the database
-            user="la28_user",          # Database username
-            password="bigdata_la28",   # Database password
-            host="localhost",          # Host where the database is running
-            port=5433                  # Port on which the database is listening
+            dbname=os.getenv("POSTGRES_DB", "navigate_la28_db"),
+            user=os.getenv("POSTGRES_USER", "la28_user"),
+            password=os.getenv("POSTGRES_PASSWORD", "bigdata_la28"),
+            host=os.getenv("POSTGRES_HOST", "localhost"),
+            port=int(os.getenv("POSTGRES_PORT", "5433"))
         )
         cursor = connection.cursor()  # Create a cursor for executing SQL queries
 

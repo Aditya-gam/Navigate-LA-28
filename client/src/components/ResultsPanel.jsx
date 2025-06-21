@@ -77,19 +77,17 @@ const ResultsPanel = ({
             <>
               <div style={{ marginBottom: '12px', color: '#5f6368', fontSize: '14px' }}>
                 Total Duration: {(() => {
-                  if (!attractionPlan.total_duration) return 'N/A';
-                  try {
-                    const hours = parseFloat(attractionPlan.total_duration.split(' ')[0]) || 0;
-                    const fullHours = Math.floor(hours);
-                    const minutes = Math.round((hours - fullHours) * 60);
-                    return `${fullHours}h ${minutes}m`;
-                  } catch (e) {
-                    return 'N/A';
-                  }
+                  if (!attractionPlan.total_duration || typeof attractionPlan.total_duration !== 'string') return 'N/A';
+                  const hoursPart = attractionPlan.total_duration.split(' ')[0];
+                  const hours = parseFloat(hoursPart);
+                  if (isNaN(hours)) return 'N/A';
+                  const fullHours = Math.floor(hours);
+                  const minutes = Math.round((hours - fullHours) * 60);
+                  return `${fullHours}h ${minutes}m`;
                 })()}
               </div>
               {attractionPlan.itinerary.map((item, index) => (
-                <div key={index} style={{
+                <div key={`${item.place.name}-${index}`} style={{
                   padding: '12px',
                   borderBottom: '1px solid #eee',
                   fontSize: '14px',
@@ -113,19 +111,17 @@ const ResultsPanel = ({
                   }}>
                     <div>⏰ {item.start_time || 'N/A'} - {item.end_time || 'N/A'}</div>
                     <div>⌛ Duration: {(() => {
-                      if (!item.suggested_duration) return 'N/A';
-                      try {
-                        const hours = parseFloat(item.suggested_duration.split(' ')[0]) || 0;
-                        const fullHours = Math.floor(hours);
-                        const minutes = Math.round((hours - fullHours) * 60);
-                        return fullHours > 0
-                          ? minutes > 0
-                            ? `${fullHours}h ${minutes}m`
-                            : `${fullHours}h`
-                          : `${minutes}m`;
-                      } catch (e) {
-                        return 'N/A';
+                      if (!item.suggested_duration || typeof item.suggested_duration !== 'string') return 'N/A';
+                      const hoursPart = item.suggested_duration.split(' ')[0];
+                      const hours = parseFloat(hoursPart);
+                      if (isNaN(hours)) return 'N/A';
+                      const fullHours = Math.floor(hours);
+                      const minutes = Math.round((hours - fullHours) * 60);
+                      
+                      if (fullHours > 0) {
+                        return minutes > 0 ? `${fullHours}h ${minutes}m` : `${fullHours}h`;
                       }
+                      return `${minutes}m`;
                     })()}</div>
                     <div>📍 Distance: {item.place.distance_from_start?.toFixed(2) || 'N/A'} miles</div>
                     {item.place.address && <div>🏠 {item.place.address}</div>}
@@ -137,7 +133,7 @@ const ResultsPanel = ({
           ) : (
             // Regular search results display
             searchResults.map((result, index) => (
-              <div key={index} style={{
+              <div key={`${result.name || 'unnamed'}-${index}`} style={{
                 padding: '12px',
                 borderBottom: '1px solid #eee',
                 fontSize: '14px',

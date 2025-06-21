@@ -80,8 +80,6 @@ async def read_review_route(
                 detail=detail,  # Error message for missing review
             )
         return review  # Return the retrieved review
-                status_code=status.HTTP_404_NOT_FOUND, detail="Review not found"
-            )
     except HTTPException as e:
         # Rethrow known HTTP exceptions
         raise e

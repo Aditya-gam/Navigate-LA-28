@@ -69,7 +69,7 @@ class AnalyticsService:
         self.engine = create_async_engine(
             self.db_config.database_url, echo=True, future=True, pool_pre_ping=True
         )
-        self.AsyncSessionFactory = async_sessionmaker(
+        self.async_session_factory = async_sessionmaker(
             self.engine,
             autoflush=False,
             expire_on_commit=False,
@@ -119,7 +119,7 @@ class AnalyticsService:
 
     async def _fetch_table_data(self, table_name: str) -> pd.DataFrame:
         """Fetch data from a table asynchronously"""
-        async with self.AsyncSessionFactory() as session:
+        async with self.async_session_factory() as session:
             try:
                 query = text(f"SELECT * FROM {table_name}")
                 result = await session.execute(query)

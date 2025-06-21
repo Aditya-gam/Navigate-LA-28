@@ -1,7 +1,11 @@
 navigate_la28
-
+.venv/
 test.md
 
 hadoop/conf/sed*
 
 datasets
+
+# Environment files containing sensitive credentials
+.env
+.env.*

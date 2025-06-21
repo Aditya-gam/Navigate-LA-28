@@ -5,12 +5,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Update the DATABASE_URL to use asyncpg instead of psycopg2
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    # Update with your actual credentials
-    "postgresql+asyncpg://postgres:postgres@localhost:5432/navigate_la",
-)
+# DATABASE_URL must be set as an environment variable
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable must be set. "
+        "Example: postgresql+asyncpg://username:password@localhost:5432/navigate_la"
+    )
 
 # Make sure it's using asyncpg
 if "postgresql://" in DATABASE_URL:

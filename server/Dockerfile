@@ -18,11 +18,9 @@ ENV C_INCLUDE_PATH=/usr/include/gdal
 # Copy Python dependencies file first (to cache Docker layers)
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Install additional dependencies for Hadoop and OpenJDK 8
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install Python dependencies and additional dependencies for Hadoop and OpenJDK 8
+RUN pip install --no-cache-dir -r requirements.txt && \
+    apt-get update && apt-get install -y --no-install-recommends \
     wget \
     software-properties-common && \
     # Add Adoptium repository for OpenJDK 8
@@ -38,7 +36,6 @@ ENV JAVA_HOME=/usr/lib/jvm/temurin-8-jdk-arm64
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Download Hadoop client jar to support Spark
-RUN apt-get install -y wget
 RUN wget https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-client/3.3.1/hadoop-client-3.3.1.jar -P /opt/spark/jars
 
 # Copy all application files into the container

@@ -2,6 +2,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
+import PropTypes from "prop-types";
 import store from "./store";
 import App from "./App";
 import "./index.css";
@@ -28,6 +29,10 @@ class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
+
+ErrorBoundary.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

@@ -43,7 +43,8 @@ async def fetch_existing_usernames(db: AsyncSession):
         # Return usernames as a set for fast lookup
         return {row[0] for row in result}
     except SQLAlchemyError as e:
-        raise Exception(f"Error fetching existing usernames: {str(e)}")
+        raise SQLAlchemyError(
+            f"Error fetching existing usernames: {str(e)}", None, None)
 
 
 async def create_random_users(db: AsyncSession, num_users: int = 200):
@@ -103,7 +104,7 @@ async def create_random_users(db: AsyncSession, num_users: int = 200):
             # Commit every 100 users to improve performance and avoid large transactions
             if (i + 1) % 100 == 0:
                 await db.commit()
-                print(f"Committed batch of 100 users")
+                print("Committed batch of 100 users")
 
         # Commit any remaining users that were not part of the last batch
         await db.commit()

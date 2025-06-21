@@ -5,10 +5,42 @@ import pytest  # For defining and managing test fixtures
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker  # For creating database sessions
 from fastapi.testclient import TestClient  # For testing FastAPI applications
+import os  # For environment variable access
+from dotenv import load_dotenv  # For loading environment variables from a .env file
+from yarl import URL as MultiHostUrl  # Utility for building database URLs
 
 from main import app  # The main FastAPI application instance
 from models.base import Base  # Base model for SQLAlchemy
 from config.database import get_db  # Dependency to get the database session
+
+# Load environment variables from a .env file
+load_dotenv()
+
+# Database configuration for tests
+
+
+class TestDatabaseConfig:
+    POSTGRES_USER = os.getenv("POSTGRES_USER", "la28_user")
+    POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "bigdata_la28")
+    POSTGRES_HOST = os.getenv("POSTGRES_HOST", "navigate_la_postgres")
+    POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
+    POSTGRES_TEST_DB = os.getenv("POSTGRES_TEST_DB", "navigate_la28_test_db")
+
+    @property
+    def test_database_url(self) -> str:
+        """
+        Constructs the PostgreSQL test database URL using environment variables.
+        """
+        return str(
+            MultiHostUrl.build(
+                scheme="postgresql+asyncpg",
+                user=self.POSTGRES_USER,
+                password=self.POSTGRES_PASSWORD,
+                host=self.POSTGRES_HOST,
+                port=int(self.POSTGRES_PORT),
+                path=f"/{self.POSTGRES_TEST_DB}",
+            )
+        )
 
 # Define an asynchronous fixture for the test database
 
@@ -24,9 +56,10 @@ async def async_engine():
     Yields:
         AsyncEngine: The asynchronous engine for the test database.
     """
-    # Create an asynchronous engine for the test database
+    # Create test database configuration and engine
+    test_db_config = TestDatabaseConfig()
     engine = create_async_engine(
-        "postgresql+asyncpg://la28_user:bigdata_la28@navigate_la_postgres:5432/navigate_la28_test_db",
+        test_db_config.test_database_url,
         echo=True,  # Enable SQLAlchemy query logging
     )
     async with engine.begin() as conn:
@@ -85,6 +118,8 @@ def client(async_db):
         try:
             yield async_db
         finally:
+            # Session cleanup is handled by the async_db fixture
+            # No explicit cleanup needed here
             pass
 
     app.dependency_overrides[get_db] = override_get_db

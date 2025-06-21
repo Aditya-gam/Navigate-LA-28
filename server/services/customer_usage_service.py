@@ -12,6 +12,21 @@ from models.customer_usage import CustomerUsage as CustomerUsageModel
 from schemas.customer_usage import CustomerUsageCreate
 
 
+class CustomerUsageError(Exception):
+    """Base exception for customer usage operations"""
+    pass
+
+
+class CustomerUsageCreationError(CustomerUsageError):
+    """Exception raised when customer usage creation fails"""
+    pass
+
+
+class CustomerUsageFetchError(CustomerUsageError):
+    """Exception raised when customer usage fetch fails"""
+    pass
+
+
 async def create_customer_usage(db: AsyncSession, customer_usage: CustomerUsageCreate, user_id: int) -> CustomerUsageModel:
     """
     Create a new customer usage record.
@@ -39,7 +54,8 @@ async def create_customer_usage(db: AsyncSession, customer_usage: CustomerUsageC
     except SQLAlchemyError as e:
         # Rollback changes in case of an error
         await db.rollback()
-        raise Exception(f"Error creating customer usage: {str(e)}")
+        raise CustomerUsageCreationError(
+            f"Error creating customer usage: {str(e)}")
 
 
 async def get_customer_usage(db: AsyncSession, customer_usage_id: int) -> CustomerUsageModel:
@@ -62,4 +78,5 @@ async def get_customer_usage(db: AsyncSession, customer_usage_id: int) -> Custom
         return result.scalars().first()  # Return the first result or None if not found
     except SQLAlchemyError as e:
         # Handle SQLAlchemy-specific errors
-        raise Exception(f"Error fetching customer usage: {str(e)}")
+        raise CustomerUsageFetchError(
+            f"Error fetching customer usage: {str(e)}")

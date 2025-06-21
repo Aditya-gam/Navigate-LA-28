@@ -7,7 +7,6 @@ import LocationMarker from './LocationMarker';
 import '../styles/MapContainerComponent.css';
 
 const MapContainerComponent = ({
-  selectedLocation,
   onLocationSelect,
   resultMarkers,
   searchResults,
@@ -32,7 +31,7 @@ const MapContainerComponent = ({
       
       {resultMarkers.map((marker, index) => (
         <Marker
-          key={index}
+          key={`${marker.position[0]}-${marker.position[1]}`}
           position={marker.position}
           icon={searchType === 'nearest_restrooms' ? greenIcon : redIcon}
           eventHandlers={{
@@ -118,8 +117,7 @@ const MapContainerComponent = ({
                   }}
                   className="review-button"
                 >
-                  <span>⭐</span>
-                  Write Review
+                  <span>⭐</span>{' '}Write Review
                 </button>
               </div>
             </div>
@@ -127,7 +125,7 @@ const MapContainerComponent = ({
         </Marker>
       ))}
 
-      {busRoute && busRoute.geometry && (
+      {busRoute?.geometry && (
         <>
           <Marker
             position={[busRoute.origin.coordinates[1], busRoute.origin.coordinates[0]]}
@@ -168,7 +166,6 @@ const MapContainerComponent = ({
 };
 
 MapContainerComponent.propTypes = {
-  selectedLocation: PropTypes.arrayOf(PropTypes.number),
   onLocationSelect: PropTypes.func.isRequired,
   resultMarkers: PropTypes.arrayOf(PropTypes.shape({
     position: PropTypes.arrayOf(PropTypes.number).isRequired,

@@ -15,6 +15,9 @@ from services.user_service import create_user, get_user, delete_user, update_use
 # Create an APIRouter instance for user routes
 router = APIRouter()
 
+# Define a constant for the "User not found" message
+USER_NOT_FOUND = "User not found"
+
 
 @router.post("/users/", response_model=User, status_code=201)
 async def create_user_route(
@@ -70,7 +73,7 @@ async def read_user_route(
         # If no user is found, raise a 404 Not Found error
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",  # Error message for missing user
+            detail=USER_NOT_FOUND,  # Error message for missing user
         )
     return user  # Return the retrieved user
 
@@ -102,7 +105,7 @@ async def delete_user_route(
             # If no user is deleted, raise a 404 Not Found error
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found",  # Error message for missing user
+                detail=USER_NOT_FOUND,  # Error message for missing user
             )
     except Exception as e:
         # Handle unexpected exceptions and return a 500 Internal Server Error
@@ -142,7 +145,7 @@ async def update_user_route(
             # If no user is updated, raise a 404 Not Found error
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found",  # Error message for missing user
+                detail=USER_NOT_FOUND,  # Error message for missing user
             )
         return updated_user  # Return the updated user
     except Exception as e:
