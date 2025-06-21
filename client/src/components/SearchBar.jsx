@@ -7,13 +7,15 @@ const SearchBar = ({
   setSearchQuery,
   searchType,
   setSearchType,
+  handleSearch,
+  selectedLocation
 }) => (
   <div className="search-bar">
     <input
       type="text"
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      placeholder="Search..."
+      placeholder="Click on map or search in LA..."
       className="search-input"
     />
     <select
@@ -21,11 +23,21 @@ const SearchBar = ({
       onChange={(e) => setSearchType(e.target.value)}
       className="search-select"
     >
-      <option value="query1">Query 1</option>
-      <option value="query2">Query 2</option>
-      <option value="query3">Query 3</option>
+      <option value="nearest_places">Nearest Places</option>
+      <option value="nearest_restrooms">Nearest Restrooms</option>
+      <option value="attraction_plan">Attraction Plan</option>
     </select>
-    <button className="search-button">Search</button>
+    <button 
+      onClick={handleSearch}
+      className="search-button"
+    >
+      Search
+    </button>
+    {selectedLocation && (
+      <div className="location-display">
+        Selected: {selectedLocation[0].toFixed(6)}, {selectedLocation[1].toFixed(6)}
+      </div>
+    )}
   </div>
 );
 
@@ -34,6 +46,8 @@ SearchBar.propTypes = {
   setSearchQuery: PropTypes.func.isRequired,
   searchType: PropTypes.string.isRequired,
   setSearchType: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired,
+  selectedLocation: PropTypes.arrayOf(PropTypes.number)
 };
 
 export default SearchBar;
