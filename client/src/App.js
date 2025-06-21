@@ -55,13 +55,11 @@ function App() {
 
     if (searchType === "attraction_plan") {
       handleAttractionPlan(coords);
+    } else if (!searchResults.length) {
+      setSearchType("nearest_places");
+      handleSearch(coords, "nearest_places");
     } else {
-      if (searchResults.length === 0) {
-        setSearchType("nearest_places");
-        handleSearch(coords, "nearest_places");
-      } else {
-        handleSearch(coords, searchType);
-      }
+      handleSearch(coords, searchType);
     }
   };
 
@@ -214,7 +212,7 @@ function App() {
       {activeTab === 'map' ? (
         <div style={{ flex: 1, display: "flex", gap: "20px", padding: "20px" }}>
           <div style={{
-            flex: searchResults.length && isPanelVisible ? "1 1 70%" : "1 1 100%",
+            flex: searchResults.length > 0 && isPanelVisible ? "1 1 70%" : "1 1 100%",
             transition: "flex 0.3s ease"
           }}>
             <MapContainerComponent
