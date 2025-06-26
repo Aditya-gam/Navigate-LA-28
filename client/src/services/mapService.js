@@ -1,6 +1,6 @@
 // src/services/mapService.js
-import axios from "../utils/api";
-import { LOCATION_ENDPOINTS } from "../constants/apiEndpoints";
+import axios from '../utils/api';
+import { LOCATION_ENDPOINTS } from '../constants/apiEndpoints';
 
 /**
  * Fetch location data based on query.
@@ -20,7 +20,7 @@ export const fetchLocations = async (query) => {
  * @returns {Promise} Response with nearest places
  */
 export const searchNearestPlaces = async (lat, lng, token = null) => {
-  const url = new URL('http://localhost:8000/api/geo/nearest_places/');
+  const url = new URL('http://localhost:8001/api/geo/nearest_places/');
   url.searchParams.append('lat', lat);
   url.searchParams.append('long', lng);
 
@@ -31,7 +31,7 @@ export const searchNearestPlaces = async (lat, lng, token = null) => {
 
   const response = await fetch(url, {
     method: 'GET',
-    headers
+    headers,
   });
 
   if (!response.ok) {
@@ -49,7 +49,7 @@ export const searchNearestPlaces = async (lat, lng, token = null) => {
  * @returns {Promise} Response with nearest restrooms
  */
 export const searchNearestRestrooms = async (lat, lng, token = null) => {
-  const url = new URL('http://localhost:8000/api/geo/nearest_restrooms/');
+  const url = new URL('http://localhost:8001/api/geo/nearest_restrooms/');
   url.searchParams.append('lat', lat);
   url.searchParams.append('long', lng);
 
@@ -60,7 +60,7 @@ export const searchNearestRestrooms = async (lat, lng, token = null) => {
 
   const response = await fetch(url, {
     method: 'GET',
-    headers
+    headers,
   });
 
   if (!response.ok) {
@@ -80,7 +80,7 @@ export const searchNearestRestrooms = async (lat, lng, token = null) => {
  * @returns {Promise} Response with bus route data
  */
 export const fetchDirectBusRoutes = async (lat1, lng1, lat2, lng2, token = null) => {
-  const url = new URL('http://localhost:8000/api/geo/direct_bus_routes/');
+  const url = new URL('http://localhost:8001/api/geo/direct_bus_routes/');
   url.searchParams.append('lat1', lat1);
   url.searchParams.append('long1', lng1);
   url.searchParams.append('lat2', lat2);
@@ -111,7 +111,7 @@ export const fetchDirectBusRoutes = async (lat1, lng1, lat2, lng2, token = null)
  * @returns {Promise} Response with attraction plan
  */
 export const fetchAttractionPlan = async (lat, lng, maxPlaces = 5, token = null) => {
-  const url = new URL('http://localhost:8000/api/geo/attraction_plan/');
+  const url = new URL('http://localhost:8001/api/geo/attraction_plan/');
   url.searchParams.append('lat', lat);
   url.searchParams.append('long', lng);
   url.searchParams.append('max_places', maxPlaces);

@@ -1,6 +1,6 @@
 // src/constants/apiEndpoints.js
 
-const API_BASE_URL = "http://localhost:8000/api";
+const API_BASE_URL = 'http://localhost:8001/api';
 
 export const AUTH_ENDPOINTS = {
   LOGIN: `${API_BASE_URL}/auth/token/`,
