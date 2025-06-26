@@ -20,23 +20,23 @@ const DemographicsAnalytics = ({ data, isLoading, error }) => {
         data: data.age.reviews.map(item => item.total_reviews),
         backgroundColor: chartColors.tertiary.background,
         borderColor: chartColors.tertiary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Average Rating',
         data: data.age.reviews.map(item => item.avg_rating),
         backgroundColor: chartColors.secondary.background,
         borderColor: chartColors.secondary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Active Reviewers',
         data: data.age.reviews.map(item => item.active_reviewers),
         backgroundColor: chartColors.primary.background,
         borderColor: chartColors.primary.border,
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   const ageBusData = {
@@ -47,23 +47,23 @@ const DemographicsAnalytics = ({ data, isLoading, error }) => {
         data: data.age.bus_usage.map(item => item.total_trips),
         backgroundColor: chartColors.quaternary.background,
         borderColor: chartColors.quaternary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Active Riders',
         data: data.age.bus_usage.map(item => item.active_riders),
         backgroundColor: chartColors.quinary.background,
         borderColor: chartColors.quinary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Trips per User',
         data: data.age.bus_usage.map(item => item.trips_per_user),
         backgroundColor: chartColors.tertiary.background,
         borderColor: chartColors.tertiary.border,
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   const countryReviewsData = {
@@ -74,23 +74,23 @@ const DemographicsAnalytics = ({ data, isLoading, error }) => {
         data: data.country.reviews.map(item => item.total_reviews),
         backgroundColor: chartColors.tertiary.background,
         borderColor: chartColors.tertiary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Average Rating',
         data: data.country.reviews.map(item => item.avg_rating),
         backgroundColor: chartColors.secondary.background,
         borderColor: chartColors.secondary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Active Reviewers',
         data: data.country.reviews.map(item => item.active_reviewers),
         backgroundColor: chartColors.primary.background,
         borderColor: chartColors.primary.border,
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   const countryBusData = {
@@ -101,23 +101,23 @@ const DemographicsAnalytics = ({ data, isLoading, error }) => {
         data: data.country.bus_usage.map(item => item.total_trips),
         backgroundColor: chartColors.quaternary.background,
         borderColor: chartColors.quaternary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Active Riders',
         data: data.country.bus_usage.map(item => item.active_riders),
         backgroundColor: chartColors.quinary.background,
         borderColor: chartColors.quinary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Trips per User',
         data: data.country.bus_usage.map(item => item.trips_per_user),
         backgroundColor: chartColors.tertiary.background,
         borderColor: chartColors.tertiary.border,
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   return (
@@ -156,7 +156,7 @@ const DemographicsAnalytics = ({ data, isLoading, error }) => {
 DemographicsAnalytics.propTypes = {
   data: PropTypes.object,
   isLoading: PropTypes.bool,
-  error: PropTypes.string
+  error: PropTypes.string,
 };
 
 export default DemographicsAnalytics; 

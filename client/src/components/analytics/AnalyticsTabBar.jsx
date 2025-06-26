@@ -6,14 +6,14 @@ const AnalyticsTabBar = ({ activeSubTab, setActiveSubTab }) => {
     { key: 'attractions', label: 'Top Attractions' },
     { key: 'demographics', label: 'Demographics' },
     { key: 'bus-routes', label: 'Bus Routes' },
-    { key: 'popular-stops', label: 'Popular Stops' }
+    { key: 'popular-stops', label: 'Popular Stops' },
   ];
 
   return (
     <div style={{
       display: 'flex',
       gap: '10px',
-      marginBottom: '20px'
+      marginBottom: '20px',
     }}>
       {tabs.map(tab => (
         <button
@@ -26,7 +26,7 @@ const AnalyticsTabBar = ({ activeSubTab, setActiveSubTab }) => {
             border: '1px solid #1a73e8',
             borderRadius: '4px',
             cursor: 'pointer',
-            transition: 'all 0.3s ease'
+            transition: 'all 0.3s ease',
           }}
         >
           {tab.label}
@@ -38,7 +38,7 @@ const AnalyticsTabBar = ({ activeSubTab, setActiveSubTab }) => {
 
 AnalyticsTabBar.propTypes = {
   activeSubTab: PropTypes.string.isRequired,
-  setActiveSubTab: PropTypes.func.isRequired
+  setActiveSubTab: PropTypes.func.isRequired,
 };
 
 export default AnalyticsTabBar; 

@@ -20,23 +20,23 @@ const BusRoutesAnalytics = ({ data, isLoading, error }) => {
         data: data.line_popularity.map(route => route.total_trips),
         backgroundColor: chartColors.primary.background,
         borderColor: chartColors.primary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Unique Users',
         data: data.line_popularity.map(route => route.unique_users),
         backgroundColor: chartColors.secondary.background,
         borderColor: chartColors.secondary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Stops Used',
         data: data.line_popularity.map(route => route.stops_used),
         backgroundColor: chartColors.tertiary.background,
         borderColor: chartColors.tertiary.border,
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   const frequentRoutesData = {
@@ -47,16 +47,16 @@ const BusRoutesAnalytics = ({ data, isLoading, error }) => {
         data: data.frequent_routes.map(route => route.trip_count),
         backgroundColor: chartColors.quaternary.background,
         borderColor: chartColors.quaternary.border,
-        borderWidth: 1
+        borderWidth: 1,
       },
       {
         label: 'Unique Users',  
         data: data.frequent_routes.map(route => route.unique_users),
         backgroundColor: chartColors.quinary.background,
         borderColor: chartColors.quinary.border,
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   return (
@@ -81,7 +81,7 @@ const BusRoutesAnalytics = ({ data, isLoading, error }) => {
 BusRoutesAnalytics.propTypes = {
   data: PropTypes.object,
   isLoading: PropTypes.bool,
-  error: PropTypes.string
+  error: PropTypes.string,
 };
 
 export default BusRoutesAnalytics; 

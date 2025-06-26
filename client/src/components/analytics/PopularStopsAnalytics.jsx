@@ -31,14 +31,14 @@ const PopularStopsAnalytics = ({ data, isLoading, error }) => {
             <Popup>
               <div style={{
                 padding: '8px',
-                minWidth: '200px'
+                minWidth: '200px',
               }}>
                 <h3 style={{
                   margin: '0 0 8px 0',
                   color: '#1a73e8',
                   fontSize: '16px',
                   borderBottom: '1px solid #eee',
-                  paddingBottom: '8px'
+                  paddingBottom: '8px',
                 }}>
                   {index + 1}. {stop.stop_name}
                 </h3>
@@ -47,7 +47,7 @@ const PopularStopsAnalytics = ({ data, isLoading, error }) => {
                   color: '#5f6368',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '4px'
+                  gap: '4px',
                 }}>
                   <div>🚌 Line: {stop.line}</div>
                   <div>👥 Users: {stop.unique_users}</div>
@@ -68,7 +68,7 @@ const PopularStopsAnalytics = ({ data, isLoading, error }) => {
 PopularStopsAnalytics.propTypes = {
   data: PropTypes.array,
   isLoading: PropTypes.bool,
-  error: PropTypes.string
+  error: PropTypes.string,
 };
 
 export default PopularStopsAnalytics; 

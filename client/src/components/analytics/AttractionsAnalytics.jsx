@@ -37,14 +37,14 @@ const AttractionsAnalytics = ({ data, isLoading, error }) => {
                 <div style={{
                   padding: '8px',
                   minWidth: '200px',
-                  maxWidth: '300px'
+                  maxWidth: '300px',
                 }}>
                   <h3 style={{
                     margin: '0 0 8px 0',
                     color: '#1a73e8',
                     fontSize: '16px',
                     borderBottom: '1px solid #eee',
-                    paddingBottom: '8px'
+                    paddingBottom: '8px',
                   }}>
                     {index + 1}. {place.name || 'Unnamed Location'}
                   </h3>
@@ -53,7 +53,7 @@ const AttractionsAnalytics = ({ data, isLoading, error }) => {
                     color: '#5f6368',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '4px'
+                    gap: '4px',
                   }}>
                     <div>⭐ Rating: {place.rating?.toFixed(2) || 'N/A'}/5</div>
                     <div>📊 Reviews: {place.review_count || 0}</div>

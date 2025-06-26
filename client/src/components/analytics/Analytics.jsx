@@ -13,10 +13,10 @@ const Analytics = () => {
   const chartRef = useRef(null);
 
   useEffect(() => {
-    // Cleanup chart instance when component unmounts or tab changes
+    const currentChart = chartRef.current;
     return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
+      if (currentChart) {
+        currentChart.destroy();
       }
     };
   }, [activeSubTab]);
