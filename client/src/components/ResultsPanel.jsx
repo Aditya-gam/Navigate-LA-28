@@ -6,7 +6,7 @@ const ResultsPanel = ({
   searchType,
   attractionPlan,
   isPanelVisible, 
-  setIsPanelVisible 
+  setIsPanelVisible, 
 }) => {
   if ((searchResults.length === 0 && !(searchType === 'attraction_plan' && attractionPlan))) {
     return null;
@@ -14,7 +14,7 @@ const ResultsPanel = ({
 
   return (
     <div style={{
-      flex: isPanelVisible ? "1 1 30%" : "0 0 auto",
+      flex: isPanelVisible ? '1 1 30%' : '0 0 auto',
       backgroundColor: 'white',
       padding: isPanelVisible ? '15px' : '8px',
       borderRadius: '8px',
@@ -26,7 +26,7 @@ const ResultsPanel = ({
       width: isPanelVisible ? 'auto' : '40px',
       position: 'relative',
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
     }}>
       <div style={{
         display: 'flex',
@@ -34,14 +34,14 @@ const ResultsPanel = ({
         alignItems: 'center',
         marginBottom: isPanelVisible ? '15px' : '0',
         borderBottom: isPanelVisible ? '1px solid #eee' : 'none',
-        paddingBottom: isPanelVisible ? '10px' : '0'
+        paddingBottom: isPanelVisible ? '10px' : '0',
       }}>
         {isPanelVisible && (
           <h3 style={{
             margin: '0',
             color: '#1a73e8',
             fontSize: '18px',
-            fontWeight: '500'
+            fontWeight: '500',
           }}>
             {searchType === 'attraction_plan' ? 'Attraction Plan' : 'Search Results'}
           </h3>
@@ -64,7 +64,7 @@ const ResultsPanel = ({
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             outline: 'none',
             padding: 0,
-            transform: isPanelVisible ? 'rotate(0deg)' : 'rotate(180deg)'
+            transform: isPanelVisible ? 'rotate(0deg)' : 'rotate(180deg)',
           }}
         >
           ›
@@ -93,12 +93,12 @@ const ResultsPanel = ({
                   fontSize: '14px',
                   backgroundColor: index % 2 === 0 ? '#f8f9fa' : 'white',
                   borderRadius: '4px',
-                  marginBottom: '8px'
+                  marginBottom: '8px',
                 }}>
                   <div style={{
                     fontWeight: '500',
                     color: '#1a73e8',
-                    marginBottom: '4px'
+                    marginBottom: '4px',
                   }}>
                     {index + 1}. {item.place.name}
                   </div>
@@ -107,7 +107,7 @@ const ResultsPanel = ({
                     fontSize: '13px',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '4px'
+                    gap: '4px',
                   }}>
                     <div>⏰ {item.start_time || 'N/A'} - {item.end_time || 'N/A'}</div>
                     <div>⌛ Duration: {(() => {
@@ -139,12 +139,12 @@ const ResultsPanel = ({
                 fontSize: '14px',
                 backgroundColor: index % 2 === 0 ? '#f8f9fa' : 'white',
                 borderRadius: '4px',
-                marginBottom: '8px'
+                marginBottom: '8px',
               }}>
                 <div style={{
                   fontWeight: '500',
                   color: '#1a73e8',
-                  marginBottom: '4px'
+                  marginBottom: '4px',
                 }}>
                   {result.name || 'Unnamed Location'}
                 </div>
@@ -153,7 +153,7 @@ const ResultsPanel = ({
                   fontSize: '13px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '4px'
+                  gap: '4px',
                 }}>
                   <div>📍 Distance: {result.distance?.toFixed(2) || 'N/A'} miles</div>
                   {result.address && <div>🏠 Address: {result.address}</div>}
@@ -172,7 +172,7 @@ ResultsPanel.propTypes = {
   searchType: PropTypes.string.isRequired,
   attractionPlan: PropTypes.object,
   isPanelVisible: PropTypes.bool.isRequired,
-  setIsPanelVisible: PropTypes.func.isRequired
+  setIsPanelVisible: PropTypes.func.isRequired,
 };
 
 export default ResultsPanel; 

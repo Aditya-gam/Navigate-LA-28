@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "../styles/SearchBar.css"; // Importing the CSS file
+import React from 'react';
+import PropTypes from 'prop-types';
+import '../styles/SearchBar.css'; // Importing the CSS file
 
 const SearchBar = ({
   searchQuery,
@@ -8,7 +8,7 @@ const SearchBar = ({
   searchType,
   setSearchType,
   handleSearch,
-  selectedLocation
+  selectedLocation,
 }) => (
   <div className="search-bar">
     <input
@@ -47,7 +47,7 @@ SearchBar.propTypes = {
   searchType: PropTypes.string.isRequired,
   setSearchType: PropTypes.func.isRequired,
   handleSearch: PropTypes.func.isRequired,
-  selectedLocation: PropTypes.arrayOf(PropTypes.number)
+  selectedLocation: PropTypes.arrayOf(PropTypes.number),
 };
 
 export default SearchBar;

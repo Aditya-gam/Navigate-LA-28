@@ -19,7 +19,7 @@ const LoadingSpinner = ({ isLoading, message = 'Searching nearby locations...' }
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '10px'
+        gap: '10px',
       }}>
         <div style={{
           width: '40px',
@@ -27,7 +27,7 @@ const LoadingSpinner = ({ isLoading, message = 'Searching nearby locations...' }
           border: '4px solid #f3f3f3',
           borderTop: '4px solid #1a73e8',
           borderRadius: '50%',
-          animation: 'spin 1s linear infinite'
+          animation: 'spin 1s linear infinite',
         }} />
         <div style={{ color: '#5f6368', fontSize: '14px' }}>
           {message}
@@ -47,7 +47,7 @@ const LoadingSpinner = ({ isLoading, message = 'Searching nearby locations...' }
 
 LoadingSpinner.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  message: PropTypes.string
+  message: PropTypes.string,
 };
 
 export default LoadingSpinner; 

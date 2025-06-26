@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "../styles/Header.css";
-import SearchBar from "./SearchBar";
+import React from 'react';
+import PropTypes from 'prop-types';
+import '../styles/Header.css';
+import SearchBar from './SearchBar';
 
 const Header = ({ 
   username, 
@@ -13,7 +13,7 @@ const Header = ({
   searchType,
   setSearchType,
   handleSearch,
-  selectedLocation
+  selectedLocation,
 }) => (
   <div className="header">
     <h1 className="header-title">Navigate LA</h1>
@@ -50,7 +50,7 @@ const Header = ({
         onClick={onLoginToggle} 
         className="auth-button"
       >
-        {username ? "👤" : "🔑"}
+        {username ? '👤' : '🔑'}
       </button>
     </div>
   </div>
@@ -66,7 +66,7 @@ Header.propTypes = {
   searchType: PropTypes.string.isRequired,
   setSearchType: PropTypes.func.isRequired,
   handleSearch: PropTypes.func.isRequired,
-  selectedLocation: PropTypes.arrayOf(PropTypes.number)
+  selectedLocation: PropTypes.arrayOf(PropTypes.number),
 };
 
 export default Header;

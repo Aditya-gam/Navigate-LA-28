@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Marker, useMapEvents } from "react-leaflet";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Marker, useMapEvents } from 'react-leaflet';
 
 const LocationMarker = ({ onLocationSelect }) => {
   const [position, setPosition] = useState(null);

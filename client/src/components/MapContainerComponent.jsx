@@ -13,7 +13,7 @@ const MapContainerComponent = ({
   searchType,
   busRoute,
   onMarkerClick,
-  onWriteReview
+  onWriteReview,
 }) => {
   return (
     <MapContainer
@@ -37,7 +37,7 @@ const MapContainerComponent = ({
           eventHandlers={{
             click: () => {
               onMarkerClick(marker.position[0], marker.position[1]);
-            }
+            },
           }}
         >
           <Popup>
@@ -169,13 +169,13 @@ MapContainerComponent.propTypes = {
   onLocationSelect: PropTypes.func.isRequired,
   resultMarkers: PropTypes.arrayOf(PropTypes.shape({
     position: PropTypes.arrayOf(PropTypes.number).isRequired,
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
   })).isRequired,
   searchResults: PropTypes.array.isRequired,
   searchType: PropTypes.string.isRequired,
   busRoute: PropTypes.object,
   onMarkerClick: PropTypes.func.isRequired,
-  onWriteReview: PropTypes.func.isRequired
+  onWriteReview: PropTypes.func.isRequired,
 };
 
 export default MapContainerComponent;
