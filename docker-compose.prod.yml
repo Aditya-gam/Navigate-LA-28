@@ -1,0 +1,100 @@
+# Production Docker Compose Configuration
+version: '3.8'
+
+services:
+  # Production Frontend
+  client:
+    container_name: navigate_la_frontend_prod
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+    ports:
+      - "80:80"
+    depends_on:
+      - server
+    networks:
+      - navigate_la_28
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+
+  # Production Backend
+  server:
+    container_name: navigate_la_backend_prod
+    build:
+      context: ./server
+      dockerfile: Dockerfile.prod
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server/logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=production
+    networks:
+      - navigate_la_28
+    depends_on:
+      - postgres
+    restart: unless-stopped
+    command: >
+      bash -c "
+        python models/init_db.py &&
+        gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+      "
+
+  # Production Database
+  postgres:
+    container_name: navigate_la_postgres_prod
+    image: postgis/postgis:13-3.1
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-la28_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secure_production_password}
+      POSTGRES_DB: ${POSTGRES_DB:-navigate_la28_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    networks:
+      - navigate_la_28
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy
+  nginx:
+    container_name: navigate_la_nginx
+    image: nginx:alpine
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - client
+      - server
+    networks:
+      - navigate_la_28
+    restart: unless-stopped
+
+  # Redis for Caching
+  redis:
+    container_name: navigate_la_redis
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - navigate_la_28
+    restart: unless-stopped
+
+# Production volumes
+volumes:
+  postgres_prod_data:
+    driver: local
+  redis_data:
+    driver: local
+
+# Production network
+networks:
+  navigate_la_28:
+    driver: bridge 
