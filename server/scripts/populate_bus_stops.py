@@ -13,7 +13,7 @@ from models.base import Base  # Base class for SQLAlchemy models
 from models.bus_stops import BusStop  # Model for bus stops
 
 
-async def read_csv(file_path):
+def read_csv(file_path):
     """
     Read a CSV file and return its contents as a list of dictionaries.
 
@@ -26,7 +26,7 @@ async def read_csv(file_path):
     with open(file_path, mode="r", encoding="utf-8") as file:
         reader = csv.DictReader(file)  # Read CSV as a dictionary
         # Convert the reader object to a list of rows
-        return [row for row in reader]
+        return list(reader)
 
 
 async def populate_bus_stops_from_file(db: AsyncSession, file_path: str):
@@ -49,7 +49,7 @@ async def populate_bus_stops_from_file(db: AsyncSession, file_path: str):
     """
     try:
         # Read bus stop data from the CSV file
-        rows = await read_csv(file_path)
+        rows = read_csv(file_path)
         for row in rows:
             # Create a `BusStop` object for each row
             bus_stop = BusStop(

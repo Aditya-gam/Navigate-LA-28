@@ -12,7 +12,7 @@ from config.database import AsyncSessionFactory  # Database session factory
 from models.place import Place  # Model for the `places` table
 
 
-async def read_csv(file_path):
+def read_csv(file_path):
     """
     Read a CSV file and return its contents as a list of dictionaries.
 
@@ -25,7 +25,7 @@ async def read_csv(file_path):
     with open(file_path, mode="r", encoding="utf-8") as file:
         reader = csv.DictReader(file)  # Read CSV as a dictionary
         # Convert the reader object to a list of rows
-        return [row for row in reader]
+        return list(reader)
 
 
 def extract_coordinates(geometry_str):
@@ -70,7 +70,7 @@ async def populate_places_from_file(
         5. Handle and log errors during the process.
     """
     try:
-        rows = await read_csv(file_path)  # Read the CSV file
+        rows = read_csv(file_path)  # Read the CSV file
         for row in rows:
             place_data = {}
 
