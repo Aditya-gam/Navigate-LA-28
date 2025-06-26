@@ -6,7 +6,7 @@ const useAnalyticsData = (activeSubTab) => {
     demographics: null,
     busRoutes: null,
     popularStops: null,
-    geoDistribution: null
+    geoDistribution: null,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -21,11 +21,11 @@ const useAnalyticsData = (activeSubTab) => {
           'demographics': 'demographics',
           'bus-routes': 'bus-routes',
           'popular-stops': 'popular-stops',
-          'geographic-distribution': 'geographic-distribution'
+          'geographic-distribution': 'geographic-distribution',
         };
 
         const endpoint = endpointMap[activeSubTab] || activeSubTab;
-        let url = `http://localhost:8000/api/analytics/${endpoint}`;
+        const url = `http://localhost:8001/api/analytics/${endpoint}`;
 
         const response = await fetch(url);
         if (!response.ok) {
@@ -35,11 +35,11 @@ const useAnalyticsData = (activeSubTab) => {
 
         setData(prevData => ({
           ...prevData,
-          [activeSubTab]: responseData
+          [activeSubTab]: responseData,
         }));
       } catch (error) {
         setError(error.message);
-        console.error(`Error fetching ${activeSubTab} data:`, error);
+        // Error handled by the caller - no console logging needed
       } finally {
         setIsLoading(false);
       }
