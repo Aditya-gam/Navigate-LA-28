@@ -29,15 +29,23 @@ class DatabaseConfig:
     POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
     # Default database name
     POSTGRES_DB = os.getenv("POSTGRES_DB", "navigate_la28_db")
+    # Database URL from environment
+    DATABASE_URL = os.getenv("DATABASE_URL")
 
     @property
-    def database_url(self) -> str:
+    def connection_url(self) -> str:
         """
-        Constructs the PostgreSQL database URL using the provided credentials.
+        Constructs the database URL using the provided credentials or environment variable.
 
         Returns:
             str: A properly formatted database URL.
         """
+        if self.DATABASE_URL:
+            logger.info(
+                f"Using DATABASE_URL from environment: {self.DATABASE_URL}")
+            return self.DATABASE_URL
+
+        # Fallback to PostgreSQL configuration
         logger.info(
             f"Attempting to connect to: {self.POSTGRES_HOST}:{self.POSTGRES_PORT}"
         )  # Log connection details for debugging
@@ -59,7 +67,7 @@ db_config = DatabaseConfig()
 
 # Create an asynchronous database engine
 engine = create_async_engine(
-    db_config.database_url,  # Use the generated database URL
+    db_config.connection_url,  # Use the generated database URL
     echo=True,  # Enable SQL query logging for debugging
     future=True,  # Use the SQLAlchemy 2.0 future API
     pool_pre_ping=True,  # Test connections for liveness before using them
