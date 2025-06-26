@@ -95,9 +95,9 @@ class Review(ReviewBase):
 
     class Config:
         """
-        Pydantic configuration class.
+        Pydantic configuration class for review schemas.
 
         Attributes:
-            orm_mode (bool): Enables Pydantic models to interact seamlessly with SQLAlchemy ORM objects.
+            from_attributes (bool): Enables Pydantic models to interact seamlessly with SQLAlchemy ORM objects.
         """
-        orm_mode = True  # Enable compatibility with SQLAlchemy models
+        from_attributes = True  # Enable compatibility with SQLAlchemy models
