@@ -2,18 +2,21 @@
 
 # Import necessary modules and base class for defining SQLAlchemy models
 # For defining relationships between models
+from models.place import Place  # Model for geographic places or locations
+from models.bus_stops import BusStop  # Model for representing bus stops
+from models.bus_route_usage import BusRouteUsage
+from models.review import Review  # Model for storing user reviews
+from models.customer_usage import CustomerUsage
+from models.user import User  # User model representing application users
+from models.base import Base  # Base model class to define the database schema
 from sqlalchemy.orm import relationship
 
+# Constants
+CASCADE_DELETE_ORPHAN = "all, delete-orphan"
+
 # Import all model definitions
-from models.base import Base  # Base model class to define the database schema
-from models.user import User  # User model representing application users
 # Model for tracking customer usage data
-from models.customer_usage import CustomerUsage
-from models.review import Review  # Model for storing user reviews
 # Model for logging bus route usage
-from models.bus_route_usage import BusRouteUsage
-from models.bus_stops import BusStop  # Model for representing bus stops
-from models.place import Place  # Model for geographic places or locations
 
 # Function to initialize relationships between models
 
@@ -35,7 +38,7 @@ def init_models():
     User.usages = relationship(
         "CustomerUsage",  # Target model
         back_populates="user",  # Corresponding field in CustomerUsage
-        cascade="all, delete-orphan",  # Automatically handle deletions
+        cascade=CASCADE_DELETE_ORPHAN,  # Automatically handle deletions
         lazy="dynamic",  # Load data lazily when accessed
 
     )
@@ -44,7 +47,7 @@ def init_models():
     User.reviews = relationship(
         "Review",  # Target model
         back_populates="user",  # Corresponding field in Review
-        cascade="all, delete-orphan",  # Automatically handle deletions
+        cascade=CASCADE_DELETE_ORPHAN,  # Automatically handle deletions
         lazy="dynamic",  # Load data lazily when accessed
 
     )
@@ -53,7 +56,7 @@ def init_models():
     User.bus_route_usages = relationship(
         "BusRouteUsage",  # Target model
         back_populates="user",  # Corresponding field in BusRouteUsage
-        cascade="all, delete-orphan",  # Automatically handle deletions
+        cascade=CASCADE_DELETE_ORPHAN,  # Automatically handle deletions
         lazy="dynamic",  # Load data lazily when accessed
 
     )
