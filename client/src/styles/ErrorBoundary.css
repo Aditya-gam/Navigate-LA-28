@@ -1,0 +1,116 @@
+.error-boundary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.error-boundary--page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.error-boundary--section {
+  min-height: 200px;
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.error-boundary--component {
+  min-height: 60px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.error-boundary__container {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.error-boundary__icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.error-boundary--component .error-boundary__icon {
+  font-size: 16px;
+  margin-bottom: 0;
+  margin-right: 8px;
+}
+
+.error-boundary__title {
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.error-boundary__message {
+  color: #666;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.error-boundary__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.error-boundary__button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.error-boundary__button--primary {
+  background-color: #1976d2;
+  color: white;
+}
+
+.error-boundary__button--primary:hover {
+  background-color: #1565c0;
+}
+
+.error-boundary__button--secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.error-boundary__button--secondary:hover {
+  background-color: #eeeeee;
+}
+
+.error-boundary__button--small {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.error-boundary__error-id {
+  margin-top: 16px;
+  font-size: 12px;
+  color: #888;
+  font-family: monospace;
+}
+
+.error-boundary__details {
+  margin: 16px 0;
+  text-align: left;
+}
+
+.error-boundary__error {
+  background-color: #f5f5f5;
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 12px;
+  white-space: pre-wrap;
+} 
