@@ -4,19 +4,34 @@ from pyspark.sql import SparkSession  # For working with Spark dataframes
 from shapely.geometry import LineString, Point  # For route and point geometries
 from shapely.ops import substring  # For extracting a portion of a geometry
 import json  # For handling JSON data
+import os
 
-# Initialize Spark Session with HDFS configuration
-spark = (
-    SparkSession.builder.appName("DirectBusLinesFinder")
-    .config("spark.driver.memory", "2g")  # Allocate memory for the driver
-    .config("spark.executor.memory", "2g")  # Allocate memory for executors
-    .config("spark.hadoop.fs.defaultFS", "hdfs://hadoop:9000")  # HDFS setup
-    .config("spark.hadoop.fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem")
-    .config("spark.hadoop.fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
-    # Hadoop client
-    .config("spark.jars.packages", "org.apache.hadoop:hadoop-client:3.3.1")
-    .getOrCreate()
-)
+# Check if we're in development mode (no HDFS)
+is_development = os.getenv('ENVIRONMENT', 'development') == 'development'
+
+if is_development:
+    # Use local Spark configuration for development
+    spark = (
+        SparkSession.builder.appName("DirectBusLinesFinder")
+        .config("spark.driver.memory", "1g")
+        .config("spark.executor.memory", "1g")
+        .config("spark.sql.adaptive.enabled", "false")
+        .config("spark.sql.adaptive.coalescePartitions.enabled", "false")
+        .master("local[*]")
+        .getOrCreate()
+    )
+else:
+    # Use HDFS configuration for production
+    spark = (
+        SparkSession.builder.appName("DirectBusLinesFinder")
+        .config("spark.driver.memory", "2g")
+        .config("spark.executor.memory", "2g")
+        .config("spark.hadoop.fs.defaultFS", "hdfs://hadoop:9000")
+        .config("spark.hadoop.fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem")
+        .config("spark.hadoop.fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
+        .config("spark.jars.packages", "org.apache.hadoop:hadoop-client:3.3.1")
+        .getOrCreate()
+    )
 
 
 def trim_route_geometry(route_coords, origin_point, destination_point):
@@ -144,7 +159,7 @@ def _find_best_route(user_stops, target_stops, route_lookup):
     return best_route
 
 
-async def find_direct_bus_lines(
+def find_direct_bus_lines(
     user_lat, user_lon, target_lat, target_lon, buffer_radius_miles
 ):
     """

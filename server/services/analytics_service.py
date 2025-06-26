@@ -26,6 +26,39 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Spark configuration constants
+SPARK_DRIVER_MEMORY = "spark.driver.memory"
+SPARK_EXECUTOR_MEMORY = "spark.executor.memory"
+SPARK_SQL_ADAPTIVE_ENABLED = "spark.sql.adaptive.enabled"
+SPARK_SQL_ADAPTIVE_COALESCE = "spark.sql.adaptive.coalescePartitions.enabled"
+
+# Check if we're in development mode (no HDFS)
+is_development = os.getenv('ENVIRONMENT', 'development') == 'development'
+
+if is_development:
+    # Use local Spark configuration for development
+    spark = (
+        SparkSession.builder.appName("NavigateLA-Analytics")
+        .config(SPARK_DRIVER_MEMORY, "1g")
+        .config(SPARK_EXECUTOR_MEMORY, "1g")
+        .config(SPARK_SQL_ADAPTIVE_ENABLED, "false")
+        .config(SPARK_SQL_ADAPTIVE_COALESCE, "false")
+        .master("local[*]")
+        .getOrCreate()
+    )
+else:
+    # Use HDFS configuration for production
+    spark = (
+        SparkSession.builder.appName("NavigateLA-Analytics")
+        .config(SPARK_DRIVER_MEMORY, "2g")
+        .config(SPARK_EXECUTOR_MEMORY, "2g")
+        .config("spark.hadoop.fs.defaultFS", "hdfs://hadoop:9000")
+        .config("spark.hadoop.fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem")
+        .config("spark.hadoop.fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
+        .config("spark.jars.packages", "org.apache.hadoop:hadoop-client:3.3.1")
+        .getOrCreate()
+    )
+
 
 class DatabaseConfig:
     """
@@ -74,7 +107,7 @@ class AnalyticsService:
             autoflush=False,
             expire_on_commit=False,
         )
-        self.spark = None  # Initialize as None
+        self.spark = spark  # Use the existing spark session
 
     def _get_spark(self):
         """Get or create Spark session"""
@@ -93,8 +126,8 @@ class AnalyticsService:
 
             return (
                 SparkSession.builder.appName("NavigateLA-Analytics")
-                .config("spark.driver.memory", "2g")
-                .config("spark.executor.memory", "2g")
+                .config(SPARK_DRIVER_MEMORY, "2g")
+                .config(SPARK_EXECUTOR_MEMORY, "2g")
                 .config("spark.driver.bindAddress", "0.0.0.0")
                 .config("spark.driver.host", "localhost")
                 .config("spark.sql.shuffle.partitions", "2")

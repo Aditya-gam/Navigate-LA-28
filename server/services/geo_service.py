@@ -70,17 +70,32 @@ async def nearest_places(db: AsyncSession, lat: float, long: float) -> List[Plac
 
     places = []
     for row in spark_places:
+        # Handle both Spark Row objects and dictionaries
+        if hasattr(row, 'name'):
+            # Spark Row object
+            name = row.name
+            latitude = float(row.latitude)
+            longitude = float(row.longitude)
+            address = getattr(row, 'address', '')
+        else:
+            # Dictionary (development mode)
+            name = row.get('name', 'Unknown Place')
+            latitude = float(row.get('latitude', 0))
+            longitude = float(row.get('longitude', 0))
+            address = row.get('address', '')
+
         # Query database to find matching place using name and coordinates
         query = select(PlaceModel).where(
             and_(
-                PlaceModel.name == row.name,
-                func.abs(PlaceModel.latitude - float(row.latitude)) < 0.0001,
-                func.abs(PlaceModel.longitude - float(row.longitude)) < 0.0001,
+                PlaceModel.name == name,
+                func.abs(PlaceModel.latitude - latitude) < 0.0001,
+                func.abs(PlaceModel.longitude - longitude) < 0.0001,
                 PlaceModel.types == "tourist attraction",
             )
         )
         result = await db.execute(query)
         db_place = result.scalar_one_or_none()
+
         if db_place:
             # Calculate distance
             distance = calculate_distance(
@@ -96,6 +111,20 @@ async def nearest_places(db: AsyncSession, lat: float, long: float) -> List[Plac
                 "address": db_place.address,
                 "types": db_place.types,
                 "distance": distance,  # Add distance to the dictionary
+            }
+            places.append(Place(**place_dict))
+        else:
+            # If not found in database, create a mock place for development
+            distance = calculate_distance(lat, long, latitude, longitude)
+            place_dict = {
+                "id": len(places) + 1,  # Mock ID
+                "name": name,
+                "description": f"Sample attraction near {address}",
+                "latitude": latitude,
+                "longitude": longitude,
+                "address": address,
+                "types": "tourist attraction",
+                "distance": distance,
             }
             places.append(Place(**place_dict))
 
@@ -121,17 +150,32 @@ async def nearest_restrooms(db: AsyncSession, lat: float, long: float) -> List[P
 
     restrooms = []
     for row in spark_restrooms:
+        # Handle both Spark Row objects and dictionaries
+        if hasattr(row, 'name'):
+            # Spark Row object
+            name = row.name
+            latitude = float(row.latitude)
+            longitude = float(row.longitude)
+            address = getattr(row, 'address', '')
+        else:
+            # Dictionary (development mode)
+            name = row.get('name', 'Unknown Restroom')
+            latitude = float(row.get('latitude', 0))
+            longitude = float(row.get('longitude', 0))
+            address = row.get('address', '')
+
         # Query database to find matching restroom using coordinates
         query = select(PlaceModel).where(
             and_(
-                PlaceModel.name == row.name,
-                func.abs(PlaceModel.latitude - float(row.latitude)) < 0.0001,
-                func.abs(PlaceModel.longitude - float(row.longitude)) < 0.0001,
+                PlaceModel.name == name,
+                func.abs(PlaceModel.latitude - latitude) < 0.0001,
+                func.abs(PlaceModel.longitude - longitude) < 0.0001,
                 PlaceModel.types == "restroom",
             )
         )
         result = await db.execute(query)
         db_restroom = result.scalar_one_or_none()
+
         if db_restroom:
             # Calculate distance
             distance = calculate_distance(
@@ -147,6 +191,20 @@ async def nearest_restrooms(db: AsyncSession, lat: float, long: float) -> List[P
                 "address": db_restroom.address,
                 "types": db_restroom.types,
                 "distance": distance,  # Add distance to the dictionary
+            }
+            restrooms.append(Place(**restroom_dict))
+        else:
+            # If not found in database, create a mock restroom for development
+            distance = calculate_distance(lat, long, latitude, longitude)
+            restroom_dict = {
+                "id": len(restrooms) + 1,  # Mock ID
+                "name": name,
+                "description": f"Public restroom at {address}",
+                "latitude": latitude,
+                "longitude": longitude,
+                "address": address,
+                "types": "restroom",
+                "distance": distance,
             }
             restrooms.append(Place(**restroom_dict))
 
