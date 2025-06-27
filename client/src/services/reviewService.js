@@ -5,25 +5,27 @@
  * @returns {Promise} Response from server
  */
 export const submitReview = async (reviewData, token = null) => {
-  const url = new URL('http://localhost:8001/api/reviews/');
+  const url = new URL("http://localhost:8001/api/reviews/");
 
   const headers = {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   };
-  
+
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
     body: JSON.stringify(reviewData),
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    throw new Error(
+      errorData.message || `HTTP error! status: ${response.status}`,
+    );
   }
 
   return await response.json();
@@ -38,15 +40,15 @@ export const submitReview = async (reviewData, token = null) => {
  */
 export const getPlaceReviews = async (placeId, options = {}, token = null) => {
   const url = new URL(`http://localhost:8001/api/reviews/place/${placeId}/`);
-  
+
   // Add query parameters
-  if (options.limit) url.searchParams.append('limit', options.limit);
-  if (options.offset) url.searchParams.append('offset', options.offset);
-  if (options.sort) url.searchParams.append('sort', options.sort);
+  if (options.limit) url.searchParams.append("limit", options.limit);
+  if (options.offset) url.searchParams.append("offset", options.offset);
+  if (options.sort) url.searchParams.append("sort", options.sort);
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, { headers });
@@ -67,13 +69,13 @@ export const getPlaceReviews = async (placeId, options = {}, token = null) => {
  */
 export const getUserReviews = async (userId, options = {}, token) => {
   const url = new URL(`http://localhost:8001/api/reviews/user/${userId}/`);
-  
+
   // Add query parameters
-  if (options.limit) url.searchParams.append('limit', options.limit);
-  if (options.offset) url.searchParams.append('offset', options.offset);
+  if (options.limit) url.searchParams.append("limit", options.limit);
+  if (options.offset) url.searchParams.append("offset", options.offset);
 
   const headers = {
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   };
 
   const response = await fetch(url, { headers });
@@ -96,19 +98,21 @@ export const updateReview = async (reviewId, reviewData, token) => {
   const url = new URL(`http://localhost:8001/api/reviews/${reviewId}/`);
 
   const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
   };
 
   const response = await fetch(url, {
-    method: 'PUT',
+    method: "PUT",
     headers,
     body: JSON.stringify(reviewData),
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    throw new Error(
+      errorData.message || `HTTP error! status: ${response.status}`,
+    );
   }
 
   return await response.json();
@@ -124,17 +128,19 @@ export const deleteReview = async (reviewId, token) => {
   const url = new URL(`http://localhost:8001/api/reviews/${reviewId}/`);
 
   const headers = {
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   };
 
   const response = await fetch(url, {
-    method: 'DELETE',
+    method: "DELETE",
     headers,
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    throw new Error(
+      errorData.message || `HTTP error! status: ${response.status}`,
+    );
   }
 
   return response.status === 204 ? { success: true } : await response.json();
@@ -150,17 +156,19 @@ export const markReviewHelpful = async (reviewId, token) => {
   const url = new URL(`http://localhost:8001/api/reviews/${reviewId}/helpful/`);
 
   const headers = {
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   };
 
   const response = await fetch(url, {
-    method: 'POST',
+    method: "POST",
     headers,
   });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    throw new Error(
+      errorData.message || `HTTP error! status: ${response.status}`,
+    );
   }
 
   return await response.json();
@@ -177,7 +185,7 @@ export const getReviewStatistics = async (placeId, token = null) => {
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, { headers });
@@ -187,4 +195,4 @@ export const getReviewStatistics = async (placeId, token = null) => {
   }
 
   return await response.json();
-}; 
+};

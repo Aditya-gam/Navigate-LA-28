@@ -1,7 +1,7 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component, ErrorInfo, ReactNode } from "react";
 
-import { errorHandler } from '../utils/errorHandler';
-import '../styles/ErrorBoundary.css';
+import { errorHandler } from "../utils/errorHandler";
+import "../styles/ErrorBoundary.css";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -14,7 +14,7 @@ interface ErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (_error: Error, _errorInfo: ErrorInfo) => void;
-  level?: 'page' | 'component' | 'section';
+  level?: "page" | "component" | "section";
   name?: string;
 }
 
@@ -37,10 +37,10 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   override componentDidCatch(_error: Error, _errorInfo: React.ErrorInfo) {
     const { onError, name } = this.props;
-    
+
     // Handle the error using our error handler
     errorHandler.handleComponentError(_error, _errorInfo, name);
-    
+
     // Call custom error handler if provided
     if (onError) {
       onError(_error, _errorInfo);
@@ -62,7 +62,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 
   handleReport = () => {
     const { error, errorInfo, errorId } = this.state;
-    
+
     // Create a detailed error report
     const report = {
       errorId,
@@ -79,7 +79,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     };
 
     // Copy to clipboard for easy reporting
-    const textarea = document.createElement('textarea');
+    const textarea = document.createElement("textarea");
     textarea.value = JSON.stringify(report, null, 2);
     document.body.appendChild(textarea);
     textarea.select();
@@ -87,15 +87,17 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     // use Clipboard API again instead of execCommand
     navigator.clipboard.writeText(textarea.value).finally(() => {
       document.body.removeChild(textarea);
-      alert('Error report copied to clipboard. Please share this with support.');
+      alert(
+        "Error report copied to clipboard. Please share this with support.",
+      );
     });
   };
 
   private getCurrentUserId(): string | undefined {
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem("access_token");
       if (token) {
-        const tokenParts = token.split('.');
+        const tokenParts = token.split(".");
         if (tokenParts.length > 1 && tokenParts[1]) {
           const payload = JSON.parse(atob(tokenParts[1]));
           return payload.sub ?? payload.user_id;
@@ -103,27 +105,28 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       }
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.error('Failed to extract user ID from token:', error);
+      console.error("Failed to extract user ID from token:", error);
       return undefined;
     }
     return undefined;
   }
 
   private getErrorUI() {
-    const { level = 'component', name } = this.props;
+    const { level = "component", name } = this.props;
     const { error, errorId } = this.state;
     const canRetry = this.retryCount < this.maxRetries;
 
-    if (level === 'page') {
+    if (level === "page") {
       return (
         <div className="error-boundary error-boundary--page">
           <div className="error-boundary__container">
             <div className="error-boundary__icon">⚠️</div>
             <h1 className="error-boundary__title">Something went wrong</h1>
             <p className="error-boundary__message">
-              We're sorry, but something unexpected happened. Please try refreshing the page.
+              We're sorry, but something unexpected happened. Please try
+              refreshing the page.
             </p>
-            {process.env['NODE_ENV'] === 'development' && (
+            {process.env["NODE_ENV"] === "development" && (
               <details className="error-boundary__details">
                 <summary>Error Details (Development)</summary>
                 <pre className="error-boundary__error">
@@ -147,16 +150,14 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
               </button>
             </div>
             {errorId && (
-              <p className="error-boundary__error-id">
-                Error ID: {errorId}
-              </p>
+              <p className="error-boundary__error-id">Error ID: {errorId}</p>
             )}
           </div>
         </div>
       );
     }
 
-    if (level === 'section') {
+    if (level === "section") {
       return (
         <div className="error-boundary error-boundary--section">
           <div className="error-boundary__container">
@@ -192,7 +193,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
         <div className="error-boundary__container">
           <span className="error-boundary__icon">⚠️</span>
           <span className="error-boundary__message">
-            {name ? `${name} failed to load` : 'Component error'}
+            {name ? `${name} failed to load` : "Component error"}
           </span>
           {canRetry && (
             <button
@@ -224,7 +225,7 @@ export default ErrorBoundary;
 // Higher Order Component for easy wrapping
 export function withErrorBoundary<P extends object>(
   Component: React.ComponentType<P>,
-  errorBoundaryProps?: Omit<ErrorBoundaryProps, 'children'>,
+  errorBoundaryProps?: Omit<ErrorBoundaryProps, "children">,
 ) {
   const WrappedComponent = (props: P) => (
     <ErrorBoundary {...errorBoundaryProps}>
@@ -233,8 +234,6 @@ export function withErrorBoundary<P extends object>(
   );
 
   WrappedComponent.displayName = `withErrorBoundary(${Component.displayName ?? Component.name})`;
-  
+
   return WrappedComponent;
 }
-
- 

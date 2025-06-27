@@ -1,50 +1,50 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import '../styles/LoginModal.css'; // Importing the CSS file
-import { useAuth } from '../hooks/useAuth';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import "../styles/LoginModal.css"; // Importing the CSS file
+import { useAuth } from "../hooks/useAuth";
 
 const LoginModal = ({ isOpen, onClose, onSuccess }) => {
   const { login, register, isLoading, error, clearError } = useAuth();
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    dob: '',
-    country: '',
+    username: "",
+    password: "",
+    dob: "",
+    country: "",
   });
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     clearError();
-    setSuccessMessage('');
+    setSuccessMessage("");
 
     try {
       if (isLoginMode) {
         await login(formData);
-        setSuccessMessage('Login successful!');
+        setSuccessMessage("Login successful!");
         setTimeout(() => onSuccess(formData), 1500);
       } else {
         await register(formData);
-        setSuccessMessage('Account created! You can now log in.');
-        setFormData({ username: '', password: '', dob: '', country: '' });
+        setSuccessMessage("Account created! You can now log in.");
+        setFormData({ username: "", password: "", dob: "", country: "" });
         setTimeout(() => setIsLoginMode(true), 1500);
       }
     } catch (err) {
       // Error is handled by the auth hook, but we need to satisfy linter
       // eslint-disable-next-line no-console
-      console.debug('Auth operation failed:', err);
+      console.debug("Auth operation failed:", err);
     }
   };
 
   if (!isOpen) return null;
 
-  const buttonText = isLoginMode ? 'Sign In' : 'Create Account';
+  const buttonText = isLoginMode ? "Sign In" : "Create Account";
 
   return (
     <div className="modal-overlay">
       <div className="modal-content">
-        <h2>{isLoginMode ? 'Sign In' : 'Create Account'}</h2>
+        <h2>{isLoginMode ? "Sign In" : "Create Account"}</h2>
         <form onSubmit={handleSubmit}>
           {error && <div className="error-message">{error}</div>}
           {successMessage && (
@@ -93,7 +93,7 @@ const LoginModal = ({ isOpen, onClose, onSuccess }) => {
             </>
           )}
           <button type="submit" disabled={isLoading}>
-            {isLoading ? 'Please wait...' : buttonText}
+            {isLoading ? "Please wait..." : buttonText}
           </button>
         </form>
         <div>
@@ -102,8 +102,8 @@ const LoginModal = ({ isOpen, onClose, onSuccess }) => {
             className="switch-mode-button"
           >
             {isLoginMode
-              ? 'Need an account? Create one'
-              : 'Already have an account? Sign in'}
+              ? "Need an account? Create one"
+              : "Already have an account? Sign in"}
           </button>
           <button onClick={onClose} className="close-button">
             Close

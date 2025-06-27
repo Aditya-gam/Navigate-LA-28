@@ -1,11 +1,11 @@
-import L from 'leaflet';
+import L from "leaflet";
 
 // Fix for default marker icon
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl: require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
 // Common icon configurations
@@ -14,7 +14,8 @@ const ICON_CONFIG = {
   anchor: [12, 41],
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
 };
 
 const NUMBERED_ICON_CONFIG = {
@@ -25,7 +26,8 @@ const NUMBERED_ICON_CONFIG = {
 
 // Color-coded marker icons
 export const redIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
   shadowUrl: ICON_CONFIG.shadowUrl,
   iconSize: ICON_CONFIG.size,
   iconAnchor: ICON_CONFIG.anchor,
@@ -34,7 +36,8 @@ export const redIcon = new L.Icon({
 });
 
 export const greenIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png",
   shadowUrl: ICON_CONFIG.shadowUrl,
   iconSize: ICON_CONFIG.size,
   iconAnchor: ICON_CONFIG.anchor,
@@ -43,7 +46,8 @@ export const greenIcon = new L.Icon({
 });
 
 export const blueIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png",
   shadowUrl: ICON_CONFIG.shadowUrl,
   iconSize: ICON_CONFIG.size,
   iconAnchor: ICON_CONFIG.anchor,
@@ -52,7 +56,8 @@ export const blueIcon = new L.Icon({
 });
 
 export const yellowIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png",
   shadowUrl: ICON_CONFIG.shadowUrl,
   iconSize: ICON_CONFIG.size,
   iconAnchor: ICON_CONFIG.anchor,
@@ -61,7 +66,8 @@ export const yellowIcon = new L.Icon({
 });
 
 export const orangeIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png",
   shadowUrl: ICON_CONFIG.shadowUrl,
   iconSize: ICON_CONFIG.size,
   iconAnchor: ICON_CONFIG.anchor,
@@ -70,7 +76,8 @@ export const orangeIcon = new L.Icon({
 });
 
 export const purpleIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+  iconUrl:
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png",
   shadowUrl: ICON_CONFIG.shadowUrl,
   iconSize: ICON_CONFIG.size,
   iconAnchor: ICON_CONFIG.anchor,
@@ -92,14 +99,14 @@ export const createColorIcon = (color) => {
     purple: purpleIcon,
     bus: busIcon,
   };
-  
+
   return iconMap[color] || blueIcon;
 };
 
 // Numbered icon factory functions
-export const createNumberedIcon = (number, backgroundColor = '#1a73e8') => {
+export const createNumberedIcon = (number, backgroundColor = "#1a73e8") => {
   return L.divIcon({
-    className: 'custom-numbered-icon',
+    className: "custom-numbered-icon",
     html: `<div style="
       background-color: ${backgroundColor};
       color: white;
@@ -120,9 +127,9 @@ export const createNumberedIcon = (number, backgroundColor = '#1a73e8') => {
   });
 };
 
-export const createNumberedStopIcon = (number, backgroundColor = '#FFA500') => {
+export const createNumberedStopIcon = (number, backgroundColor = "#FFA500") => {
   return L.divIcon({
-    className: 'custom-numbered-stop',
+    className: "custom-numbered-stop",
     html: `<div style="
       background-color: ${backgroundColor};
       color: white;
@@ -146,7 +153,7 @@ export const createNumberedStopIcon = (number, backgroundColor = '#FFA500') => {
 // Olympic venue icon
 export const createOlympicVenueIcon = () => {
   return L.divIcon({
-    className: 'olympic-venue-icon',
+    className: "olympic-venue-icon",
     html: `<div style="
       background-color: #FFD700;
       color: #000;
@@ -170,7 +177,7 @@ export const createOlympicVenueIcon = () => {
 // User location icon
 export const createUserLocationIcon = () => {
   return L.divIcon({
-    className: 'user-location-icon',
+    className: "user-location-icon",
     html: `<div style="
       background-color: #4285F4;
       width: 18px;
@@ -183,4 +190,4 @@ export const createUserLocationIcon = () => {
     iconAnchor: [9, 9],
     popupAnchor: [0, -9],
   });
-}; 
+};

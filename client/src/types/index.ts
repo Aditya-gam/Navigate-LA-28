@@ -162,8 +162,8 @@ export interface AttractionPlanItem {
 export interface AnalyticsData {
   attractions?: AttractionsAnalytics;
   demographics?: DemographicsAnalytics;
-  'bus-routes'?: BusRoutesAnalytics;
-  'popular-stops'?: PopularStopsAnalytics;
+  "bus-routes"?: BusRoutesAnalytics;
+  "popular-stops"?: PopularStopsAnalytics;
 }
 
 export interface AttractionsAnalytics {
@@ -259,13 +259,13 @@ export interface RecentSearch {
   location?: [number, number];
 }
 
-export type SearchType = 
-  | 'nearest_places' 
-  | 'nearest_restrooms' 
-  | 'olympic_venues' 
-  | 'attraction_plan';
+export type SearchType =
+  | "nearest_places"
+  | "nearest_restrooms"
+  | "olympic_venues"
+  | "attraction_plan";
 
-export type TabType = 'map' | 'analytics';
+export type TabType = "map" | "analytics";
 
 export interface UIState {
   activeTab: TabType;
@@ -279,7 +279,7 @@ export interface UIState {
 
 export interface Notification {
   id: string;
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: "success" | "error" | "warning" | "info";
   title?: string;
   message: string;
   duration?: number;
@@ -291,7 +291,7 @@ export interface Notification {
 }
 
 export interface APIResponse<T = any> {
-  status: 'success' | 'error';
+  status: "success" | "error";
   message?: string;
   data?: T;
   errors?: Record<string, string[]>;
@@ -401,10 +401,10 @@ export type RequiredBy<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 // Environment Types
 export interface EnvConfig {
-  NODE_ENV: 'development' | 'production' | 'test';
+  NODE_ENV: "development" | "production" | "test";
   REACT_APP_API_URL: string;
   REACT_APP_SENTRY_DSN?: string;
   REACT_APP_MAPS_API_KEY?: string;
 }
 
-export default {}; 
+export default {};

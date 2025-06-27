@@ -1,6 +1,6 @@
 // src/services/authService.js
-import axios from '../utils/api';
-import { AUTH_ENDPOINTS } from '../constants/apiEndpoints';
+import axios from "../utils/api";
+import { AUTH_ENDPOINTS } from "../constants/apiEndpoints";
 
 /**
  * Authenticate user login.
@@ -10,7 +10,7 @@ import { AUTH_ENDPOINTS } from '../constants/apiEndpoints';
 export const loginUser = async (formData) => {
   const response = await axios.post(
     AUTH_ENDPOINTS.LOGIN,
-    new URLSearchParams(formData)
+    new URLSearchParams(formData),
   );
   return response.data;
 };

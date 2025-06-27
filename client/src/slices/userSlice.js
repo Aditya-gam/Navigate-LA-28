@@ -1,13 +1,13 @@
 // src/slices/userSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   profile: null,
   preferences: {
     searchRadius: 1000, // meters
-    preferredTransport: 'bus',
-    language: 'en',
-    theme: 'light',
+    preferredTransport: "bus",
+    language: "en",
+    theme: "light",
   },
   recentSearches: [],
   favoritePlaces: [],
@@ -16,7 +16,7 @@ const initialState = {
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     setProfile: (state, action) => {
@@ -29,19 +29,21 @@ const userSlice = createSlice({
       // Keep only last 10 searches
       state.recentSearches = [
         action.payload,
-        ...state.recentSearches.filter(search => 
-          search.query !== action.payload.query,
+        ...state.recentSearches.filter(
+          (search) => search.query !== action.payload.query,
         ),
       ].slice(0, 10);
     },
     addFavoritePlace: (state, action) => {
-      if (!state.favoritePlaces.find(place => place.id === action.payload.id)) {
+      if (
+        !state.favoritePlaces.find((place) => place.id === action.payload.id)
+      ) {
         state.favoritePlaces.push(action.payload);
       }
     },
     removeFavoritePlace: (state, action) => {
       state.favoritePlaces = state.favoritePlaces.filter(
-        place => place.id !== action.payload
+        (place) => place.id !== action.payload,
       );
     },
     clearRecentSearches: (state) => {

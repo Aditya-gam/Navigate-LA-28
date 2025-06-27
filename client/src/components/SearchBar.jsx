@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import '../styles/SearchBar.css'; // Importing the CSS file
+import React from "react";
+import PropTypes from "prop-types";
+import "../styles/SearchBar.css"; // Importing the CSS file
 
 const SearchBar = ({
   searchQuery,
@@ -28,15 +28,13 @@ const SearchBar = ({
       <option value="olympic_venues">Olympic Venues</option>
       <option value="attraction_plan">Attraction Plan</option>
     </select>
-    <button 
-      onClick={handleSearch}
-      className="search-button"
-    >
+    <button onClick={handleSearch} className="search-button">
       Search
     </button>
     {selectedLocation && (
       <div className="location-display">
-        Selected: {selectedLocation[0].toFixed(6)}, {selectedLocation[1].toFixed(6)}
+        Selected: {selectedLocation[0].toFixed(6)},{" "}
+        {selectedLocation[1].toFixed(6)}
       </div>
     )}
   </div>

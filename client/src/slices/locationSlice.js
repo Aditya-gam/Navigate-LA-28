@@ -1,5 +1,5 @@
 // src/slices/locationSlice.js
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   selectedLocation: null,
@@ -7,15 +7,15 @@ const initialState = {
   resultMarkers: [],
   busRoute: null,
   attractionPlan: null,
-  searchType: 'nearest_places',
-  searchQuery: '',
+  searchType: "nearest_places",
+  searchQuery: "",
   isPanelVisible: true,
   isLoading: false,
   error: null,
 };
 
 const locationSlice = createSlice({
-  name: 'location',
+  name: "location",
   initialState,
   reducers: {
     setSelectedLocation: (state, action) => {

@@ -4,8 +4,8 @@
 
 /* eslint-disable no-unused-vars */
 export enum ErrorSeverity {
-  MEDIUM = 'medium',
-  HIGH = 'high',
+  MEDIUM = "medium",
+  HIGH = "high",
 }
 /* eslint-enable no-unused-vars */
 
@@ -24,7 +24,7 @@ export interface ErrorDetails {
 export interface ErrorNotification {
   title: string;
   message: string;
-  type: 'error' | 'warning' | 'info' | 'success';
+  type: "error" | "warning" | "info" | "success";
   duration?: number;
   actions?: Array<{
     label: string;
@@ -35,8 +35,8 @@ export interface ErrorNotification {
 class ErrorHandler {
   private static instance: ErrorHandler;
   private readonly errorQueue: ErrorDetails[] = [];
-  private readonly isProduction = process.env['NODE_ENV'] === 'production';
-  private readonly sentryEnabled = Boolean(process.env['REACT_APP_SENTRY_DSN']);
+  private readonly isProduction = process.env["NODE_ENV"] === "production";
+  private readonly sentryEnabled = Boolean(process.env["REACT_APP_SENTRY_DSN"]);
 
   private constructor() {
     this.setupGlobalErrorHandlers();
@@ -54,7 +54,7 @@ class ErrorHandler {
    */
   private setupGlobalErrorHandlers(): void {
     // Handle unhandled promise rejections
-    window.addEventListener('unhandledrejection', (event) => {
+    window.addEventListener("unhandledrejection", (event) => {
       this.handleError({
         message: `Unhandled promise rejection: ${event.reason}`,
         severity: ErrorSeverity.HIGH,
@@ -64,7 +64,7 @@ class ErrorHandler {
     });
 
     // Handle global JavaScript errors
-    window.addEventListener('error', (event) => {
+    window.addEventListener("error", (event) => {
       this.handleError({
         message: event.message,
         severity: ErrorSeverity.HIGH,
@@ -85,7 +85,7 @@ class ErrorHandler {
   public handleError(error: Partial<ErrorDetails>): void {
     const userId = this.getCurrentUserId();
     const errorDetails: ErrorDetails = {
-      message: error.message ?? 'An unknown error occurred',
+      message: error.message ?? "An unknown error occurred",
       ...(error.code && { code: error.code }),
       severity: error.severity ?? ErrorSeverity.MEDIUM,
       context: error.context || {},
@@ -122,13 +122,13 @@ class ErrorHandler {
   public handleApiError(error: any, context?: Record<string, any>): void {
     const errorMessage = this.extractErrorMessage(error);
     const severity = this.getApiErrorSeverity(error);
-    
+
     this.handleError({
       message: errorMessage,
       severity,
       context: {
         ...context,
-        type: 'API_ERROR',
+        type: "API_ERROR",
         timestamp: new Date().toISOString(),
       },
     });
@@ -137,14 +137,18 @@ class ErrorHandler {
   /**
    * Handle React component errors
    */
-  public handleComponentError(error: Error, errorInfo: any, componentName?: string): void {
+  public handleComponentError(
+    error: Error,
+    errorInfo: any,
+    componentName?: string,
+  ): void {
     this.handleError({
-      message: `Component error in ${componentName ?? 'unknown'}: ${error.message}`,
+      message: `Component error in ${componentName ?? "unknown"}: ${error.message}`,
       severity: ErrorSeverity.HIGH,
       context: {
         component: componentName,
         errorInfo,
-        type: 'COMPONENT_ERROR',
+        type: "COMPONENT_ERROR",
       },
       ...(error.stack && { stack: error.stack }),
     });
@@ -155,9 +159,9 @@ class ErrorHandler {
    */
   public showSuccess(message: string, duration = 3000): void {
     this.showNotification({
-      title: 'Success',
+      title: "Success",
       message,
-      type: 'success',
+      type: "success",
       duration,
     });
   }
@@ -167,9 +171,9 @@ class ErrorHandler {
    */
   public showInfo(message: string, duration = 5000): void {
     this.showNotification({
-      title: 'Information',
+      title: "Information",
       message,
-      type: 'info',
+      type: "info",
       duration,
     });
   }
@@ -179,9 +183,9 @@ class ErrorHandler {
    */
   public showWarning(message: string, duration = 7000): void {
     this.showNotification({
-      title: 'Warning',
+      title: "Warning",
       message,
-      type: 'warning',
+      type: "warning",
       duration,
     });
   }
@@ -190,11 +194,11 @@ class ErrorHandler {
    * Get formatted error message for display
    */
   public getDisplayMessage(error: any): string {
-    if (typeof error === 'string') return error;
+    if (typeof error === "string") return error;
     if (error.message) return error.message;
     if (error.response?.data?.detail) return error.response.data.detail;
     if (error.response?.data?.message) return error.response.data.message;
-    return 'An unexpected error occurred';
+    return "An unexpected error occurred";
   }
 
   /**
@@ -204,7 +208,7 @@ class ErrorHandler {
     if (error.response?.data?.detail) return error.response.data.detail;
     if (error.response?.data?.message) return error.response.data.message;
     if (error.message) return error.message;
-    return 'An unexpected error occurred';
+    return "An unexpected error occurred";
   }
 
   private getApiErrorSeverity(error: any): ErrorSeverity {
@@ -221,10 +225,12 @@ class ErrorHandler {
   private logToConsole(error: ErrorDetails): void {
     const logMethod = this.getConsoleLogMethod(error.severity);
     // eslint-disable-next-line no-console
-    logMethod('Error:', error);
+    logMethod("Error:", error);
   }
 
-  private getConsoleLogMethod(severity: ErrorSeverity): (..._args: any[]) => void {
+  private getConsoleLogMethod(
+    severity: ErrorSeverity,
+  ): (..._args: any[]) => void {
     switch (severity) {
       case ErrorSeverity.HIGH:
         // eslint-disable-next-line no-console
@@ -248,11 +254,11 @@ class ErrorHandler {
   private showUserNotification(error: ErrorDetails): void {
     const message = this.getUserFriendlyMessage(error);
     const duration = this.getNotificationDuration(error.severity);
-    
+
     this.showNotification({
-      title: 'Error',
+      title: "Error",
       message,
-      type: 'error',
+      type: "error",
       duration,
     });
   }
@@ -264,43 +270,43 @@ class ErrorHandler {
       // In development, we can log notifications for debugging
       /* eslint-disable no-console */
       let logMethod;
-      if (notification.type === 'error') {
+      if (notification.type === "error") {
         logMethod = console.error;
-      } else if (notification.type === 'warning') {
+      } else if (notification.type === "warning") {
         logMethod = console.warn;
-      } else if (notification.type === 'success') {
+      } else if (notification.type === "success") {
         logMethod = console.info;
       } else {
         logMethod = console.log;
       }
-      logMethod('Notification:', notification);
+      logMethod("Notification:", notification);
       /* eslint-enable no-console */
     }
   }
 
   private getUserFriendlyMessage(error: ErrorDetails): string {
     // Convert technical error messages to user-friendly ones
-    if (error.message.includes('Network Error')) {
-      return 'Unable to connect to the server. Please check your internet connection.';
+    if (error.message.includes("Network Error")) {
+      return "Unable to connect to the server. Please check your internet connection.";
     }
-    if (error.message.includes('401')) {
-      return 'You are not authorized to perform this action. Please log in again.';
+    if (error.message.includes("401")) {
+      return "You are not authorized to perform this action. Please log in again.";
     }
-    if (error.message.includes('404')) {
-      return 'The requested resource was not found.';
+    if (error.message.includes("404")) {
+      return "The requested resource was not found.";
     }
-    if (error.message.includes('500')) {
-      return 'A server error occurred. Please try again later.';
+    if (error.message.includes("500")) {
+      return "A server error occurred. Please try again later.";
     }
-    return error.message || 'An unexpected error occurred.';
+    return error.message || "An unexpected error occurred.";
   }
 
   private getNotificationDuration(severity: ErrorSeverity): number {
     switch (severity) {
       case ErrorSeverity.HIGH:
-        return 8000;  // 8 seconds
+        return 8000; // 8 seconds
       case ErrorSeverity.MEDIUM:
-        return 5000;  // 5 seconds
+        return 5000; // 5 seconds
       default:
         return 5000;
     }
@@ -310,29 +316,29 @@ class ErrorHandler {
     try {
       const storedErrors = this.getStoredErrors();
       storedErrors.push(error);
-      
+
       // Keep only the last 50 errors
       if (storedErrors.length > 50) {
         storedErrors.splice(0, storedErrors.length - 50);
       }
-      
-      localStorage.setItem('app_errors', JSON.stringify(storedErrors));
+
+      localStorage.setItem("app_errors", JSON.stringify(storedErrors));
     } catch (e) {
       // localStorage is not available or quota exceeded
       if (!this.isProduction) {
         // eslint-disable-next-line no-console
-        console.warn('Failed to store error locally:', e);
+        console.warn("Failed to store error locally:", e);
       }
     }
   }
 
   private getCurrentUserId(): string | undefined {
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem("access_token");
       if (token) {
         // Decode JWT token to get user ID
         // This is a simplified version - you might want to use a proper JWT library
-        const tokenPart = token.split('.')[1];
+        const tokenPart = token.split(".")[1];
         if (tokenPart) {
           const payload = JSON.parse(atob(tokenPart));
           return payload.sub ?? payload.user_id;
@@ -342,7 +348,7 @@ class ErrorHandler {
       // Return undefined if token is invalid
       if (!this.isProduction) {
         // eslint-disable-next-line no-console
-        console.warn('Failed to decode token:', e);
+        console.warn("Failed to decode token:", e);
       }
     }
     return undefined;
@@ -350,12 +356,12 @@ class ErrorHandler {
 
   public getStoredErrors(): ErrorDetails[] {
     try {
-      const stored = localStorage.getItem('app_errors');
+      const stored = localStorage.getItem("app_errors");
       return stored ? JSON.parse(stored) : [];
     } catch (e) {
       if (!this.isProduction) {
         // eslint-disable-next-line no-console
-        console.warn('Failed to parse stored errors:', e);
+        console.warn("Failed to parse stored errors:", e);
       }
       return [];
     }
@@ -363,12 +369,12 @@ class ErrorHandler {
 
   public clearStoredErrors(): void {
     try {
-      localStorage.removeItem('app_errors');
+      localStorage.removeItem("app_errors");
     } catch (e) {
       // localStorage is not available
       if (!this.isProduction) {
         // eslint-disable-next-line no-console
-        console.warn('Failed to clear stored errors:', e);
+        console.warn("Failed to clear stored errors:", e);
       }
     }
   }
@@ -386,15 +392,18 @@ export const handleError = (error: any, context?: Record<string, any>) => {
   });
 };
 
-export const showSuccess = (message: string) => errorHandler.showSuccess(message);
+export const showSuccess = (message: string) =>
+  errorHandler.showSuccess(message);
 export const showInfo = (message: string) => errorHandler.showInfo(message);
-export const showWarning = (message: string) => errorHandler.showWarning(message);
+export const showWarning = (message: string) =>
+  errorHandler.showWarning(message);
 export const showError = (message: string) => {
   errorHandler.showNotification({
-    title: 'Error',
+    title: "Error",
     message,
-    type: 'error',
+    type: "error",
     duration: 5000,
   });
 };
-export const getDisplayMessage = (error: any) => errorHandler.getDisplayMessage(error); 
+export const getDisplayMessage = (error: any) =>
+  errorHandler.getDisplayMessage(error);

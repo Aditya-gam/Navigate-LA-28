@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import '../styles/Header.css';
-import SearchBar from './SearchBar';
+import React from "react";
+import PropTypes from "prop-types";
+import "../styles/Header.css";
+import SearchBar from "./SearchBar";
 
-const Header = ({ 
-  username, 
-  onLoginToggle, 
-  activeTab, 
+const Header = ({
+  username,
+  onLoginToggle,
+  activeTab,
   setActiveTab,
   searchQuery,
   setSearchQuery,
@@ -17,17 +17,17 @@ const Header = ({
 }) => (
   <div className="header">
     <h1 className="header-title">Navigate LA</h1>
-    
+
     <div className="tab-buttons">
       <button
-        onClick={() => setActiveTab('map')}
-        className={`tab-button ${activeTab === 'map' ? 'active' : ''}`}
+        onClick={() => setActiveTab("map")}
+        className={`tab-button ${activeTab === "map" ? "active" : ""}`}
       >
         Map
       </button>
       <button
-        onClick={() => setActiveTab('analytics')}
-        className={`tab-button ${activeTab === 'analytics' ? 'active' : ''}`}
+        onClick={() => setActiveTab("analytics")}
+        className={`tab-button ${activeTab === "analytics" ? "active" : ""}`}
       >
         Analytics
       </button>
@@ -46,11 +46,8 @@ const Header = ({
 
     <div className="header-actions">
       {username && <span className="username">{username}</span>}
-      <button 
-        onClick={onLoginToggle} 
-        className="auth-button"
-      >
-        {username ? '👤' : '🔑'}
+      <button onClick={onLoginToggle} className="auth-button">
+        {username ? "👤" : "🔑"}
       </button>
     </div>
   </div>

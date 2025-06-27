@@ -1,6 +1,6 @@
 // src/services/mapService.js
-import axios from '../utils/api';
-import { LOCATION_ENDPOINTS } from '../constants/apiEndpoints';
+import axios from "../utils/api";
+import { LOCATION_ENDPOINTS } from "../constants/apiEndpoints";
 
 /**
  * Fetch location data based on query.
@@ -20,17 +20,17 @@ export const fetchLocations = async (query) => {
  * @returns {Promise} Response with nearest places
  */
 export const searchNearestPlaces = async (lat, lng, token = null) => {
-  const url = new URL('http://localhost:8001/api/geo/nearest_places/');
-  url.searchParams.append('lat', lat);
-  url.searchParams.append('long', lng);
+  const url = new URL("http://localhost:8001/api/geo/nearest_places/");
+  url.searchParams.append("lat", lat);
+  url.searchParams.append("long", lng);
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, {
-    method: 'GET',
+    method: "GET",
     headers,
   });
 
@@ -49,17 +49,17 @@ export const searchNearestPlaces = async (lat, lng, token = null) => {
  * @returns {Promise} Response with nearest restrooms
  */
 export const searchNearestRestrooms = async (lat, lng, token = null) => {
-  const url = new URL('http://localhost:8001/api/geo/nearest_restrooms/');
-  url.searchParams.append('lat', lat);
-  url.searchParams.append('long', lng);
+  const url = new URL("http://localhost:8001/api/geo/nearest_restrooms/");
+  url.searchParams.append("lat", lat);
+  url.searchParams.append("long", lng);
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, {
-    method: 'GET',
+    method: "GET",
     headers,
   });
 
@@ -78,17 +78,17 @@ export const searchNearestRestrooms = async (lat, lng, token = null) => {
  * @returns {Promise} Response with Olympic venues
  */
 export const searchOlympicVenues = async (lat, lng, token = null) => {
-  const url = new URL('http://localhost:8001/api/olympic_venues/');
-  url.searchParams.append('lat', lat);
-  url.searchParams.append('lng', lng);
+  const url = new URL("http://localhost:8001/api/olympic_venues/");
+  url.searchParams.append("lat", lat);
+  url.searchParams.append("lng", lng);
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, {
-    method: 'GET',
+    method: "GET",
     headers,
   });
 
@@ -105,11 +105,11 @@ export const searchOlympicVenues = async (lat, lng, token = null) => {
  * @returns {Promise} Response with all Olympic venues
  */
 export const fetchAllOlympicVenues = async (token = null) => {
-  const url = new URL('http://localhost:8001/api/olympic_venues/all/');
+  const url = new URL("http://localhost:8001/api/olympic_venues/all/");
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, { headers });
@@ -132,7 +132,7 @@ export const fetchOlympicVenueDetails = async (venueId, token = null) => {
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, { headers });
@@ -153,24 +153,32 @@ export const fetchOlympicVenueDetails = async (venueId, token = null) => {
  * @param {string} token - Optional access token
  * @returns {Promise} Response with bus route data
  */
-export const fetchDirectBusRoutes = async (lat1, lng1, lat2, lng2, token = null) => {
-  const url = new URL('http://localhost:8001/api/geo/direct_bus_routes/');
-  url.searchParams.append('lat1', lat1);
-  url.searchParams.append('long1', lng1);
-  url.searchParams.append('lat2', lat2);
-  url.searchParams.append('long2', lng2);
-  url.searchParams.append('buffer_radius', '0.5');
+export const fetchDirectBusRoutes = async (
+  lat1,
+  lng1,
+  lat2,
+  lng2,
+  token = null,
+) => {
+  const url = new URL("http://localhost:8001/api/geo/direct_bus_routes/");
+  url.searchParams.append("lat1", lat1);
+  url.searchParams.append("long1", lng1);
+  url.searchParams.append("lat2", lat2);
+  url.searchParams.append("long2", lng2);
+  url.searchParams.append("buffer_radius", "0.5");
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, { headers });
 
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    throw new Error(
+      errorData.message || `HTTP error! status: ${response.status}`,
+    );
   }
 
   return await response.json();
@@ -184,15 +192,20 @@ export const fetchDirectBusRoutes = async (lat1, lng1, lat2, lng2, token = null)
  * @param {string} token - Optional access token
  * @returns {Promise} Response with attraction plan
  */
-export const fetchAttractionPlan = async (lat, lng, maxPlaces = 5, token = null) => {
-  const url = new URL('http://localhost:8001/api/geo/attraction_plan/');
-  url.searchParams.append('lat', lat);
-  url.searchParams.append('long', lng);
-  url.searchParams.append('max_places', maxPlaces);
+export const fetchAttractionPlan = async (
+  lat,
+  lng,
+  maxPlaces = 5,
+  token = null,
+) => {
+  const url = new URL("http://localhost:8001/api/geo/attraction_plan/");
+  url.searchParams.append("lat", lat);
+  url.searchParams.append("long", lng);
+  url.searchParams.append("max_places", maxPlaces);
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, { headers });
@@ -211,12 +224,12 @@ export const fetchAttractionPlan = async (lat, lng, maxPlaces = 5, token = null)
  * @returns {Promise} Response with coordinates
  */
 export const geocodeAddress = async (address, token = null) => {
-  const url = new URL('http://localhost:8001/api/geo/geocode/');
-  url.searchParams.append('address', address);
+  const url = new URL("http://localhost:8001/api/geo/geocode/");
+  url.searchParams.append("address", address);
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, { headers });
@@ -236,13 +249,13 @@ export const geocodeAddress = async (address, token = null) => {
  * @returns {Promise} Response with address
  */
 export const reverseGeocode = async (lat, lng, token = null) => {
-  const url = new URL('http://localhost:8001/api/geo/reverse-geocode/');
-  url.searchParams.append('lat', lat);
-  url.searchParams.append('lng', lng);
+  const url = new URL("http://localhost:8001/api/geo/reverse-geocode/");
+  url.searchParams.append("lat", lat);
+  url.searchParams.append("lng", lng);
 
   const headers = {};
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   const response = await fetch(url, { headers });

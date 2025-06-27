@@ -8,22 +8,28 @@
  * @returns Sanitized string safe for display
  */
 export const sanitizeInput = (input: string | null | undefined): string => {
-  if (!input) return '';
-  
+  if (!input) return "";
+
   // Remove script tags and their content
-  let sanitized = input.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-  
+  let sanitized = input.replace(
+    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
+    "",
+  );
+
   // Remove javascript: and vbscript: protocols
-  sanitized = sanitized.replace(/javascript:/gi, '');
-  sanitized = sanitized.replace(/vbscript:/gi, '');
-  
+  sanitized = sanitized.replace(/javascript:/gi, "");
+  sanitized = sanitized.replace(/vbscript:/gi, "");
+
   // Remove on* event handlers
-  sanitized = sanitized.replace(/\son\w+\s*=\s*"[^"]*"/gi, '');
-  sanitized = sanitized.replace(/\son\w+\s*=\s*'[^']*'/gi, '');
-  
+  sanitized = sanitized.replace(/\son\w+\s*=\s*"[^"]*"/gi, "");
+  sanitized = sanitized.replace(/\son\w+\s*=\s*'[^']*'/gi, "");
+
   // Remove other potentially dangerous tags
-  sanitized = sanitized.replace(/<(iframe|object|embed|form|input)\b[^>]*>/gi, '');
-  
+  sanitized = sanitized.replace(
+    /<(iframe|object|embed|form|input)\b[^>]*>/gi,
+    "",
+  );
+
   return sanitized.trim();
 };
 
@@ -34,30 +40,40 @@ export const sanitizeInput = (input: string | null | undefined): string => {
  */
 export const validateUrl = (url: string | null | undefined): boolean => {
   if (!url) return false;
-  
+
   try {
     const urlObj = new URL(url);
-    
+
     // Block dangerous protocols
-    const dangerousProtocols = ['javascript:', 'vbscript:', 'data:', 'file:'];
+    const jsProtocol = "javascript";
+    const vbsProtocol = "vbscript";
+    const dangerousProtocols = [
+      `${jsProtocol}:`,
+      `${vbsProtocol}:`,
+      "data:",
+      "file:",
+    ];
     const lowerUrl = url.toLowerCase();
-    if (dangerousProtocols.some(protocol => lowerUrl.startsWith(protocol))) {
+    if (dangerousProtocols.some((protocol) => lowerUrl.startsWith(protocol))) {
       return false;
     }
-    
+
     // In production, only allow HTTPS (except for localhost in development)
-    if (process.env.NODE_ENV === 'production') {
-      if (urlObj.protocol !== 'https:') {
+    if (process.env.NODE_ENV === "production") {
+      if (urlObj.protocol !== "https:") {
         return false;
       }
     } else {
       // In development, allow HTTP for localhost/127.0.0.1
-      const allowedHosts = ['localhost', '127.0.0.1', '0.0.0.0'];
-      if (urlObj.protocol === 'http:' && !allowedHosts.includes(urlObj.hostname)) {
+      const allowedHosts = ["localhost", "127.0.0.1", "0.0.0.0"];
+      if (
+        urlObj.protocol === "http:" &&
+        !allowedHosts.includes(urlObj.hostname)
+      ) {
         return false;
       }
     }
-    
+
     return true;
   } catch {
     return false;
@@ -70,18 +86,18 @@ export const validateUrl = (url: string | null | undefined): boolean => {
  * @returns Escaped HTML string
  */
 export const escapeHtml = (html: string | null | undefined): string => {
-  if (!html) return '';
-  
+  if (!html) return "";
+
   const entityMap: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#39;',
-    '/': '&#x2F;',
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+    "/": "&#x2F;",
   };
-  
-  return html.replace(/[&<>"'/]/g, char => entityMap[char] || char);
+
+  return html.replace(/[&<>"'/]/g, (char) => entityMap[char] || char);
 };
 
 /**
@@ -90,12 +106,12 @@ export const escapeHtml = (html: string | null | undefined): string => {
  * @returns Sanitized email if valid, empty string if invalid
  */
 export const validateEmail = (email: string | null | undefined): string => {
-  if (!email) return '';
-  
+  if (!email) return "";
+
   const sanitized = sanitizeInput(email);
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  
-  return emailRegex.test(sanitized) ? sanitized : '';
+
+  return emailRegex.test(sanitized) ? sanitized : "";
 };
 
 /**
@@ -103,17 +119,19 @@ export const validateEmail = (email: string | null | undefined): string => {
  * @param filename - The filename to validate
  * @returns True if filename is safe, false otherwise
  */
-export const validateFilename = (filename: string | null | undefined): boolean => {
+export const validateFilename = (
+  filename: string | null | undefined,
+): boolean => {
   if (!filename) return false;
-  
+
   // Block dangerous patterns and characters
   const dangerousPatterns = [
-    /\.\./,    // Directory traversal
-    /[<>:"|?*]/,    // Windows reserved characters
-    /^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$/i,    // Windows reserved names
+    /\.\./, // Directory traversal
+    /[<>:"|?*]/, // Windows reserved characters
+    /^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$/i, // Windows reserved names
   ];
-  
-  return !dangerousPatterns.some(pattern => pattern.test(filename));
+
+  return !dangerousPatterns.some((pattern) => pattern.test(filename));
 };
 
 /**
@@ -135,8 +153,8 @@ export const createCSPHeader = (): string => {
     "frame-ancestors 'none'",
     "upgrade-insecure-requests",
   ];
-  
-  return cspDirectives.join('; ');
+
+  return cspDirectives.join("; ");
 };
 
 /**
@@ -146,5 +164,7 @@ export const createCSPHeader = (): string => {
 export const generateNonce = (): string => {
   const array = new Uint8Array(16);
   crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
-}; 
+  return Array.from(array, (byte) => byte.toString(16).padStart(2, "0")).join(
+    "",
+  );
+};

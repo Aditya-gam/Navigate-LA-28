@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 const useAnalyticsData = (activeSubTab) => {
   const [data, setData] = useState({
@@ -17,11 +17,11 @@ const useAnalyticsData = (activeSubTab) => {
       setError(null);
       try {
         const endpointMap = {
-          'attractions': 'attractions',
-          'demographics': 'demographics',
-          'bus-routes': 'bus-routes',
-          'popular-stops': 'popular-stops',
-          'geographic-distribution': 'geographic-distribution',
+          attractions: "attractions",
+          demographics: "demographics",
+          "bus-routes": "bus-routes",
+          "popular-stops": "popular-stops",
+          "geographic-distribution": "geographic-distribution",
         };
 
         const endpoint = endpointMap[activeSubTab] || activeSubTab;
@@ -29,11 +29,11 @@ const useAnalyticsData = (activeSubTab) => {
 
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error('Failed to fetch data');
+          throw new Error("Failed to fetch data");
         }
         const responseData = await response.json();
 
-        setData(prevData => ({
+        setData((prevData) => ({
           ...prevData,
           [activeSubTab]: responseData,
         }));
@@ -51,4 +51,4 @@ const useAnalyticsData = (activeSubTab) => {
   return { data, isLoading, error };
 };
 
-export default useAnalyticsData; 
+export default useAnalyticsData;
