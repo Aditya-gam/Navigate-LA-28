@@ -3,7 +3,8 @@ Application settings and configuration management.
 """
 import os
 from typing import Optional, List
-from pydantic import BaseSettings, field_validator, Field
+from pydantic import field_validator, Field, ConfigDict
+from pydantic_settings import BaseSettings
 
 # URL constants
 LOCALHOST_3000 = "http://localhost:3000"
@@ -12,6 +13,13 @@ LOCALHOST_3030 = "http://localhost:3030"
 
 class Settings(BaseSettings):
     """Application settings with environment variable support."""
+
+    model_config = ConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore"
+    )
 
     # Application settings
     app_name: str = "Navigate LA 2028 API"
@@ -96,11 +104,6 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v.lower() in ('true', '1', 'yes', 'on')
         return bool(v)
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
 
 
 # Create global settings instance
