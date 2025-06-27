@@ -82,13 +82,6 @@ We welcome security researchers and the community to help identify vulnerabiliti
 ### **Vulnerability Rewards**
 We offer recognition and rewards for valid security findings:
 
-| Severity | Reward | Criteria |
-|----------|--------|----------|
-| **Critical** | $1,000 - $5,000 | Remote code execution, SQL injection |
-| **High** | $500 - $1,000 | Authentication bypass, data exposure |
-| **Medium** | $100 - $500 | XSS, CSRF, privilege escalation |
-| **Low** | $50 - $100 | Information disclosure, security misconfig |
-
 ### **Out of Scope**
 - Social engineering attacks
 - Physical security issues
