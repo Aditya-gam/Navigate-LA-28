@@ -8,6 +8,8 @@ FILES=(
     "$BASE_DIR/all_places.csv"
     "$BASE_DIR/all_restrooms.csv"
     "$BASE_DIR/Parks_20241116.csv"
+    "$BASE_DIR/all_parks.csv"
+    "$BASE_DIR/bus_stops.csv"
 )
 
 # Define the destination directory in HDFS
