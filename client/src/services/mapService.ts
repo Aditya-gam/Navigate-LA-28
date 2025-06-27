@@ -1,30 +1,34 @@
-// src/services/mapService.js
 import axios from "../utils/api";
 import { LOCATION_ENDPOINTS } from "../constants/apiEndpoints";
+import type { Place, AttractionPlan, BusRoute, APIResponse } from "@/types";
 
 /**
  * Fetch location data based on query.
- * @param {String} query - Location search query.
- * @returns {Promise} Response from server.
+ * @param query - Location search query.
+ * @returns Response from server.
  */
-export const fetchLocations = async (query) => {
+export const fetchLocations = async (query: string): Promise<APIResponse> => {
   const response = await axios.get(`${LOCATION_ENDPOINTS.SEARCH}?q=${query}`);
   return response.data;
 };
 
 /**
  * Search for nearest places
- * @param {number} lat - Latitude
- * @param {number} lng - Longitude
- * @param {string} token - Optional access token
- * @returns {Promise} Response with nearest places
+ * @param lat - Latitude
+ * @param lng - Longitude
+ * @param token - Optional access token
+ * @returns Response with nearest places
  */
-export const searchNearestPlaces = async (lat, lng, token = null) => {
+export const searchNearestPlaces = async (
+  lat: number, 
+  lng: number, 
+  token?: string
+): Promise<Place[]> => {
   const url = new URL("http://localhost:8001/api/geo/nearest_places/");
-  url.searchParams.append("lat", lat);
-  url.searchParams.append("long", lng);
+  url.searchParams.append("lat", lat.toString());
+  url.searchParams.append("long", lng.toString());
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -43,17 +47,21 @@ export const searchNearestPlaces = async (lat, lng, token = null) => {
 
 /**
  * Search for nearest restrooms
- * @param {number} lat - Latitude
- * @param {number} lng - Longitude
- * @param {string} token - Optional access token
- * @returns {Promise} Response with nearest restrooms
+ * @param lat - Latitude
+ * @param lng - Longitude
+ * @param token - Optional access token
+ * @returns Response with nearest restrooms
  */
-export const searchNearestRestrooms = async (lat, lng, token = null) => {
+export const searchNearestRestrooms = async (
+  lat: number, 
+  lng: number, 
+  token?: string
+): Promise<Place[]> => {
   const url = new URL("http://localhost:8001/api/geo/nearest_restrooms/");
-  url.searchParams.append("lat", lat);
-  url.searchParams.append("long", lng);
+  url.searchParams.append("lat", lat.toString());
+  url.searchParams.append("long", lng.toString());
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -72,17 +80,21 @@ export const searchNearestRestrooms = async (lat, lng, token = null) => {
 
 /**
  * Search for Olympic venues
- * @param {number} lat - Latitude
- * @param {number} lng - Longitude
- * @param {string} token - Optional access token
- * @returns {Promise} Response with Olympic venues
+ * @param lat - Latitude
+ * @param lng - Longitude
+ * @param token - Optional access token
+ * @returns Response with Olympic venues
  */
-export const searchOlympicVenues = async (lat, lng, token = null) => {
+export const searchOlympicVenues = async (
+  lat: number, 
+  lng: number, 
+  token?: string
+): Promise<Place[]> => {
   const url = new URL("http://localhost:8001/api/olympic_venues/");
-  url.searchParams.append("lat", lat);
-  url.searchParams.append("lng", lng);
+  url.searchParams.append("lat", lat.toString());
+  url.searchParams.append("lng", lng.toString());
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -101,13 +113,13 @@ export const searchOlympicVenues = async (lat, lng, token = null) => {
 
 /**
  * Get all Olympic venues
- * @param {string} token - Optional access token
- * @returns {Promise} Response with all Olympic venues
+ * @param token - Optional access token
+ * @returns Response with all Olympic venues
  */
-export const fetchAllOlympicVenues = async (token = null) => {
+export const fetchAllOlympicVenues = async (token?: string): Promise<Place[]> => {
   const url = new URL("http://localhost:8001/api/olympic_venues/all/");
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -123,14 +135,17 @@ export const fetchAllOlympicVenues = async (token = null) => {
 
 /**
  * Get Olympic venue details by ID
- * @param {string} venueId - Olympic venue ID
- * @param {string} token - Optional access token
- * @returns {Promise} Response with venue details
+ * @param venueId - Olympic venue ID
+ * @param token - Optional access token
+ * @returns Response with venue details
  */
-export const fetchOlympicVenueDetails = async (venueId, token = null) => {
+export const fetchOlympicVenueDetails = async (
+  venueId: string, 
+  token?: string
+): Promise<Place> => {
   const url = new URL(`http://localhost:8001/api/olympic_venues/${venueId}/`);
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -146,28 +161,28 @@ export const fetchOlympicVenueDetails = async (venueId, token = null) => {
 
 /**
  * Fetch direct bus routes between two locations
- * @param {number} lat1 - Origin latitude
- * @param {number} lng1 - Origin longitude
- * @param {number} lat2 - Destination latitude
- * @param {number} lng2 - Destination longitude
- * @param {string} token - Optional access token
- * @returns {Promise} Response with bus route data
+ * @param lat1 - Origin latitude
+ * @param lng1 - Origin longitude
+ * @param lat2 - Destination latitude
+ * @param lng2 - Destination longitude
+ * @param token - Optional access token
+ * @returns Response with bus route data
  */
 export const fetchDirectBusRoutes = async (
-  lat1,
-  lng1,
-  lat2,
-  lng2,
-  token = null,
-) => {
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number,
+  token?: string,
+): Promise<APIResponse<BusRoute>> => {
   const url = new URL("http://localhost:8001/api/geo/direct_bus_routes/");
-  url.searchParams.append("lat1", lat1);
-  url.searchParams.append("long1", lng1);
-  url.searchParams.append("lat2", lat2);
-  url.searchParams.append("long2", lng2);
+  url.searchParams.append("lat1", lat1.toString());
+  url.searchParams.append("long1", lng1.toString());
+  url.searchParams.append("lat2", lat2.toString());
+  url.searchParams.append("long2", lng2.toString());
   url.searchParams.append("buffer_radius", "0.5");
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -177,7 +192,7 @@ export const fetchDirectBusRoutes = async (
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(
-      errorData.message || `HTTP error! status: ${response.status}`,
+      errorData.message ?? `HTTP error! status: ${response.status}`,
     );
   }
 
@@ -186,24 +201,24 @@ export const fetchDirectBusRoutes = async (
 
 /**
  * Fetch attraction plan for a location
- * @param {number} lat - Latitude
- * @param {number} lng - Longitude
- * @param {number} maxPlaces - Maximum number of places to include
- * @param {string} token - Optional access token
- * @returns {Promise} Response with attraction plan
+ * @param lat - Latitude
+ * @param lng - Longitude
+ * @param maxPlaces - Maximum number of places to include
+ * @param token - Optional access token
+ * @returns Response with attraction plan
  */
 export const fetchAttractionPlan = async (
-  lat,
-  lng,
-  maxPlaces = 5,
-  token = null,
-) => {
+  lat: number,
+  lng: number,
+  maxPlaces: number = 5,
+  token?: string,
+): Promise<AttractionPlan> => {
   const url = new URL("http://localhost:8001/api/geo/attraction_plan/");
-  url.searchParams.append("lat", lat);
-  url.searchParams.append("long", lng);
-  url.searchParams.append("max_places", maxPlaces);
+  url.searchParams.append("lat", lat.toString());
+  url.searchParams.append("long", lng.toString());
+  url.searchParams.append("max_places", maxPlaces.toString());
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -219,15 +234,18 @@ export const fetchAttractionPlan = async (
 
 /**
  * Geocoding service - convert address to coordinates
- * @param {string} address - Address to geocode
- * @param {string} token - Optional access token
- * @returns {Promise} Response with coordinates
+ * @param address - Address to geocode
+ * @param token - Optional access token
+ * @returns Response with coordinates
  */
-export const geocodeAddress = async (address, token = null) => {
+export const geocodeAddress = async (
+  address: string, 
+  token?: string
+): Promise<APIResponse> => {
   const url = new URL("http://localhost:8001/api/geo/geocode/");
   url.searchParams.append("address", address);
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -243,17 +261,21 @@ export const geocodeAddress = async (address, token = null) => {
 
 /**
  * Reverse geocoding service - convert coordinates to address
- * @param {number} lat - Latitude
- * @param {number} lng - Longitude
- * @param {string} token - Optional access token
- * @returns {Promise} Response with address
+ * @param lat - Latitude
+ * @param lng - Longitude
+ * @param token - Optional access token
+ * @returns Response with address
  */
-export const reverseGeocode = async (lat, lng, token = null) => {
+export const reverseGeocode = async (
+  lat: number, 
+  lng: number, 
+  token?: string
+): Promise<APIResponse> => {
   const url = new URL("http://localhost:8001/api/geo/reverse-geocode/");
-  url.searchParams.append("lat", lat);
-  url.searchParams.append("lng", lng);
+  url.searchParams.append("lat", lat.toString());
+  url.searchParams.append("lng", lng.toString());
 
-  const headers = {};
+  const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -265,4 +287,4 @@ export const reverseGeocode = async (lat, lng, token = null) => {
   }
 
   return await response.json();
-};
+}; 

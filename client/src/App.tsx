@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import 'leaflet/dist/leaflet.css';
 import './styles/App.css'; // Import global styles
@@ -39,7 +39,17 @@ import {
 } from './services/mapService';
 import { errorHandler, showError, showInfo } from './utils/errorHandler';
 
-function App() {
+// Import types
+import type { 
+  RootState, 
+  SearchType, 
+  TabType, 
+  Place, 
+  LoginFormData,
+  AttractionPlanItem
+} from '@/types';
+
+function App(): JSX.Element {
   const dispatch = useDispatch();
   const { login, logout, user, isAuthenticated } = useAuth();
   
@@ -54,13 +64,13 @@ function App() {
     searchQuery,
     isPanelVisible,
     isLoading,
-  } = useSelector((state) => state.location);
+  } = useSelector((state: RootState) => state.location);
 
   // Local state for modals and UI
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('map');
-  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState(null);
+  const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<TabType>('map');
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   // Check for existing auth token on component mount
   useEffect(() => {
@@ -71,7 +81,7 @@ function App() {
     }
   }, [isAuthenticated]);
 
-  const handleLocationSelect = (coords) => {
+  const handleLocationSelect = (coords: [number, number]): void => {
     dispatch(setSelectedLocation(coords));
     const [lat, lng] = coords;
     dispatch(setSearchQuery(`${lat.toFixed(6)}, ${lng.toFixed(6)}`));
@@ -87,16 +97,19 @@ function App() {
     }
   };
 
-  const handleLoginSuccess = async (formData) => {
+  const handleLoginSuccess = async (formData: LoginFormData): Promise<void> => {
     await login(formData);
     setIsLoginOpen(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = (): void => {
     logout();
   };
 
-  const handleSearch = async (location = selectedLocation, type = searchType) => {
+  const handleSearch = async (
+    location: [number, number] | null = selectedLocation, 
+    type: SearchType = searchType
+  ): Promise<void> => {
     if (!location) {
       showError('Please select a location on the map first');
       return;
@@ -107,9 +120,9 @@ function App() {
 
     try {
       const [lat, lng] = location;
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem('access_token') || undefined;
       
-      let data;
+      let data: Place[] | undefined;
       if (type === 'nearest_places') {
         data = await searchNearestPlaces(lat, lng, token);
       } else if (type === 'nearest_restrooms') {
@@ -118,22 +131,24 @@ function App() {
         data = await searchOlympicVenues(lat, lng, token);
       }
 
-      dispatch(setSearchResults(data));
+      if (data) {
+        dispatch(setSearchResults(data));
 
-      const markers = data.map(result => ({
-        position: [result.latitude, result.longitude],
-        name: result.name || 'Unnamed Location',
-        type: type,
-        data: result,
-      }));
-      dispatch(setResultMarkers(markers));
+        const markers = data.map((result: Place) => ({
+          position: [result.latitude, result.longitude] as [number, number],
+          name: result.name || 'Unnamed Location',
+          type: type,
+          data: result,
+        }));
+        dispatch(setResultMarkers(markers));
 
-      // Add to recent searches
-      dispatch(addRecentSearch({
-        query: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
-        type,
-        timestamp: new Date().toISOString(),
-      }));
+        // Add to recent searches
+        dispatch(addRecentSearch({
+          query: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+          type,
+          timestamp: new Date().toISOString(),
+        }));
+      }
 
     } catch (error) {
       errorHandler.handleApiError(error, { type, location: selectedLocation });
@@ -142,19 +157,19 @@ function App() {
     }
   };
 
-  const handleAttractionPlan = async (coords) => {
+  const handleAttractionPlan = async (coords: [number, number]): Promise<void> => {
     if (!coords) return;
 
     dispatch(setLoading(true));
     try {
       const [lat, lng] = coords;
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem('access_token') || undefined;
       
       const data = await fetchAttractionPlan(lat, lng, 5, token);
       dispatch(setAttractionPlan(data));
 
-      const planMarkers = data.itinerary.map(item => ({
-        position: [item.place.latitude, item.place.longitude],
+      const planMarkers = data.itinerary.map((item: AttractionPlanItem) => ({
+        position: [item.place.latitude, item.place.longitude] as [number, number],
         name: item.place.name,
       }));
       dispatch(setResultMarkers(planMarkers));
@@ -166,11 +181,11 @@ function App() {
     }
   };
 
-  const handleMarkerClick = async (targetLat, targetLon) => {
+  const handleMarkerClick = async (targetLat: number, targetLon: number): Promise<void> => {
     if (!selectedLocation) return;
 
     try {
-      const token = localStorage.getItem('access_token');
+      const token = localStorage.getItem('access_token') || undefined;
       const responseData = await fetchDirectBusRoutes(
         selectedLocation[0], 
         selectedLocation[1], 
@@ -192,12 +207,12 @@ function App() {
     }
   };
 
-  const handleWriteReview = (place) => {
+  const handleWriteReview = (place: Place): void => {
     setSelectedPlace(place);
     setIsReviewModalOpen(true);
   };
 
-  const handleSearchTypeChange = (newType) => {
+  const handleSearchTypeChange = (newType: SearchType): void => {
     dispatch(setSearchType(newType));
     dispatch(setResultMarkers([]));
     dispatch(setSearchResults([]));
@@ -232,7 +247,7 @@ function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         searchQuery={searchQuery}
-        setSearchQuery={(value) => dispatch(setSearchQuery(value))}
+        setSearchQuery={(value: string) => dispatch(setSearchQuery(value))}
         searchType={searchType}
         setSearchType={handleSearchTypeChange}
         handleSearch={handleSearch}
@@ -246,7 +261,6 @@ function App() {
             transition: 'flex 0.3s ease',
           }}>
             <MapContainerComponent
-              selectedLocation={selectedLocation}
               onLocationSelect={handleLocationSelect}
               resultMarkers={resultMarkers}
               searchResults={searchResults}
@@ -262,7 +276,7 @@ function App() {
             searchType={searchType}
             attractionPlan={attractionPlan}
             isPanelVisible={isPanelVisible}
-            setIsPanelVisible={(value) => dispatch(setPanelVisibility(value))}
+            setIsPanelVisible={(value: boolean) => dispatch(setPanelVisibility(value))}
           />
         </div>
       ) : (
@@ -286,4 +300,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; 

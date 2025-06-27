@@ -1,18 +1,17 @@
-// src/utils/api.js
-import axios from "axios";
+import axios, { InternalAxiosRequestConfig } from "axios";
 
 /**
  * Create a pre-configured axios instance.
  */
 const api = axios.create({
-  baseURL: "http://localhost:8001/api",
+  baseURL: "http://localhost:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 // Intercept requests to add Authorization headers.
-api.interceptors.request.use((config) => {
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem("access_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -20,4 +19,4 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export default api;
+export default api; 

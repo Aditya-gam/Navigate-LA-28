@@ -1,4 +1,3 @@
-// src/slices/rootReducer.js
 import { combineReducers } from "redux";
 import authReducer from "./authSlice";
 import locationReducer from "./locationSlice";
@@ -10,4 +9,4 @@ const rootReducer = combineReducers({
   user: userReducer,
 });
 
-export default rootReducer;
+export default rootReducer; 

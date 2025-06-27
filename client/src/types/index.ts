@@ -391,8 +391,21 @@ export interface AnalyticsProps {
 // Redux State Types
 export interface RootState {
   auth: AuthState;
-  search: SearchState;
-  ui: UIState;
+  location: {
+    selectedLocation: [number, number] | null;
+    searchResults: SearchResult[];
+    resultMarkers: Marker[];
+    busRoute: BusRoute | null;
+    attractionPlan: AttractionPlan | null;
+    searchType: SearchType;
+    searchQuery: string;
+    isPanelVisible: boolean;
+    isLoading: boolean;
+    error: string | null;
+  };
+  user: {
+    recentSearches: RecentSearch[];
+  };
 }
 
 // Utility Types

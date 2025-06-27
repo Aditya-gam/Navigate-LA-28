@@ -1,7 +1,23 @@
-// src/slices/userSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { User, Place, RecentSearch } from "@/types";
 
-const initialState = {
+interface UserPreferences {
+  searchRadius: number; // meters
+  preferredTransport: string;
+  language: string;
+  theme: string;
+}
+
+interface UserState {
+  profile: User | null;
+  preferences: UserPreferences;
+  recentSearches: RecentSearch[];
+  favoritePlaces: Place[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+const initialState: UserState = {
   profile: null,
   preferences: {
     searchRadius: 1000, // meters
@@ -19,13 +35,13 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setProfile: (state, action) => {
+    setProfile: (state, action: PayloadAction<User>) => {
       state.profile = action.payload;
     },
-    updatePreferences: (state, action) => {
+    updatePreferences: (state, action: PayloadAction<Partial<UserPreferences>>) => {
       state.preferences = { ...state.preferences, ...action.payload };
     },
-    addRecentSearch: (state, action) => {
+    addRecentSearch: (state, action: PayloadAction<RecentSearch>) => {
       // Keep only last 10 searches
       state.recentSearches = [
         action.payload,
@@ -34,14 +50,14 @@ const userSlice = createSlice({
         ),
       ].slice(0, 10);
     },
-    addFavoritePlace: (state, action) => {
+    addFavoritePlace: (state, action: PayloadAction<Place>) => {
       if (
         !state.favoritePlaces.find((place) => place.id === action.payload.id)
       ) {
         state.favoritePlaces.push(action.payload);
       }
     },
-    removeFavoritePlace: (state, action) => {
+    removeFavoritePlace: (state, action: PayloadAction<string>) => {
       state.favoritePlaces = state.favoritePlaces.filter(
         (place) => place.id !== action.payload,
       );
@@ -49,10 +65,10 @@ const userSlice = createSlice({
     clearRecentSearches: (state) => {
       state.recentSearches = [];
     },
-    setLoading: (state, action) => {
+    setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
     },
-    setError: (state, action) => {
+    setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
     clearError: (state) => {
@@ -73,4 +89,4 @@ export const {
   clearError,
 } = userSlice.actions;
 
-export default userSlice.reducer;
+export default userSlice.reducer; 

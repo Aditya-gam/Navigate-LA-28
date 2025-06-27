@@ -1,8 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "../styles/SearchBar.css"; // Importing the CSS file
+import React from 'react';
+import type { SearchBarProps } from '@/types';
 
-const SearchBar = ({
+const SearchBar: React.FC<SearchBarProps> = ({
   searchQuery,
   setSearchQuery,
   searchType,
@@ -13,14 +12,14 @@ const SearchBar = ({
   <div className="search-bar">
     <input
       type="text"
+      placeholder="Search for places..."
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      placeholder="Click on map or search in LA..."
       className="search-input"
     />
     <select
       value={searchType}
-      onChange={(e) => setSearchType(e.target.value)}
+      onChange={(e) => setSearchType(e.target.value as any)}
       className="search-select"
     >
       <option value="nearest_places">Nearest Places</option>
@@ -33,20 +32,10 @@ const SearchBar = ({
     </button>
     {selectedLocation && (
       <div className="location-display">
-        Selected: {selectedLocation[0].toFixed(6)},{" "}
-        {selectedLocation[1].toFixed(6)}
+        Selected: {selectedLocation[0].toFixed(4)}, {selectedLocation[1].toFixed(4)}
       </div>
     )}
   </div>
 );
 
-SearchBar.propTypes = {
-  searchQuery: PropTypes.string.isRequired,
-  setSearchQuery: PropTypes.func.isRequired,
-  searchType: PropTypes.string.isRequired,
-  setSearchType: PropTypes.func.isRequired,
-  handleSearch: PropTypes.func.isRequired,
-  selectedLocation: PropTypes.arrayOf(PropTypes.number),
-};
-
-export default SearchBar;
+export default SearchBar; 
