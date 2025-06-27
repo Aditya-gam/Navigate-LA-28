@@ -8,6 +8,7 @@ from models.bus_route_usage import BusRouteUsage
 from models.review import Review  # Model for storing user reviews
 from models.customer_usage import CustomerUsage
 from models.user import User  # User model representing application users
+from models.olympic_venue import OlympicVenue  # Model for LA 28 Olympic venues
 from models.base import Base  # Base model class to define the database schema
 from sqlalchemy.orm import relationship
 
@@ -75,4 +76,5 @@ __all__ = [
     "BusRouteUsage",  # BusRouteUsage model
     "BusStop",  # BusStop model
     "Place",  # Place model
+    "OlympicVenue",  # Olympic venue model
 ]
