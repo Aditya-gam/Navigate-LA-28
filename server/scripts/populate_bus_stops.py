@@ -2,6 +2,7 @@
 
 import asyncio  # For asynchronous programming
 import csv  # For reading CSV files
+import os  # For environment variables
 # For asynchronous database sessions
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError  # For handling database exceptions
@@ -90,7 +91,8 @@ async def main():
         print("Created database tables")
 
     # Path to the CSV file containing bus stop data
-    file_path = "bus_stops.csv"
+    dataset_dir = os.getenv("DATASET_DIR", "datasets")
+    file_path = os.path.join(dataset_dir, "bus_stops.csv")
 
     # Populate bus stops data
     async with AsyncSessionFactory() as db:

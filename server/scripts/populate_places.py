@@ -3,6 +3,7 @@
 import asyncio  # For asynchronous programming
 import csv  # For reading CSV files
 import re  # For parsing geometry strings
+import os  # For handling environment variables
 # For asynchronous database sessions
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError  # For handling database exceptions
@@ -117,7 +118,7 @@ async def main():
         2. Open a database session.
         3. Call the function to populate the `places` table with data from each file.
     """
-    # File paths and column mappings for CSV files
+    dataset_dir = os.getenv("DATASET_DIR", "datasets")
     files = [
         # Uncomment and modify this block to include other datasets
         # {
@@ -130,7 +131,8 @@ async def main():
         #     "type": "park",
         # },
         {
-            "path": "all_places.csv",  # File path for places
+            # File path for places
+            "path": os.path.join(dataset_dir, "all_places.csv"),
             "columns": {
                 "name": "name",
                 "latitude": "latitude",
@@ -140,7 +142,8 @@ async def main():
             "type": "tourist attraction",  # Default type for this dataset
         },
         {
-            "path": "all_restrooms.csv",  # File path for restrooms
+            # File path for restrooms
+            "path": os.path.join(dataset_dir, "all_restrooms.csv"),
             "columns": {
                 "name": "name",
                 "latitude": "latitude",
