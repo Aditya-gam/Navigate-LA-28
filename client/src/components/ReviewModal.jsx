@@ -55,7 +55,7 @@ const ReviewModal = ({ isOpen, onClose, place }) => {
         },
       };
 
-      const response = await submitReview(reviewData, token);
+      await submitReview(reviewData, token);
 
       showSuccess("Review submitted successfully!");
 
@@ -65,8 +65,11 @@ const ReviewModal = ({ isOpen, onClose, place }) => {
       setTitle("");
       onClose();
     } catch (err) {
-      console.error("Error submitting review:", err);
-      setError(err.message || "Failed to submit review. Please try again.");
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to submit review. Please try again.";
+      setError(errorMessage);
       showError("Failed to submit review");
     } finally {
       setIsLoading(false);

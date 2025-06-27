@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import { createNumberedIcon } from '../../utils/mapIcons';
+import React from "react";
+import PropTypes from "prop-types";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { createNumberedIcon } from "../../utils/mapIcons";
 
 const AttractionsAnalytics = ({ data, isLoading, error }) => {
   if (isLoading) return <div>Loading...</div>;
@@ -12,18 +12,22 @@ const AttractionsAnalytics = ({ data, isLoading, error }) => {
   }
 
   return (
-    <div style={{ height: 'calc(100vh - 200px)', width: '100%' }}>
+    <div style={{ height: "calc(100vh - 200px)", width: "100%" }}>
       <MapContainer
         center={[34.0522, -118.2437]}
         zoom={11}
-        style={{ height: '100%', width: '100%' }}
+        style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         {data.map((place, index) => {
-          if (!place || typeof place.latitude !== 'number' || typeof place.longitude !== 'number') {
+          if (
+            !place ||
+            typeof place.latitude !== "number" ||
+            typeof place.longitude !== "number"
+          ) {
             return null;
           }
 
@@ -34,34 +38,52 @@ const AttractionsAnalytics = ({ data, isLoading, error }) => {
               icon={createNumberedIcon(index + 1)}
             >
               <Popup>
-                <div style={{
-                  padding: '8px',
-                  minWidth: '200px',
-                  maxWidth: '300px',
-                }}>
-                  <h3 style={{
-                    margin: '0 0 8px 0',
-                    color: '#1a73e8',
-                    fontSize: '16px',
-                    borderBottom: '1px solid #eee',
-                    paddingBottom: '8px',
-                  }}>
-                    {index + 1}. {place.name || 'Unnamed Location'}
+                <div
+                  style={{
+                    padding: "8px",
+                    minWidth: "200px",
+                    maxWidth: "300px",
+                  }}
+                >
+                  <h3
+                    style={{
+                      margin: "0 0 8px 0",
+                      color: "#1a73e8",
+                      fontSize: "16px",
+                      borderBottom: "1px solid #eee",
+                      paddingBottom: "8px",
+                    }}
+                  >
+                    {index + 1}. {place.name || "Unnamed Location"}
                   </h3>
-                  <div style={{
-                    fontSize: '13px',
-                    color: '#5f6368',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '4px',
-                  }}>
-                    <div>⭐ Rating: {place.rating?.toFixed(2) || 'N/A'}/5</div>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#5f6368",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "4px",
+                    }}
+                  >
+                    <div>⭐ Rating: {place.rating?.toFixed(2) || "N/A"}/5</div>
                     <div>📊 Reviews: {place.review_count || 0}</div>
-                    <div>🏆 High Ratings: {place.high_rating_ratio ?
-                      Math.round(place.high_rating_ratio * 100) : 'N/A'}%</div>
+                    <div>
+                      🏆 High Ratings:{" "}
+                      {place.high_rating_ratio
+                        ? Math.round(place.high_rating_ratio * 100)
+                        : "N/A"}
+                      %
+                    </div>
                     {place.category && <div>🏷️ Category: {place.category}</div>}
-                    <div style={{ fontSize: '12px', color: '#80868b', marginTop: '4px' }}>
-                      📍 {place.latitude?.toFixed(6)}, {place.longitude?.toFixed(6)}
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        color: "#80868b",
+                        marginTop: "4px",
+                      }}
+                    >
+                      📍 {place.latitude?.toFixed(6)},{" "}
+                      {place.longitude?.toFixed(6)}
                     </div>
                   </div>
                 </div>
@@ -80,4 +102,4 @@ AttractionsAnalytics.propTypes = {
   error: PropTypes.string,
 };
 
-export default AttractionsAnalytics; 
+export default AttractionsAnalytics;

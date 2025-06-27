@@ -8,8 +8,8 @@ import type { Review, ReviewSubmission, APIResponse } from "@/types";
  * @returns Response from server
  */
 export const submitReview = async (
-  reviewData: ReviewSubmission, 
-  token?: string
+  reviewData: ReviewSubmission,
+  token?: string,
 ): Promise<APIResponse<Review>> => {
   const headers: Record<string, string> = {};
   if (token) {
@@ -28,10 +28,12 @@ export const submitReview = async (
  * @returns Response with reviews
  */
 export const getPlaceReviews = async (
-  placeId: string, 
-  options: { limit?: number; offset?: number; sort?: string } = {}, 
-  token?: string
-): Promise<APIResponse<{ reviews: Review[]; pagination: any; summary: any }>> => {
+  placeId: string,
+  options: { limit?: number; offset?: number; sort?: string } = {},
+  token?: string,
+): Promise<
+  APIResponse<{ reviews: Review[]; pagination: any; summary: any }>
+> => {
   const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -42,7 +44,9 @@ export const getPlaceReviews = async (
   if (options.offset) params.append("offset", options.offset.toString());
   if (options.sort) params.append("sort", options.sort);
 
-  const response = await axios.get(`/places/${placeId}/reviews?${params}`, { headers });
+  const response = await axios.get(`/places/${placeId}/reviews?${params}`, {
+    headers,
+  });
   return response.data;
 };
 
@@ -54,16 +58,16 @@ export const getPlaceReviews = async (
  * @returns Response with user reviews
  */
 export const getUserReviews = async (
-  userId: string, 
-  options: { limit?: number; offset?: number } = {}, 
-  token: string
+  userId: string,
+  options: { limit?: number; offset?: number } = {},
+  token: string,
 ): Promise<APIResponse<Review[]>> => {
   const params = new URLSearchParams();
   if (options.limit) params.append("limit", options.limit.toString());
   if (options.offset) params.append("offset", options.offset.toString());
 
   const response = await axios.get(`/users/${userId}/reviews?${params}`, {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;
 };
@@ -76,12 +80,12 @@ export const getUserReviews = async (
  * @returns Response with updated review
  */
 export const updateReview = async (
-  reviewId: string, 
-  reviewData: Partial<ReviewSubmission>, 
-  token: string
+  reviewId: string,
+  reviewData: Partial<ReviewSubmission>,
+  token: string,
 ): Promise<APIResponse<Review>> => {
   const response = await axios.put(`/reviews/${reviewId}`, reviewData, {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;
 };
@@ -93,11 +97,11 @@ export const updateReview = async (
  * @returns Response indicating success
  */
 export const deleteReview = async (
-  reviewId: string, 
-  token: string
+  reviewId: string,
+  token: string,
 ): Promise<APIResponse> => {
   const response = await axios.delete(`/reviews/${reviewId}`, {
-    headers: { Authorization: `Bearer ${token}` }
+    headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;
 };
@@ -109,12 +113,16 @@ export const deleteReview = async (
  * @returns Response indicating success
  */
 export const markReviewHelpful = async (
-  reviewId: string, 
-  token: string
+  reviewId: string,
+  token: string,
 ): Promise<APIResponse> => {
-  const response = await axios.post(`/reviews/${reviewId}/helpful`, {}, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
+  const response = await axios.post(
+    `/reviews/${reviewId}/helpful`,
+    {},
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  );
   return response.data;
 };
 
@@ -125,14 +133,22 @@ export const markReviewHelpful = async (
  * @returns Response with review statistics
  */
 export const getReviewStatistics = async (
-  placeId: string, 
-  token?: string
-): Promise<APIResponse<{ average_rating: number; total_reviews: number; rating_distribution: Record<string, number> }>> => {
+  placeId: string,
+  token?: string,
+): Promise<
+  APIResponse<{
+    average_rating: number;
+    total_reviews: number;
+    rating_distribution: Record<string, number>;
+  }>
+> => {
   const headers: Record<string, string> = {};
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await axios.get(`/places/${placeId}/reviews/statistics`, { headers });
+  const response = await axios.get(`/places/${placeId}/reviews/statistics`, {
+    headers,
+  });
   return response.data;
-}; 
+};

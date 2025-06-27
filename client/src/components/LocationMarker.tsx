@@ -1,11 +1,13 @@
-import React from 'react';
-import { useMap } from 'react-leaflet';
+import React from "react";
+import { useMap } from "react-leaflet";
 
 interface LocationMarkerProps {
   onLocationSelect: (coords: [number, number]) => void;
 }
 
-const LocationMarker: React.FC<LocationMarkerProps> = ({ onLocationSelect }) => {
+const LocationMarker: React.FC<LocationMarkerProps> = ({
+  onLocationSelect,
+}) => {
   const map = useMap();
 
   React.useEffect(() => {
@@ -14,14 +16,14 @@ const LocationMarker: React.FC<LocationMarkerProps> = ({ onLocationSelect }) => 
       onLocationSelect([lat, lng]);
     };
 
-    map.on('click', handleClick);
+    map.on("click", handleClick);
 
     return () => {
-      map.off('click', handleClick);
+      map.off("click", handleClick);
     };
   }, [map, onLocationSelect]);
 
   return null;
 };
 
-export default LocationMarker; 
+export default LocationMarker;

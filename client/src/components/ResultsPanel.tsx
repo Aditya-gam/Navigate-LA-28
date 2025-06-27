@@ -102,71 +102,70 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                   return `${fullHours}h ${minutes}m`;
                 })()}
               </div>
-              {attractionPlan.itinerary.map((item: AttractionPlanItem, index: number) => (
-                <div
-                  key={`${item.place.name}-${index}`}
-                  style={{
-                    padding: "12px",
-                    borderBottom: "1px solid #eee",
-                    fontSize: "14px",
-                    backgroundColor: index % 2 === 0 ? "#f8f9fa" : "white",
-                    borderRadius: "4px",
-                    marginBottom: "8px",
-                  }}
-                >
+              {attractionPlan.itinerary.map(
+                (item: AttractionPlanItem, index: number) => (
                   <div
+                    key={`${item.place.name}-${index}`}
                     style={{
-                      fontWeight: "500",
-                      color: "#1a73e8",
-                      marginBottom: "4px",
+                      padding: "12px",
+                      borderBottom: "1px solid #eee",
+                      fontSize: "14px",
+                      backgroundColor: index % 2 === 0 ? "#f8f9fa" : "white",
+                      borderRadius: "4px",
+                      marginBottom: "8px",
                     }}
                   >
-                    {index + 1}. {item.place.name}
-                  </div>
-                  <div
-                    style={{
-                      color: "#5f6368",
-                      fontSize: "13px",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px",
-                    }}
-                  >
-                    <div>
-                      ⏰ {item.estimated_duration || "N/A"} minutes
+                    <div
+                      style={{
+                        fontWeight: "500",
+                        color: "#1a73e8",
+                        marginBottom: "4px",
+                      }}
+                    >
+                      {index + 1}. {item.place.name}
                     </div>
-                    <div>
-                      ⌛ Duration:{" "}
-                      {(() => {
-                        if (
-                          !item.estimated_duration ||
-                          typeof item.estimated_duration !== "number"
-                        )
-                          return "N/A";
-                        const hours = item.estimated_duration / 60;
-                        const fullHours = Math.floor(hours);
-                        const minutes = Math.round((hours - fullHours) * 60);
+                    <div
+                      style={{
+                        color: "#5f6368",
+                        fontSize: "13px",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "4px",
+                      }}
+                    >
+                      <div>⏰ {item.estimated_duration || "N/A"} minutes</div>
+                      <div>
+                        ⌛ Duration:{" "}
+                        {(() => {
+                          if (
+                            !item.estimated_duration ||
+                            typeof item.estimated_duration !== "number"
+                          )
+                            return "N/A";
+                          const hours = item.estimated_duration / 60;
+                          const fullHours = Math.floor(hours);
+                          const minutes = Math.round((hours - fullHours) * 60);
 
-                        if (fullHours > 0) {
-                          return minutes > 0
-                            ? `${fullHours}h ${minutes}m`
-                            : `${fullHours}h`;
-                        }
-                        return `${minutes}m`;
-                      })()}
+                          if (fullHours > 0) {
+                            return minutes > 0
+                              ? `${fullHours}h ${minutes}m`
+                              : `${fullHours}h`;
+                          }
+                          return `${minutes}m`;
+                        })()}
+                      </div>
+                      <div>
+                        📍 Distance: {item.travel_distance?.toFixed(2) ?? "N/A"}{" "}
+                        miles
+                      </div>
+                      {item.place.address && <div>🏠 {item.place.address}</div>}
+                      {item.place.description && (
+                        <div>ℹ️ {item.place.description}</div>
+                      )}
                     </div>
-                    <div>
-                      📍 Distance:{" "}
-                      {item.travel_distance?.toFixed(2) ?? "N/A"}{" "}
-                      miles
-                    </div>
-                    {item.place.address && <div>🏠 {item.place.address}</div>}
-                    {item.place.description && (
-                      <div>ℹ️ {item.place.description}</div>
-                    )}
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </>
           ) : (
             // Regular search results display
@@ -200,9 +199,7 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                     gap: "4px",
                   }}
                 >
-                  {result.description && (
-                    <div>ℹ️ {result.description}</div>
-                  )}
+                  {result.description && <div>ℹ️ {result.description}</div>}
                   {result.address && <div>🏠 {result.address}</div>}
                   {result.types && <div>🏷️ {result.types}</div>}
                   {result.distance && (
@@ -218,7 +215,9 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
                     <>
                       {result.sport && <div>🏆 Sport: {result.sport}</div>}
                       {result.capacity && (
-                        <div>👥 Capacity: {result.capacity.toLocaleString()}</div>
+                        <div>
+                          👥 Capacity: {result.capacity.toLocaleString()}
+                        </div>
                       )}
                       {result.venue_type && (
                         <div>🏟️ Type: {result.venue_type}</div>
@@ -236,4 +235,4 @@ const ResultsPanel: React.FC<ResultsPanelProps> = ({
   );
 };
 
-export default ResultsPanel; 
+export default ResultsPanel;

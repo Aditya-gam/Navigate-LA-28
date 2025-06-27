@@ -1,5 +1,5 @@
-import React from 'react';
-import type { HeaderProps } from '@/types';
+import React from "react";
+import type { HeaderProps } from "@/types";
 
 const Header: React.FC<HeaderProps> = ({
   username,
@@ -16,17 +16,17 @@ const Header: React.FC<HeaderProps> = ({
     <div className="header-title">
       <h1>Navigate LA 28</h1>
     </div>
-    
+
     <div className="tab-buttons">
       <button
-        className={`tab-button ${activeTab === 'map' ? 'active' : ''}`}
-        onClick={() => setActiveTab('map')}
+        className={`tab-button ${activeTab === "map" ? "active" : ""}`}
+        onClick={() => setActiveTab("map")}
       >
         Map
       </button>
       <button
-        className={`tab-button ${activeTab === 'analytics' ? 'active' : ''}`}
-        onClick={() => setActiveTab('analytics')}
+        className={`tab-button ${activeTab === "analytics" ? "active" : ""}`}
+        onClick={() => setActiveTab("analytics")}
       >
         Analytics
       </button>
@@ -56,14 +56,12 @@ const Header: React.FC<HeaderProps> = ({
     </div>
 
     <div className="header-actions">
-      {username ? (
-        <span className="username">Welcome, {username}</span>
-      ) : null}
+      {username ? <span className="username">Welcome, {username}</span> : null}
       <button onClick={onLoginToggle} className="auth-button">
-        {username ? 'Logout' : 'Login'}
+        {username ? "Logout" : "Login"}
       </button>
     </div>
   </header>
 );
 
-export default Header; 
+export default Header;

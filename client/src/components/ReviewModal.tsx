@@ -3,7 +3,11 @@ import { submitReview } from "../services/reviewService";
 import { showSuccess, showError } from "../utils/errorHandler";
 import type { ReviewModalProps, Place, ReviewSubmission } from "@/types";
 
-const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => {
+const ReviewModal: React.FC<ReviewModalProps> = ({
+  isOpen,
+  onClose,
+  place,
+}) => {
   const [rating, setRating] = useState<number>(0);
   const [review, setReview] = useState<string>("");
   const [title, setTitle] = useState<string>("");
@@ -40,7 +44,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
       }
 
       const reviewData: ReviewSubmission = {
-        place_id: place.id || place.place_id || generatePlaceId(place),
+        place_id: place.id ?? place.place_id ?? generatePlaceId(place),
         rating: rating,
         title: title.trim() || undefined,
         content: review.trim(),
@@ -51,7 +55,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
             latitude: place.latitude,
             longitude: place.longitude,
           },
-          search_type: place.type || "unknown",
+          search_type: place.type ?? "unknown",
         },
       };
 
@@ -65,8 +69,11 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
       setTitle("");
       onClose();
     } catch (err) {
-      console.error("Error submitting review:", err);
-      const errorMessage = err instanceof Error ? err.message : "Failed to submit review. Please try again.";
+      // Error submitting review: (see error handling below)
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to submit review. Please try again.";
       setError(errorMessage);
       showError("Failed to submit review");
     } finally {
@@ -196,6 +203,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: "20px" }}>
             <label
+              htmlFor="rating-stars"
               style={{
                 display: "block",
                 marginBottom: "8px",
@@ -205,12 +213,23 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
             >
               Rating *
             </label>
-            <div style={{ display: "flex", gap: "8px" }}>
+            <fieldset
+              id="rating-stars"
+              style={{
+                display: "flex",
+                gap: "8px",
+                border: "none",
+                padding: 0,
+                margin: 0,
+              }}
+            >
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
+                  aria-label={`Rate ${star} star${star !== 1 ? "s" : ""}`}
+                  aria-pressed={star === rating}
                   style={{
                     border: "none",
                     background: "none",
@@ -223,11 +242,12 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
                   ★
                 </button>
               ))}
-            </div>
+            </fieldset>
           </div>
 
           <div style={{ marginBottom: "20px" }}>
             <label
+              htmlFor="review-title"
               style={{
                 display: "block",
                 marginBottom: "8px",
@@ -238,6 +258,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
               Title (Optional)
             </label>
             <input
+              id="review-title"
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -255,6 +276,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
 
           <div style={{ marginBottom: "24px" }}>
             <label
+              htmlFor="review-content"
               style={{
                 display: "block",
                 marginBottom: "8px",
@@ -265,6 +287,7 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
               Review *
             </label>
             <textarea
+              id="review-content"
               value={review}
               onChange={(e) => setReview(e.target.value)}
               placeholder="Share your experience..."
@@ -325,4 +348,4 @@ const ReviewModal: React.FC<ReviewModalProps> = ({ isOpen, onClose, place }) => 
   );
 };
 
-export default ReviewModal; 
+export default ReviewModal;

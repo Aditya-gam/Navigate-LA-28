@@ -1,22 +1,26 @@
-import React, { useState } from 'react';
-import type { LoginModalProps } from '@/types';
+import React, { useState } from "react";
+import type { LoginModalProps } from "@/types";
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) => {
+const LoginModal: React.FC<LoginModalProps> = ({
+  isOpen,
+  onClose,
+  onSuccess,
+}) => {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    username: '',
-    confirmPassword: '',
+    email: "",
+    password: "",
+    username: "",
+    confirmPassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       return;
     }
 
@@ -25,10 +29,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
         await onSuccess({ email: formData.email, password: formData.password });
       } else {
         // Handle registration - you might want to add a separate onRegister prop
-        console.log('Registration not implemented yet');
+        // Registration not implemented yet
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      setError(err instanceof Error ? err.message : "An error occurred");
     }
   };
 
@@ -47,9 +51,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
         <button className="close-button" onClick={onClose}>
           ×
         </button>
-        
-        <h2>{isLogin ? 'Login' : 'Register'}</h2>
-        
+
+        <h2>{isLogin ? "Login" : "Register"}</h2>
+
         <form onSubmit={handleSubmit}>
           {!isLogin && (
             <input
@@ -61,7 +65,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
               required
             />
           )}
-          
+
           <input
             type="email"
             name="email"
@@ -70,7 +74,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
             onChange={handleInputChange}
             required
           />
-          
+
           <input
             type="password"
             name="password"
@@ -79,7 +83,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
             onChange={handleInputChange}
             required
           />
-          
+
           {!isLogin && (
             <input
               type="password"
@@ -90,32 +94,30 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, onSuccess }) =
               required
             />
           )}
-          
+
           {error && <div className="error-message">{error}</div>}
-          
-          <button type="submit">
-            {isLogin ? 'Login' : 'Register'}
-          </button>
+
+          <button type="submit">{isLogin ? "Login" : "Register"}</button>
         </form>
-        
+
         <button
           className="switch-mode-button"
           onClick={() => {
             setIsLogin(!isLogin);
-            setError('');
+            setError("");
             setFormData({
-              email: '',
-              password: '',
-              username: '',
-              confirmPassword: '',
+              email: "",
+              password: "",
+              username: "",
+              confirmPassword: "",
             });
           }}
         >
-          {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
+          {isLogin ? "Need an account? Register" : "Have an account? Login"}
         </button>
       </div>
     </div>
   );
 };
 
-export default LoginModal; 
+export default LoginModal;

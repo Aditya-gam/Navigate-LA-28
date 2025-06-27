@@ -1,17 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import 'leaflet/dist/leaflet.css';
-import './styles/App.css'; // Import global styles
-import './utils/leafletIcons'; // Import leaflet icon configuration
+import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import "leaflet/dist/leaflet.css";
+import "./styles/App.css"; // Import global styles
+import "./utils/leafletIcons"; // Import leaflet icon configuration
 
 // Import components
-import Header from './components/Header';
-import MapContainerComponent from './components/MapContainerComponent';
-import ResultsPanel from './components/ResultsPanel';
-import LoginModal from './components/LoginModal';
-import ReviewModal from './components/ReviewModal';
-import Analytics from './components/analytics/Analytics';
-import LoadingSpinner from './components/LoadingSpinner';
+import Header from "./components/Header";
+import MapContainerComponent from "./components/MapContainerComponent";
+import ResultsPanel from "./components/ResultsPanel";
+import LoginModal from "./components/LoginModal";
+import ReviewModal from "./components/ReviewModal";
+import Analytics from "./components/analytics/Analytics";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 // Import Redux actions
 import {
@@ -25,34 +25,34 @@ import {
   setPanelVisibility,
   setLoading,
   clearSearchResults,
-} from './slices/locationSlice';
-import { useAuth } from './hooks/useAuth';
-import { addRecentSearch } from './slices/userSlice';
+} from "./slices/locationSlice";
+import { useAuth } from "./hooks/useAuth";
+import { addRecentSearch } from "./slices/userSlice";
 
 // Import services
-import { 
-  searchNearestPlaces, 
-  searchNearestRestrooms, 
-  fetchDirectBusRoutes, 
-  fetchAttractionPlan, 
+import {
+  searchNearestPlaces,
+  searchNearestRestrooms,
+  fetchDirectBusRoutes,
+  fetchAttractionPlan,
   searchOlympicVenues,
-} from './services/mapService';
-import { errorHandler, showError, showInfo } from './utils/errorHandler';
+} from "./services/mapService";
+import { errorHandler, showError, showInfo } from "./utils/errorHandler";
 
 // Import types
-import type { 
-  RootState, 
-  SearchType, 
-  TabType, 
-  Place, 
+import type {
+  RootState,
+  SearchType,
+  TabType,
+  Place,
   LoginFormData,
-  AttractionPlanItem
-} from '@/types';
+  AttractionPlanItem,
+} from "@/types";
 
 function App(): JSX.Element {
   const dispatch = useDispatch();
   const { login, logout, user, isAuthenticated } = useAuth();
-  
+
   // Redux state
   const {
     selectedLocation,
@@ -68,13 +68,13 @@ function App(): JSX.Element {
 
   // Local state for modals and UI
   const [isLoginOpen, setIsLoginOpen] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<TabType>('map');
+  const [activeTab, setActiveTab] = useState<TabType>("map");
   const [isReviewModalOpen, setIsReviewModalOpen] = useState<boolean>(false);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   // Check for existing auth token on component mount
   useEffect(() => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
     if (token && !isAuthenticated) {
       // Token exists but user not authenticated - could validate here
       // For now, we'll let the auth hook handle this
@@ -87,11 +87,11 @@ function App(): JSX.Element {
     dispatch(setSearchQuery(`${lat.toFixed(6)}, ${lng.toFixed(6)}`));
     dispatch(setBusRoute(null));
 
-    if (searchType === 'attraction_plan') {
+    if (searchType === "attraction_plan") {
       handleAttractionPlan(coords);
     } else if (!searchResults.length) {
-      dispatch(setSearchType('nearest_places'));
-      handleSearch(coords, 'nearest_places');
+      dispatch(setSearchType("nearest_places"));
+      handleSearch(coords, "nearest_places");
     } else {
       handleSearch(coords, searchType);
     }
@@ -107,11 +107,11 @@ function App(): JSX.Element {
   };
 
   const handleSearch = async (
-    location: [number, number] | null = selectedLocation, 
-    type: SearchType = searchType
+    location: [number, number] | null = selectedLocation,
+    type: SearchType = searchType,
   ): Promise<void> => {
     if (!location) {
-      showError('Please select a location on the map first');
+      showError("Please select a location on the map first");
       return;
     }
 
@@ -120,14 +120,14 @@ function App(): JSX.Element {
 
     try {
       const [lat, lng] = location;
-      const token = localStorage.getItem('access_token') || undefined;
-      
+      const token = localStorage.getItem("access_token") ?? undefined;
+
       let data: Place[] | undefined;
-      if (type === 'nearest_places') {
+      if (type === "nearest_places") {
         data = await searchNearestPlaces(lat, lng, token);
-      } else if (type === 'nearest_restrooms') {
+      } else if (type === "nearest_restrooms") {
         data = await searchNearestRestrooms(lat, lng, token);
-      } else if (type === 'olympic_venues') {
+      } else if (type === "olympic_venues") {
         data = await searchOlympicVenues(lat, lng, token);
       }
 
@@ -136,20 +136,21 @@ function App(): JSX.Element {
 
         const markers = data.map((result: Place) => ({
           position: [result.latitude, result.longitude] as [number, number],
-          name: result.name || 'Unnamed Location',
+          name: result.name || "Unnamed Location",
           type: type,
           data: result,
         }));
         dispatch(setResultMarkers(markers));
 
         // Add to recent searches
-        dispatch(addRecentSearch({
-          query: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
-          type,
-          timestamp: new Date().toISOString(),
-        }));
+        dispatch(
+          addRecentSearch({
+            query: `${lat.toFixed(6)}, ${lng.toFixed(6)}`,
+            type,
+            timestamp: new Date().toISOString(),
+          }),
+        );
       }
-
     } catch (error) {
       errorHandler.handleApiError(error, { type, location: selectedLocation });
     } finally {
@@ -157,52 +158,58 @@ function App(): JSX.Element {
     }
   };
 
-  const handleAttractionPlan = async (coords: [number, number]): Promise<void> => {
+  const handleAttractionPlan = async (
+    coords: [number, number],
+  ): Promise<void> => {
     if (!coords) return;
 
     dispatch(setLoading(true));
     try {
       const [lat, lng] = coords;
-      const token = localStorage.getItem('access_token') || undefined;
-      
+      const token = localStorage.getItem("access_token") ?? undefined;
+
       const data = await fetchAttractionPlan(lat, lng, 5, token);
       dispatch(setAttractionPlan(data));
 
       const planMarkers = data.itinerary.map((item: AttractionPlanItem) => ({
-        position: [item.place.latitude, item.place.longitude] as [number, number],
+        position: [item.place.latitude, item.place.longitude] as [
+          number,
+          number,
+        ],
         name: item.place.name,
       }));
       dispatch(setResultMarkers(planMarkers));
-
     } catch (error) {
-      errorHandler.handleApiError(error, { context: 'attraction_plan' });
+      errorHandler.handleApiError(error, { context: "attraction_plan" });
     } finally {
       dispatch(setLoading(false));
     }
   };
 
-  const handleMarkerClick = async (targetLat: number, targetLon: number): Promise<void> => {
+  const handleMarkerClick = async (
+    targetLat: number,
+    targetLon: number,
+  ): Promise<void> => {
     if (!selectedLocation) return;
 
     try {
-      const token = localStorage.getItem('access_token') || undefined;
+      const token = localStorage.getItem("access_token") ?? undefined;
       const responseData = await fetchDirectBusRoutes(
-        selectedLocation[0], 
-        selectedLocation[1], 
-        targetLat, 
-        targetLon, 
-        token
+        selectedLocation[0],
+        selectedLocation[1],
+        targetLat,
+        targetLon,
+        token,
       );
 
-      if (responseData.status === 'success' && responseData.data) {
+      if (responseData.status === "success" && responseData.data) {
         dispatch(setBusRoute(responseData.data));
       } else {
-        showInfo('No direct bus routes found between these locations');
+        showInfo("No direct bus routes found between these locations");
         dispatch(setBusRoute(null));
       }
-
     } catch (error) {
-      errorHandler.handleApiError(error, { context: 'bus_routes' });
+      errorHandler.handleApiError(error, { context: "bus_routes" });
       dispatch(setBusRoute(null));
     }
   };
@@ -217,9 +224,9 @@ function App(): JSX.Element {
     dispatch(setResultMarkers([]));
     dispatch(setSearchResults([]));
     dispatch(setAttractionPlan(null));
-    
+
     if (selectedLocation) {
-      if (newType === 'attraction_plan') {
+      if (newType === "attraction_plan") {
         handleAttractionPlan(selectedLocation);
       } else {
         handleSearch(selectedLocation, newType);
@@ -228,13 +235,15 @@ function App(): JSX.Element {
   };
 
   return (
-    <div style={{
-      fontFamily: 'Roboto, Arial, sans-serif',
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      backgroundColor: '#f8f9fa',
-    }}>
+    <div
+      style={{
+        fontFamily: "Roboto, Arial, sans-serif",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#f8f9fa",
+      }}
+    >
       <Header
         username={user?.username}
         onLoginToggle={() => {
@@ -254,12 +263,17 @@ function App(): JSX.Element {
         selectedLocation={selectedLocation}
       />
 
-      {activeTab === 'map' ? (
-        <div style={{ flex: 1, display: 'flex', gap: '20px', padding: '20px' }}>
-          <div style={{
-            flex: searchResults.length > 0 && isPanelVisible ? '1 1 70%' : '1 1 100%',
-            transition: 'flex 0.3s ease',
-          }}>
+      {activeTab === "map" ? (
+        <div style={{ flex: 1, display: "flex", gap: "20px", padding: "20px" }}>
+          <div
+            style={{
+              flex:
+                searchResults.length > 0 && isPanelVisible
+                  ? "1 1 70%"
+                  : "1 1 100%",
+              transition: "flex 0.3s ease",
+            }}
+          >
             <MapContainerComponent
               onLocationSelect={handleLocationSelect}
               resultMarkers={resultMarkers}
@@ -276,7 +290,9 @@ function App(): JSX.Element {
             searchType={searchType}
             attractionPlan={attractionPlan}
             isPanelVisible={isPanelVisible}
-            setIsPanelVisible={(value: boolean) => dispatch(setPanelVisibility(value))}
+            setIsPanelVisible={(value: boolean) =>
+              dispatch(setPanelVisibility(value))
+            }
           />
         </div>
       ) : (
@@ -300,4 +316,4 @@ function App(): JSX.Element {
   );
 }
 
-export default App; 
+export default App;

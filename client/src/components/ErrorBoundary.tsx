@@ -87,9 +87,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     // use Clipboard API again instead of execCommand
     navigator.clipboard.writeText(textarea.value).finally(() => {
       document.body.removeChild(textarea);
-      alert(
-        "Error report copied to clipboard. Please share this with support.",
-      );
+      errorHandler.showSuccess("Error details copied to clipboard!");
     });
   };
 

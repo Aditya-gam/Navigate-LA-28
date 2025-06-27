@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import type { AnalyticsData } from '@/types';
+import { useState, useEffect } from "react";
+import type { AnalyticsData } from "@/types";
 
 const useAnalyticsData = (activeSubTab: string) => {
   const [data, setData] = useState<AnalyticsData | null>(null);
@@ -15,13 +15,13 @@ const useAnalyticsData = (activeSubTab: string) => {
         // Simulate API call - replace with actual API endpoint
         const response = await fetch(`/api/analytics/${activeSubTab}`);
         if (!response.ok) {
-          throw new Error('Failed to fetch analytics data');
+          throw new Error("Failed to fetch analytics data");
         }
-        
+
         const analyticsData = await response.json();
         setData(analyticsData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'An error occurred');
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
         setIsLoading(false);
       }
@@ -35,4 +35,4 @@ const useAnalyticsData = (activeSubTab: string) => {
   return { data, isLoading, error };
 };
 
-export default useAnalyticsData; 
+export default useAnalyticsData;

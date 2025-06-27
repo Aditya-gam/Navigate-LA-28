@@ -2,7 +2,7 @@
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 // Mock leaflet
 global.L = {
@@ -45,7 +45,7 @@ global.L = {
 };
 
 // Mock Chart.js
-jest.mock('chart.js', () => ({
+jest.mock("chart.js", () => ({
   Chart: {
     register: jest.fn(),
   },
@@ -60,15 +60,17 @@ jest.mock('chart.js', () => ({
 }));
 
 // Mock react-chartjs-2
-jest.mock('react-chartjs-2', () => ({
+jest.mock("react-chartjs-2", () => ({
   Bar: jest.fn(({ data, options }) => <div data-testid="bar-chart" />),
   Line: jest.fn(({ data, options }) => <div data-testid="line-chart" />),
   Pie: jest.fn(({ data, options }) => <div data-testid="pie-chart" />),
-  Doughnut: jest.fn(({ data, options }) => <div data-testid="doughnut-chart" />),
+  Doughnut: jest.fn(({ data, options }) => (
+    <div data-testid="doughnut-chart" />
+  )),
 }));
 
 // Mock react-leaflet
-jest.mock('react-leaflet', () => ({
+jest.mock("react-leaflet", () => ({
   MapContainer: jest.fn(({ children, ...props }) => (
     <div data-testid="map-container" {...props}>
       {children}
@@ -107,9 +109,9 @@ const localStorageMock = {
 global.localStorage = localStorageMock;
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: jest.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -143,4 +145,4 @@ beforeEach(() => {
   localStorageMock.setItem.mockClear();
   localStorageMock.removeItem.mockClear();
   localStorageMock.clear.mockClear();
-}); 
+});

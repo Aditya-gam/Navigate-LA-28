@@ -96,8 +96,7 @@ const MapContainerComponent: React.FC<MapContainerProps> = ({
                     )}
                     {searchResult.venue_type && (
                       <p>
-                        🏟️ <strong>Type:</strong>{" "}
-                        {searchResult.venue_type}
+                        🏟️ <strong>Type:</strong> {searchResult.venue_type}
                       </p>
                     )}
                     {searchResult.events && (
@@ -226,7 +225,7 @@ const MapContainerComponent: React.FC<MapContainerProps> = ({
           </Marker>
 
           <Polyline
-            positions={busRoute.geometry.map(coord => [coord[1], coord[0]])}
+            positions={busRoute.geometry.map((coord) => [coord[1], coord[0]])}
             color="#1a73e8"
             weight={4}
             opacity={0.8}
@@ -237,4 +236,4 @@ const MapContainerComponent: React.FC<MapContainerProps> = ({
   );
 };
 
-export default MapContainerComponent; 
+export default MapContainerComponent;

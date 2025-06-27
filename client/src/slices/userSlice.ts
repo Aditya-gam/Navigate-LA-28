@@ -38,7 +38,10 @@ const userSlice = createSlice({
     setProfile: (state, action: PayloadAction<User>) => {
       state.profile = action.payload;
     },
-    updatePreferences: (state, action: PayloadAction<Partial<UserPreferences>>) => {
+    updatePreferences: (
+      state,
+      action: PayloadAction<Partial<UserPreferences>>,
+    ) => {
       state.preferences = { ...state.preferences, ...action.payload };
     },
     addRecentSearch: (state, action: PayloadAction<RecentSearch>) => {
@@ -89,4 +92,4 @@ export const {
   clearError,
 } = userSlice.actions;
 
-export default userSlice.reducer; 
+export default userSlice.reducer;

@@ -9,4 +9,4 @@ export const LOCATION_ENDPOINTS = {
   SEARCH: `${API_BASE_URL}/locations/search`,
 } as const;
 
-export default API_BASE_URL; 
+export default API_BASE_URL;

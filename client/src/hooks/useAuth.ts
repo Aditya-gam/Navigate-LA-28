@@ -38,7 +38,9 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (userData: RegisterFormData): Promise<AuthResponse> => {
+  const register = async (
+    userData: RegisterFormData,
+  ): Promise<AuthResponse> => {
     try {
       dispatch(loginStart());
       const response = await registerUser(userData);
@@ -75,4 +77,4 @@ export const useAuth = () => {
     logout: logoutUser,
     clearError: clearAuthError,
   };
-}; 
+};

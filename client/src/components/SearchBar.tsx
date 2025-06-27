@@ -1,5 +1,5 @@
-import React from 'react';
-import type { SearchBarProps } from '@/types';
+import React from "react";
+import type { SearchBarProps } from "@/types";
 
 const SearchBar: React.FC<SearchBarProps> = ({
   searchQuery,
@@ -32,10 +32,11 @@ const SearchBar: React.FC<SearchBarProps> = ({
     </button>
     {selectedLocation && (
       <div className="location-display">
-        Selected: {selectedLocation[0].toFixed(4)}, {selectedLocation[1].toFixed(4)}
+        Selected: {selectedLocation[0].toFixed(4)},{" "}
+        {selectedLocation[1].toFixed(4)}
       </div>
     )}
   </div>
 );
 
-export default SearchBar; 
+export default SearchBar;

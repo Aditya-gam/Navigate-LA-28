@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import useAnalyticsData from '../../hooks/useAnalyticsData';
-import AnalyticsTabBar from './AnalyticsTabBar';
-import AttractionsAnalytics from './AttractionsAnalytics';
-import DemographicsAnalytics from './DemographicsAnalytics';
-import BusRoutesAnalytics from './BusRoutesAnalytics';
-import PopularStopsAnalytics from './PopularStopsAnalytics';
+import React, { useState, useEffect, useRef } from "react";
+import useAnalyticsData from "../../hooks/useAnalyticsData";
+import AnalyticsTabBar from "./AnalyticsTabBar";
+import AttractionsAnalytics from "./AttractionsAnalytics";
+import DemographicsAnalytics from "./DemographicsAnalytics";
+import BusRoutesAnalytics from "./BusRoutesAnalytics";
+import PopularStopsAnalytics from "./PopularStopsAnalytics";
 
 const Analytics = () => {
-  const [activeSubTab, setActiveSubTab] = useState('attractions');
+  const [activeSubTab, setActiveSubTab] = useState("attractions");
   const { data, isLoading, error } = useAnalyticsData(activeSubTab);
   const chartRef = useRef(null);
 
@@ -24,39 +24,39 @@ const Analytics = () => {
     const currentData = data[activeSubTab];
 
     switch (activeSubTab) {
-      case 'attractions':
+      case "attractions":
         return (
-          <AttractionsAnalytics 
-            data={currentData} 
-            isLoading={isLoading} 
-            error={error} 
+          <AttractionsAnalytics
+            data={currentData}
+            isLoading={isLoading}
+            error={error}
           />
         );
 
-      case 'demographics':
+      case "demographics":
         return (
-          <DemographicsAnalytics 
-            data={currentData} 
-            isLoading={isLoading} 
-            error={error} 
+          <DemographicsAnalytics
+            data={currentData}
+            isLoading={isLoading}
+            error={error}
           />
         );
 
-      case 'bus-routes':
+      case "bus-routes":
         return (
-          <BusRoutesAnalytics 
-            data={currentData} 
-            isLoading={isLoading} 
-            error={error} 
+          <BusRoutesAnalytics
+            data={currentData}
+            isLoading={isLoading}
+            error={error}
           />
         );
 
-      case 'popular-stops':
+      case "popular-stops":
         return (
-          <PopularStopsAnalytics 
-            data={data['popular-stops']} 
-            isLoading={isLoading} 
-            error={error} 
+          <PopularStopsAnalytics
+            data={data["popular-stops"]}
+            isLoading={isLoading}
+            error={error}
           />
         );
 
@@ -66,14 +66,14 @@ const Analytics = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <AnalyticsTabBar 
-        activeSubTab={activeSubTab} 
-        setActiveSubTab={setActiveSubTab} 
+    <div style={{ padding: "20px" }}>
+      <AnalyticsTabBar
+        activeSubTab={activeSubTab}
+        setActiveSubTab={setActiveSubTab}
       />
       {renderContent()}
     </div>
   );
 };
 
-export default Analytics; 
+export default Analytics;

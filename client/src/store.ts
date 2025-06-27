@@ -1,6 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from './slices/rootReducer';
-import type { RootState } from '@/types';
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./slices/rootReducer";
+import type { RootState } from "@/types";
 
 const store = configureStore({
   reducer: rootReducer,
@@ -8,7 +8,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore these action types
-        ignoredActions: ['persist/PERSIST'],
+        ignoredActions: ["persist/PERSIST"],
       },
     }),
 });
@@ -17,4 +17,4 @@ const store = configureStore({
 export type AppDispatch = typeof store.dispatch;
 export type AppState = RootState;
 
-export default store; 
+export default store;

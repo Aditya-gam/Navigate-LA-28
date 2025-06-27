@@ -88,7 +88,14 @@ export const purpleIcon = new L.Icon({
 // Alias for backward compatibility
 export const busIcon = yellowIcon;
 
-type ColorType = 'red' | 'green' | 'blue' | 'yellow' | 'orange' | 'purple' | 'bus';
+type ColorType =
+  | "red"
+  | "green"
+  | "blue"
+  | "yellow"
+  | "orange"
+  | "purple"
+  | "bus";
 
 // Icon factory function
 export const createColorIcon = (color: ColorType): L.Icon => {
@@ -106,7 +113,10 @@ export const createColorIcon = (color: ColorType): L.Icon => {
 };
 
 // Numbered icon factory functions
-export const createNumberedIcon = (number: number, backgroundColor: string = "#1a73e8"): L.DivIcon => {
+export const createNumberedIcon = (
+  number: number,
+  backgroundColor: string = "#1a73e8",
+): L.DivIcon => {
   return L.divIcon({
     className: "custom-numbered-icon",
     html: `<div style="
@@ -129,7 +139,10 @@ export const createNumberedIcon = (number: number, backgroundColor: string = "#1
   });
 };
 
-export const createNumberedStopIcon = (number: number, backgroundColor: string = "#FFA500"): L.DivIcon => {
+export const createNumberedStopIcon = (
+  number: number,
+  backgroundColor: string = "#FFA500",
+): L.DivIcon => {
   return L.divIcon({
     className: "custom-numbered-stop",
     html: `<div style="
@@ -192,4 +205,4 @@ export const createUserLocationIcon = (): L.DivIcon => {
     iconAnchor: [9, 9],
     popupAnchor: [0, -9],
   });
-}; 
+};

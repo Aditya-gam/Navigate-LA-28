@@ -420,4 +420,5 @@ export interface EnvConfig {
   REACT_APP_MAPS_API_KEY?: string;
 }
 
-export default {};
+const typesDefaultExport = {};
+export default typesDefaultExport;

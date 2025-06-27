@@ -19,4 +19,4 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config;
 });
 
-export default api; 
+export default api;

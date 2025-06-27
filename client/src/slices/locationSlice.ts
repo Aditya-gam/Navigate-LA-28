@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { SearchResult, Marker, BusRoute, AttractionPlan, SearchType } from "@/types";
+import type {
+  SearchResult,
+  Marker,
+  BusRoute,
+  AttractionPlan,
+  SearchType,
+} from "@/types";
 
 interface LocationState {
   selectedLocation: [number, number] | null;
@@ -31,7 +37,10 @@ const locationSlice = createSlice({
   name: "location",
   initialState,
   reducers: {
-    setSelectedLocation: (state, action: PayloadAction<[number, number] | null>) => {
+    setSelectedLocation: (
+      state,
+      action: PayloadAction<[number, number] | null>,
+    ) => {
       state.selectedLocation = action.payload;
     },
     setSearchResults: (state, action: PayloadAction<SearchResult[]>) => {
@@ -43,7 +52,10 @@ const locationSlice = createSlice({
     setBusRoute: (state, action: PayloadAction<BusRoute | null>) => {
       state.busRoute = action.payload;
     },
-    setAttractionPlan: (state, action: PayloadAction<AttractionPlan | null>) => {
+    setAttractionPlan: (
+      state,
+      action: PayloadAction<AttractionPlan | null>,
+    ) => {
       state.attractionPlan = action.payload;
     },
     setSearchType: (state, action: PayloadAction<SearchType>) => {
@@ -88,4 +100,4 @@ export const {
   clearSearchResults,
 } = locationSlice.actions;
 
-export default locationSlice.reducer; 
+export default locationSlice.reducer;

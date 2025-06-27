@@ -20,9 +20,9 @@ export const fetchLocations = async (query: string): Promise<APIResponse> => {
  * @returns Response with nearest places
  */
 export const searchNearestPlaces = async (
-  lat: number, 
-  lng: number, 
-  token?: string
+  lat: number,
+  lng: number,
+  token?: string,
 ): Promise<Place[]> => {
   const url = new URL("http://localhost:8001/api/geo/nearest_places/");
   url.searchParams.append("lat", lat.toString());
@@ -53,9 +53,9 @@ export const searchNearestPlaces = async (
  * @returns Response with nearest restrooms
  */
 export const searchNearestRestrooms = async (
-  lat: number, 
-  lng: number, 
-  token?: string
+  lat: number,
+  lng: number,
+  token?: string,
 ): Promise<Place[]> => {
   const url = new URL("http://localhost:8001/api/geo/nearest_restrooms/");
   url.searchParams.append("lat", lat.toString());
@@ -86,9 +86,9 @@ export const searchNearestRestrooms = async (
  * @returns Response with Olympic venues
  */
 export const searchOlympicVenues = async (
-  lat: number, 
-  lng: number, 
-  token?: string
+  lat: number,
+  lng: number,
+  token?: string,
 ): Promise<Place[]> => {
   const url = new URL("http://localhost:8001/api/olympic_venues/");
   url.searchParams.append("lat", lat.toString());
@@ -116,7 +116,9 @@ export const searchOlympicVenues = async (
  * @param token - Optional access token
  * @returns Response with all Olympic venues
  */
-export const fetchAllOlympicVenues = async (token?: string): Promise<Place[]> => {
+export const fetchAllOlympicVenues = async (
+  token?: string,
+): Promise<Place[]> => {
   const url = new URL("http://localhost:8001/api/olympic_venues/all/");
 
   const headers: Record<string, string> = {};
@@ -140,8 +142,8 @@ export const fetchAllOlympicVenues = async (token?: string): Promise<Place[]> =>
  * @returns Response with venue details
  */
 export const fetchOlympicVenueDetails = async (
-  venueId: string, 
-  token?: string
+  venueId: string,
+  token?: string,
 ): Promise<Place> => {
   const url = new URL(`http://localhost:8001/api/olympic_venues/${venueId}/`);
 
@@ -239,8 +241,8 @@ export const fetchAttractionPlan = async (
  * @returns Response with coordinates
  */
 export const geocodeAddress = async (
-  address: string, 
-  token?: string
+  address: string,
+  token?: string,
 ): Promise<APIResponse> => {
   const url = new URL("http://localhost:8001/api/geo/geocode/");
   url.searchParams.append("address", address);
@@ -267,9 +269,9 @@ export const geocodeAddress = async (
  * @returns Response with address
  */
 export const reverseGeocode = async (
-  lat: number, 
-  lng: number, 
-  token?: string
+  lat: number,
+  lng: number,
+  token?: string,
 ): Promise<APIResponse> => {
   const url = new URL("http://localhost:8001/api/geo/reverse-geocode/");
   url.searchParams.append("lat", lat.toString());
@@ -287,4 +289,4 @@ export const reverseGeocode = async (
   }
 
   return await response.json();
-}; 
+};
