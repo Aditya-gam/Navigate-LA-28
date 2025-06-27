@@ -1,5 +1,5 @@
-import axios from "../utils/api";
-import { AUTH_ENDPOINTS } from "../constants/apiEndpoints";
+import axios from "@/utils/api";
+import { AUTH_ENDPOINTS } from "@/constants/apiEndpoints";
 import type { LoginFormData, RegisterFormData, APIResponse } from "@/types";
 
 /**

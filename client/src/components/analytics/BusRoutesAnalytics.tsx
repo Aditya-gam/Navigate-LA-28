@@ -1,6 +1,6 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { getDefaultChartOptions, chartColors } from "../../utils/chartConfig";
+import { getDefaultChartOptions, chartColors } from "@/utils/chartConfig";
 
 interface BusRoutesData {
   line_popularity: Array<{

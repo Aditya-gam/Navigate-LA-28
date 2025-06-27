@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { submitReview } from "../services/reviewService";
-import { showSuccess, showError } from "../utils/errorHandler";
+import { submitReview } from "@/services/reviewService";
+import { showSuccess, showError } from "@/utils/errorHandler";
 import type { ReviewModalProps, Place, ReviewSubmission } from "@/types";
 
 const ReviewModal: React.FC<ReviewModalProps> = ({

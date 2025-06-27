@@ -5,8 +5,8 @@ import {
   loginFailure,
   logout,
   clearError,
-} from "../slices/authSlice";
-import { loginUser, registerUser } from "../services/authService";
+} from "@/slices/authSlice";
+import { loginUser, registerUser } from "@/services/authService";
 import type { RootState, LoginFormData, RegisterFormData, User } from "@/types";
 
 interface AuthResponse {

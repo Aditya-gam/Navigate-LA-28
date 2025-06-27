@@ -8,13 +8,13 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import {
+  createOlympicVenueIcon,
+  createColorIcon,
   redIcon,
   greenIcon,
   busIcon,
-  createOlympicVenueIcon,
-  createColorIcon,
-} from "../utils/leafletIcons";
-import LocationMarker from "./LocationMarker";
+} from "@/utils/leafletIcons";
+import LocationMarker from "@/components/LocationMarker";
 import "../styles/MapContainerComponent.css";
 import type { MapContainerProps, Marker as MarkerType } from "@/types";
 

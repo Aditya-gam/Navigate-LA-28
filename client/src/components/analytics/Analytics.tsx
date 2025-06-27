@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import useAnalyticsData from "../../hooks/useAnalyticsData";
-import AnalyticsTabBar from "./AnalyticsTabBar";
-import AttractionsAnalytics from "./AttractionsAnalytics";
-import DemographicsAnalytics from "./DemographicsAnalytics";
-import BusRoutesAnalytics from "./BusRoutesAnalytics";
-import PopularStopsAnalytics from "./PopularStopsAnalytics";
+import useAnalyticsData from "@/hooks/useAnalyticsData";
+import AnalyticsTabBar from "@/components/analytics/AnalyticsTabBar";
+import AttractionsAnalytics from "@/components/analytics/AttractionsAnalytics";
+import DemographicsAnalytics from "@/components/analytics/DemographicsAnalytics";
+import BusRoutesAnalytics from "@/components/analytics/BusRoutesAnalytics";
+import PopularStopsAnalytics from "@/components/analytics/PopularStopsAnalytics";
 
 type ActiveSubTab =
   | "attractions"

@@ -1,19 +1,16 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/types";
 import "leaflet/dist/leaflet.css";
 import "./styles/App.css"; // Import global styles
 import "./utils/leafletIcons"; // Import leaflet icon configuration
-
-// Import components
-import Header from "./components/Header";
-import MapContainerComponent from "./components/MapContainerComponent";
-import ResultsPanel from "./components/ResultsPanel";
-import LoginModal from "./components/LoginModal";
-import ReviewModal from "./components/ReviewModal";
-import Analytics from "./components/analytics/Analytics";
-import LoadingSpinner from "./components/LoadingSpinner";
-
-// Import Redux actions
+import Header from "@/components/Header";
+import MapContainerComponent from "@/components/MapContainerComponent";
+import ResultsPanel from "@/components/ResultsPanel";
+import LoginModal from "@/components/LoginModal";
+import ReviewModal from "@/components/ReviewModal";
+import Analytics from "@/components/analytics/Analytics";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import {
   setSelectedLocation,
   setSearchResults,
@@ -24,24 +21,19 @@ import {
   setSearchQuery,
   setPanelVisibility,
   setLoading,
-  clearSearchResults,
-} from "./slices/locationSlice";
-import { useAuth } from "./hooks/useAuth";
-import { addRecentSearch } from "./slices/userSlice";
-
-// Import services
+  setError,
+} from "@/slices/locationSlice";
+import { useAuth } from "@/hooks/useAuth";
+import { addRecentSearch } from "@/slices/userSlice";
 import {
   searchNearestPlaces,
   searchNearestRestrooms,
-  fetchDirectBusRoutes,
-  fetchAttractionPlan,
   searchOlympicVenues,
-} from "./services/mapService";
-import { errorHandler, showError, showInfo } from "./utils/errorHandler";
-
-// Import types
+  fetchAttractionPlan,
+  fetchDirectBusRoutes,
+} from "@/services/mapService";
+import { errorHandler, showError, showInfo } from "@/utils/errorHandler";
 import type {
-  RootState,
   SearchType,
   TabType,
   Place,
@@ -116,7 +108,7 @@ function App(): JSX.Element {
     }
 
     dispatch(setLoading(true));
-    dispatch(clearSearchResults());
+    dispatch(setError(null));
 
     try {
       const [lat, lng] = location;

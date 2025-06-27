@@ -1,5 +1,5 @@
-import axios from "../utils/api";
-import { LOCATION_ENDPOINTS } from "../constants/apiEndpoints";
+import axios from "@/utils/api";
+import { LOCATION_ENDPOINTS } from "@/constants/apiEndpoints";
 import type { Place, AttractionPlan, BusRoute, APIResponse } from "@/types";
 
 /**

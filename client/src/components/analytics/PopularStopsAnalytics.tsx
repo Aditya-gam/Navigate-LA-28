@@ -1,7 +1,7 @@
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { createNumberedStopIcon } from "../../utils/leafletIcons";
+import { createNumberedStopIcon } from "@/utils/leafletIcons";
 
 interface PopularStop {
   line: string;

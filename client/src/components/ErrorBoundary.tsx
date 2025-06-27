@@ -1,6 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from "react";
 
-import { errorHandler } from "../utils/errorHandler";
+import { errorHandler } from "@/utils/errorHandler";
 import "../styles/ErrorBoundary.css";
 
 interface ErrorBoundaryState {

@@ -1,4 +1,4 @@
-import axios from "../utils/api";
+import axios from "@/utils/api";
 import type { Review, ReviewSubmission, APIResponse } from "@/types";
 
 /**
@@ -53,14 +53,14 @@ export const getPlaceReviews = async (
 /**
  * Get reviews by a specific user
  * @param userId - User ID to get reviews for
- * @param options - Query options
  * @param token - Access token
+ * @param options - Query options
  * @returns Response with user reviews
  */
 export const getUserReviews = async (
   userId: string,
-  options: { limit?: number; offset?: number } = {},
   token: string,
+  options: { limit?: number; offset?: number } = {},
 ): Promise<APIResponse<Review[]>> => {
   const params = new URLSearchParams();
   if (options.limit) params.append("limit", options.limit.toString());
