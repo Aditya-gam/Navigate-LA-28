@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../../constants/chartConfig'; // Import chart configuration
 import useAnalyticsData from '../../hooks/useAnalyticsData';
 import AnalyticsTabBar from './AnalyticsTabBar';
 import AttractionsAnalytics from './AttractionsAnalytics';

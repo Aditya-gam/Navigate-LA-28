@@ -2,7 +2,12 @@
   "compilerOptions": {
     // Target and Module
     "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "es6", "es2022"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es6",
+      "ES2022"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -23,9 +28,9 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "exactOptionalPropertyTypes": true,
+    "exactOptionalPropertyTypes": false,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": false,
     "noUncheckedIndexedAccess": true,
     
     // Path Mapping
@@ -39,13 +44,12 @@
       "@/types/*": ["types/*"],
       "@/constants/*": ["constants/*"],
       "@/assets/*": ["assets/*"],
-      "@/styles/*": ["styles/*"]
+      "@/styles/*": ["styles/*"],
+      "@/slices/*": ["slices/*"]
     },
     
     // Advanced Options
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "declaration": false,
     "removeComments": true,
     "importHelpers": true,
     "downlevelIteration": true,
@@ -63,25 +67,25 @@
     "noImplicitUseStrict": false,
     "suppressExcessPropertyErrors": false,
     "suppressImplicitAnyIndexErrors": false,
-    "noStrictGenericChecks": false
+    "noStrictGenericChecks": false,
+    "useDefineForClassFields": true
   },
   "include": [
     "src/**/*",
-    "src/**/*.ts",
     "src/**/*.tsx",
-    "src/**/*.js",
-    "src/**/*.jsx"
+    "src/**/*.ts",
+    "src/**/*.jsx",
+    "src/**/*.js"
   ],
   "exclude": [
     "node_modules",
     "build",
     "dist",
     "coverage",
-    "public",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx"
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.spec.tsx"
   ],
   "ts-node": {
     "compilerOptions": {

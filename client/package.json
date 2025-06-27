@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@reduxjs/toolkit": "^2.4.0",
+    "@reduxjs/toolkit": "^2.5.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
     "axios": "^1.7.9",
-    "chart.js": "^4.4.7",
+    "chart.js": "^4.5.0",
     "crypto-browserify": "^3.12.1",
     "leaflet": "^1.9.4",
     "os-browserify": "^0.3.0",
@@ -16,24 +16,23 @@
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-app-rewired": "^2.2.1",
-    "react-chartjs-2": "^5.2.0",
+    "react-chartjs-2": "^5.3.0",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
-    "react-redux": "^9.1.2",
-    "react-router-dom": "^6.28.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^6.30.1",
     "react-scripts": "^5.0.1",
-    "redux": "^5.0.1",
     "sass": "^1.82.0",
     "stream-browserify": "^3.0.0",
-    "styled-components": "^6.1.13",
+    "styled-components": "^6.1.19",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "PORT=3030 react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:coverage": "react-scripts test --coverage --watchAll=false",
-    "test:ci": "CI=true react-scripts test --coverage --watchAll=false --passWithNoTests",
+    "start": "PORT=3030 GENERATE_SOURCEMAP=false react-app-rewired start",
+    "build": "GENERATE_SOURCEMAP=false react-app-rewired build",
+    "test": "react-app-rewired test",
+    "test:coverage": "react-app-rewired test --coverage --watchAll=false",
+    "test:ci": "CI=true react-app-rewired test --coverage --watchAll=false --passWithNoTests",
     "eject": "react-scripts eject",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx --max-warnings 0",
     "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
@@ -43,13 +42,26 @@
     "validate": "npm run type-check && npm run lint && npm run format:check && npm run test:ci",
     "analyze": "npm run build && npx bundle-analyzer build/static/js/*.js",
     "clean": "rm -rf build node_modules/.cache",
-    "prepare": "cd .. && husky install client/.husky"
+    "prepare": "cd .. && husky install client/.husky",
+    "audit:fix": "npm audit fix",
+    "audit:check": "npm audit --audit-level=moderate",
+    "deps:update": "npm update",
+    "deps:check": "npm outdated"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-console": "warn",
+      "no-debugger": "error",
+      "no-eval": "error",
+      "no-implied-eval": "error",
+      "no-new-func": "error",
+      "no-script-url": "error",
+      "no-alert": "warn"
+    }
   },
   "browserslist": {
     "production": [
@@ -64,24 +76,25 @@
     ]
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.27.5",
+    "@babel/eslint-parser": "^7.26.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-react": "^7.26.3",
+    "@types/jest": "^29.5.14",
     "@types/leaflet": "^1.9.12",
-    "@types/node": "^22.10.2",
-    "@types/react": "^18.3.17",
-    "@types/react-dom": "^18.3.5",
+    "@types/node": "^22.15.33",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.0.0",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.10",
+    "lint-staged": "^15.5.2",
     "prettier": "^3.4.2",
     "typescript": "^4.9.5",
     "webpack-bundle-analyzer": "^4.10.2"
@@ -117,5 +130,27 @@
         "statements": 70
       }
     }
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-org/navigate-la-28.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "maps",
+    "olympics",
+    "los-angeles"
+  ],
+  "author": "Navigate LA 28 Team",
+  "license": "MIT",
+  "resolutions": {
+    "nth-check": ">=2.0.1",
+    "postcss": ">=8.4.31",
+    "webpack-dev-server": ">=4.0.0"
   }
 }

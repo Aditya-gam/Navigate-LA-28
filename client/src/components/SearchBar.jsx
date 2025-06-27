@@ -25,6 +25,7 @@ const SearchBar = ({
     >
       <option value="nearest_places">Nearest Places</option>
       <option value="nearest_restrooms">Nearest Restrooms</option>
+      <option value="olympic_venues">Olympic Venues</option>
       <option value="attraction_plan">Attraction Plan</option>
     </select>
     <button 

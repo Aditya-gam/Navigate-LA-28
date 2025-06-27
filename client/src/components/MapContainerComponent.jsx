@@ -2,7 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { redIcon, greenIcon, busIcon } from '../utils/leafletIcons';
+import { 
+  redIcon, 
+  greenIcon, 
+  busIcon, 
+  createOlympicVenueIcon,
+  createColorIcon 
+} from '../utils/leafletIcons';
 import LocationMarker from './LocationMarker';
 import '../styles/MapContainerComponent.css';
 
@@ -15,6 +21,20 @@ const MapContainerComponent = ({
   onMarkerClick,
   onWriteReview,
 }) => {
+  
+  // Function to get appropriate icon based on search type and marker data
+  const getMarkerIcon = (marker, searchType) => {
+    if (searchType === 'olympic_venues') {
+      return createOlympicVenueIcon();
+    } else if (searchType === 'nearest_restrooms') {
+      return greenIcon;
+    } else if (searchType === 'attraction_plan') {
+      return createColorIcon('blue');
+    } else {
+      return redIcon;
+    }
+  };
+
   return (
     <MapContainer
       center={[34.0522, -118.2437]}
@@ -31,9 +51,9 @@ const MapContainerComponent = ({
       
       {resultMarkers.map((marker, index) => (
         <Marker
-          key={`${marker.position[0]}-${marker.position[1]}`}
+          key={`${marker.position[0]}-${marker.position[1]}-${index}`}
           position={marker.position}
-          icon={searchType === 'nearest_restrooms' ? greenIcon : redIcon}
+          icon={getMarkerIcon(marker, searchType)}
           eventHandlers={{
             click: () => {
               onMarkerClick(marker.position[0], marker.position[1]);
@@ -42,10 +62,31 @@ const MapContainerComponent = ({
         >
           <Popup>
             <div className="popup-content">
-              <h3 className="popup-title">{marker.name}</h3>
+              <h3 className="popup-title">
+                {searchType === 'olympic_venues' && '🏅 '}
+                {marker.name}
+              </h3>
 
               {searchResults[index]?.description && (
                 <p className="popup-description">{searchResults[index].description}</p>
+              )}
+
+              {/* Olympic venue specific information */}
+              {searchType === 'olympic_venues' && searchResults[index] && (
+                <div className="olympic-venue-info">
+                  {searchResults[index].sport && (
+                    <p>🏆 <strong>Sport:</strong> {searchResults[index].sport}</p>
+                  )}
+                  {searchResults[index].capacity && (
+                    <p>👥 <strong>Capacity:</strong> {searchResults[index].capacity.toLocaleString()}</p>
+                  )}
+                  {searchResults[index].venue_type && (
+                    <p>🏟️ <strong>Type:</strong> {searchResults[index].venue_type}</p>
+                  )}
+                  {searchResults[index].events && (
+                    <p>📅 <strong>Events:</strong> {searchResults[index].events}</p>
+                  )}
+                </div>
               )}
 
               {busRoute && (

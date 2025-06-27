@@ -71,6 +71,80 @@ export const searchNearestRestrooms = async (lat, lng, token = null) => {
 };
 
 /**
+ * Search for Olympic venues
+ * @param {number} lat - Latitude
+ * @param {number} lng - Longitude
+ * @param {string} token - Optional access token
+ * @returns {Promise} Response with Olympic venues
+ */
+export const searchOlympicVenues = async (lat, lng, token = null) => {
+  const url = new URL('http://localhost:8001/api/olympic_venues/');
+  url.searchParams.append('lat', lat);
+  url.searchParams.append('lng', lng);
+
+  const headers = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, {
+    method: 'GET',
+    headers,
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+/**
+ * Get all Olympic venues
+ * @param {string} token - Optional access token
+ * @returns {Promise} Response with all Olympic venues
+ */
+export const fetchAllOlympicVenues = async (token = null) => {
+  const url = new URL('http://localhost:8001/api/olympic_venues/all/');
+
+  const headers = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+/**
+ * Get Olympic venue details by ID
+ * @param {string} venueId - Olympic venue ID
+ * @param {string} token - Optional access token
+ * @returns {Promise} Response with venue details
+ */
+export const fetchOlympicVenueDetails = async (venueId, token = null) => {
+  const url = new URL(`http://localhost:8001/api/olympic_venues/${venueId}/`);
+
+  const headers = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+/**
  * Fetch direct bus routes between two locations
  * @param {number} lat1 - Origin latitude
  * @param {number} lng1 - Origin longitude
@@ -115,6 +189,56 @@ export const fetchAttractionPlan = async (lat, lng, maxPlaces = 5, token = null)
   url.searchParams.append('lat', lat);
   url.searchParams.append('long', lng);
   url.searchParams.append('max_places', maxPlaces);
+
+  const headers = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+/**
+ * Geocoding service - convert address to coordinates
+ * @param {string} address - Address to geocode
+ * @param {string} token - Optional access token
+ * @returns {Promise} Response with coordinates
+ */
+export const geocodeAddress = async (address, token = null) => {
+  const url = new URL('http://localhost:8001/api/geo/geocode/');
+  url.searchParams.append('address', address);
+
+  const headers = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return await response.json();
+};
+
+/**
+ * Reverse geocoding service - convert coordinates to address
+ * @param {number} lat - Latitude
+ * @param {number} lng - Longitude
+ * @param {string} token - Optional access token
+ * @returns {Promise} Response with address
+ */
+export const reverseGeocode = async (lat, lng, token = null) => {
+  const url = new URL('http://localhost:8001/api/geo/reverse-geocode/');
+  url.searchParams.append('lat', lat);
+  url.searchParams.append('lng', lng);
 
   const headers = {};
   if (token) {

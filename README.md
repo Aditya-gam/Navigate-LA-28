@@ -287,14 +287,14 @@ docker-compose exec hadoop hdfs dfs -put local_file /hdfs_path
 
 | Service | Container Name | Ports | Description |
 |---------|---------------|-------|-------------|
-| **Frontend** | `navigate_la_frontend` | 3030 | React development server |
-| **Backend** | `navigate_la_backend` | 8000 | FastAPI application server |
+| **Frontend** | `navigate_la_frontend` | 3000 | React development server |
+| **Backend** | `navigate_la_backend` | 5000 | FastAPI application server |
 | **Database** | `navigate_la_postgres` | 5433 | PostgreSQL with PostGIS |
 | **Test DB** | `navigate_la_postgres_test` | 5434 | Testing database |
 | **Hadoop** | `hadoop` | 9870, 9000 | HDFS NameNode |
 | **DataNode** | `hadoop_datanode` | 9864 | HDFS DataNode |
 | **Spark Master** | `spark_master` | 8080, 7077 | Spark cluster master |
-| **Spark Worker** | `spark_worker` | 8081 | Spark worker node |
+| **Spark Worker** | `spark_worker` | 8090 | Spark worker node |
 
 </details>
 
@@ -538,7 +538,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <div align="center">
 
 **🏟️ Built with ❤️ for the Los Angeles 2028 Olympics**
-
 [![GitHub stars](https://img.shields.io/github/stars/yourusername/Navigate-LA-28?style=social)](https://github.com/yourusername/Navigate-LA-28/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/yourusername/Navigate-LA-28?style=social)](https://github.com/yourusername/Navigate-LA-28/network/members)
 [![GitHub issues](https://img.shields.io/github/issues/yourusername/Navigate-LA-28)](https://github.com/yourusername/Navigate-LA-28/issues)
@@ -546,3 +545,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 [⬆ Back to Top](#-navigate-la-28)
 
 </div>
+

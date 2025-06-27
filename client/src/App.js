@@ -35,6 +35,7 @@ import {
   searchNearestRestrooms, 
   fetchDirectBusRoutes, 
   fetchAttractionPlan, 
+  searchOlympicVenues,
 } from './services/mapService';
 import { errorHandler, showError, showInfo } from './utils/errorHandler';
 
@@ -113,6 +114,8 @@ function App() {
         data = await searchNearestPlaces(lat, lng, token);
       } else if (type === 'nearest_restrooms') {
         data = await searchNearestRestrooms(lat, lng, token);
+      } else if (type === 'olympic_venues') {
+        data = await searchOlympicVenues(lat, lng, token);
       }
 
       dispatch(setSearchResults(data));
@@ -120,6 +123,8 @@ function App() {
       const markers = data.map(result => ({
         position: [result.latitude, result.longitude],
         name: result.name || 'Unnamed Location',
+        type: type,
+        data: result,
       }));
       dispatch(setResultMarkers(markers));
 

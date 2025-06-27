@@ -2,38 +2,57 @@
 
 .map-container {
   height: 100%;
-  width: 100%;
   position: relative;
+  width: 100%;
 }
 
 /* Popup styles */
 .popup-content {
-  padding: 8px;
-  min-width: 200px;
   max-width: 300px;
+  min-width: 200px;
+  padding: 8px;
 }
 
 .popup-title {
-  margin: 0 0 8px 0;
-  color: #1a73e8;
   font-size: 16px;
-  border-bottom: 1px solid #eee;
+  margin: 0 0 8px 0;
   padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+  color: #1a73e8;
 }
 
 .popup-description {
-  margin: 4px 0;
   font-size: 14px;
   color: #5f6368;
+  margin: 4px 0;
+}
+
+/* Olympic venue specific styles */
+.olympic-venue-info {
+  background-color: #fff8e1;
+  border: 1px solid #ffd700;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 8px 0;
+}
+
+.olympic-venue-info p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.olympic-venue-info strong {
+  color: #e65100;
 }
 
 /* Bus route info styles */
 .bus-route-info {
+  background-color: #f8f9fa;
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
   margin: 8px 0;
   padding: 12px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e8eaed;
 }
 
 .route-header {
@@ -41,13 +60,13 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid #e8eaed;
   padding-bottom: 8px;
+  border-bottom: 1px solid #e8eaed;
 }
 
 .route-number {
   background-color: #1a73e8;
-  color: white;
+  color: #fff;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 14px;
@@ -55,17 +74,17 @@
 }
 
 .route-name {
-  color: #3c4043;
   font-size: 14px;
   font-weight: 500;
+  color: #3c4043;
 }
 
 .route-details {
-  font-size: 13px;
-  color: #5f6368;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  font-size: 13px;
+  color: #5f6368;
 }
 
 .route-type {
@@ -75,10 +94,10 @@
 }
 
 .stops-info {
-  background-color: white;
-  padding: 8px;
-  border-radius: 4px;
+  background-color: #fff;
   border: 1px solid #e8eaed;
+  border-radius: 4px;
+  padding: 8px;
 }
 
 .stop-section {
@@ -92,15 +111,15 @@
 }
 
 .stop-divider {
-  width: 100%;
   height: 1px;
   background-color: #e8eaed;
+  width: 100%;
   margin: 8px 0;
 }
 
 .distance {
-  color: #80868b;
   font-size: 12px;
+  color: #80868b;
 }
 
 /* Location info styles */
@@ -110,40 +129,34 @@
   margin-top: 8px;
 }
 
-.address-info {
-  margin: 4px 0;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
+.address-info,
 .types-info {
-  margin: 4px 0;
   display: flex;
   align-items: center;
   gap: 4px;
+  margin: 4px 0;
 }
 
 .coordinates {
-  margin: 4px 0;
   font-size: 12px;
   color: #80868b;
+  margin: 4px 0;
 }
 
 .review-button {
   background-color: #1a73e8;
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 4px;
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
-  margin-top: 12px;
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  width: 100%;
+  margin-top: 12px;
   transition: background-color 0.2s ease;
 }
 
@@ -153,7 +166,9 @@
 
 /* Custom numbered icon styles */
 .custom-numbered-icon,
-.custom-numbered-stop {
+.custom-numbered-stop,
+.olympic-venue-icon,
+.user-location-icon {
   background: transparent !important;
   border: none !important;
 }
