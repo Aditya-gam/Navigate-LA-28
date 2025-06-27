@@ -79,9 +79,6 @@ We welcome security researchers and the community to help identify vulnerabiliti
 | **7 days** | Detailed investigation completion |
 | **30 days** | Resolution and disclosure coordination |
 
-### **Vulnerability Rewards**
-We offer recognition and rewards for valid security findings:
-
 ### **Out of Scope**
 - Social engineering attacks
 - Physical security issues
