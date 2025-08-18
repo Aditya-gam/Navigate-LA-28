@@ -1,0 +1,330 @@
+# .github/workflows/ci.yml
+# CI/CD workflow for Navigate LA-28 simplified architecture
+
+name: Navigate LA-28 CI/CD
+
+on:
+  push:
+    branches: [ main, develop, feat/*, fix/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Build and test containers
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgis/postgis:13-3.1
+        env:
+          POSTGRES_USER: la28_user
+          POSTGRES_PASSWORD: bigdata_la28
+          POSTGRES_DB: navigate_la28_test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Load cached Poetry dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Load cached pnpm dependencies
+        run: |
+          cd client
+          pnpm install --frozen-lockfile
+
+      - name: Run backend tests
+        run: |
+          cd server
+          poetry run pytest tests/ --cov=. --cov-report=xml --cov-report=html
+
+      - name: Run frontend tests
+        run: |
+          cd client
+          pnpm run test:ci
+
+      - name: Build backend container
+        run: |
+          cd server
+          docker build -t navigate-la28-backend:${{ github.sha }} .
+
+      - name: Build frontend container
+        run: |
+          cd client
+          docker build -f Dockerfile.prod -t navigate-la28-frontend:${{ github.sha }} .
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./server/coverage.xml
+          flags: backend
+          name: backend-coverage
+
+  # Security scanning
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached Poetry dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Run Bandit security analysis
+        run: |
+          cd server
+          poetry run bandit -r . -f json -o bandit-report.json || true
+
+      - name: Run Safety check for CVEs
+        run: |
+          cd server
+          poetry run safety check --json --output safety-report.json || true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: |
+            server/bandit-report.json
+            server/safety-report.json
+
+  # Deploy to staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build-and-test, security-scan]
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backend:staging
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./client
+          file: ./client/Dockerfile.prod
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/frontend:staging
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to staging environment
+        run: |
+          echo "Deploying to staging environment..."
+          # Add your staging deployment logic here
+          # This could be kubectl apply, docker-compose up, etc.
+
+  # Integration tests
+  integration-test:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    needs: [build-and-test, security-scan]
+
+    services:
+      postgres:
+        image: postgis/postgis:13-3.1
+        env:
+          POSTGRES_USER: la28_user
+          POSTGRES_PASSWORD: bigdata_la28
+          POSTGRES_DB: navigate_la28_test_db
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Load cached Poetry dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Start services with Docker Compose
+        run: |
+          docker-compose up -d postgres postgres_test
+          sleep 10  # Wait for services to be ready
+
+      - name: Run integration tests
+        run: |
+          cd server
+          poetry run pytest tests/ -m integration --cov=. --cov-report=xml
+
+      - name: Upload integration coverage
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./server/coverage.xml
+          flags: integration
+          name: integration-coverage
+
+  # Environment validation
+  config-validate:
+    name: Configuration Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose
+        run: |
+          docker-compose config
+
+      - name: Validate environment files
+        run: |
+          # Check if required environment files exist
+          test -f server/.env.example || echo "Warning: server/.env.example not found"
+          test -f client/.env.example || echo "Warning: client/.env.example not found"
+
+      - name: Validate Nginx configuration
+        run: |
+          # Validate Nginx configuration syntax
+          docker run --rm -v $(pwd)/client/nginx.conf:/etc/nginx/nginx.conf:ro nginx:alpine nginx -t
+
+  # Dependency vulnerability scan
+  dependency-scan:
+    name: Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: latest
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Load cached Poetry dependencies
+        run: poetry install --no-interaction --no-root
+
+      - name: Load cached pnpm dependencies
+        run: |
+          cd client
+          pnpm install --frozen-lockfile
+
+      - name: Scan Python dependencies
+        run: |
+          cd server
+          poetry run safety check --full-report
+
+      - name: Scan Node.js dependencies
+        run: |
+          cd client
+          pnpm audit --audit-level moderate
+
+      - name: Upload vulnerability reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: vulnerability-reports
+          path: |
+            server/safety-report.json
+            client/audit-report.json

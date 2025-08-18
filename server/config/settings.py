@@ -26,10 +26,38 @@ class Settings(BaseSettings):
     app_version: str = "1.0.0"
     debug: bool = Field(default=False, description="Enable debug mode")
 
-    # Database settings
+    # Database settings (PostgreSQL + PostGIS)
     database_url: str = Field(
         default="postgresql+asyncpg://user:password@localhost/dbname",
         description="Database connection URL"
+    )
+
+    # PostGIS-specific settings
+    postgis_enabled: bool = Field(
+        default=True,
+        description="Enable PostGIS spatial extensions"
+    )
+    spatial_ref_sys_srid: int = Field(
+        default=4326,
+        description="Default spatial reference system (WGS84)"
+    )
+    geometry_srid: int = Field(
+        default=4326,
+        description="Default geometry SRID for spatial operations"
+    )
+
+    # Database connection settings
+    database_pool_size: int = Field(
+        default=20,
+        description="Database connection pool size"
+    )
+    database_max_overflow: int = Field(
+        default=30,
+        description="Database connection pool max overflow"
+    )
+    database_pool_timeout: int = Field(
+        default=30,
+        description="Database connection pool timeout in seconds"
     )
 
     # Security settings
@@ -89,6 +117,24 @@ class Settings(BaseSettings):
         description="Number of requests per minute"
     )
 
+    # Logging and monitoring
+    log_level: str = Field(
+        default="INFO",
+        description="Logging level"
+    )
+    log_format: str = Field(
+        default="json",
+        description="Log format (json or text)"
+    )
+    metrics_enabled: bool = Field(
+        default=True,
+        description="Enable metrics collection"
+    )
+    health_check_enabled: bool = Field(
+        default=True,
+        description="Enable health check endpoints"
+    )
+
     @field_validator('allowed_origins', mode='before')
     @classmethod
     def validate_origins(cls, v):
@@ -105,6 +151,25 @@ class Settings(BaseSettings):
             return v.lower() in ('true', '1', 'yes', 'on')
         return bool(v)
 
+    @field_validator('log_level', mode='before')
+    @classmethod
+    def validate_log_level(cls, v):
+        """Validate log level setting."""
+        valid_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+        if isinstance(v, str):
+            v = v.upper()
+        if v not in valid_levels:
+            return 'INFO'
+        return v
+
+    @field_validator('spatial_ref_sys_srid', 'geometry_srid')
+    @classmethod
+    def validate_srid(cls, v):
+        """Validate spatial reference system ID."""
+        if not isinstance(v, int) or v < 0:
+            return 4326  # Default to WGS84
+        return v
+
 
 # Create global settings instance
 settings = Settings()
@@ -120,6 +185,8 @@ class DevelopmentSettings(Settings):
     """Development environment settings."""
     debug: bool = True
     allowed_origins: List[str] = [LOCALHOST_3030, LOCALHOST_3000]
+    log_level: str = "DEBUG"
+    log_format: str = "text"
 
 
 class ProductionSettings(Settings):
@@ -129,6 +196,10 @@ class ProductionSettings(Settings):
         default_factory=list,
         description="Production allowed origins"
     )
+    log_level: str = "INFO"
+    log_format: str = "json"
+    metrics_enabled: bool = True
+    health_check_enabled: bool = True
 
 
 class TestSettings(Settings):
@@ -139,6 +210,8 @@ class TestSettings(Settings):
         description="Test database connection URL (set TEST_DATABASE_URL env var for PostgreSQL)"
     )
     allowed_origins: List[str] = [LOCALHOST_3000]
+    log_level: str = "WARNING"
+    postgis_enabled: bool = False
 
 
 def get_environment_settings() -> Settings:

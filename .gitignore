@@ -5,7 +5,7 @@ test.md
 hadoop/conf/sed*
 
 datasets
-
+llm.txt
 # Environment files containing sensitive credentials
 .env
 .env.*

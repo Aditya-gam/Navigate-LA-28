@@ -1,0 +1,57 @@
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "navigate-la-28"
+version = "0.1.0"
+description = "Navigate LA 28 Olympics Tourism Application - Monorepo"
+authors = ["Navigate LA 28 Team <team@navigate-la28.com>"]
+license = "MIT"
+readme = "README.md"
+packages = []
+requires-python = "^3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+keywords = ["olympics", "tourism", "navigation", "geospatial", "fastapi", "react"]
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.0.1"
+
+[tool.poetry.scripts]
+dev = "scripts.dev:main"
+start = "scripts.start:main"
+test = "scripts.test:main"
+
+[tool.poetry.tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.poetry.tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # warnings
+    "I",    # import sorting
+    "D",    # pydocstyle
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "ANN",  # flake8-annotations
+    "S",    # flake8-bandit (security)
+]
+ignore = [
+    "D100", "D104", "D401",  # relax some strict docstring rules
+    "ANN101", "ANN102",       # allow missing self/cls annotations
+    "S101",                    # allow asserts in tests/dev
+]
+
+[tool.poetry.tool.ruff.format]
+quote-style = "double"

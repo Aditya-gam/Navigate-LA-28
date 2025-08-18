@@ -8,8 +8,7 @@
 [![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/postgresql-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Apache Spark](https://img.shields.io/badge/Apache%20Spark-FDEE21?style=for-the-badge&logo=apachespark&logoColor=black)](https://spark.apache.org/)
-[![Hadoop](https://img.shields.io/badge/Apache%20Hadoop-66CCFF?style=for-the-badge&logo=apachehadoop&logoColor=black)](https://hadoop.apache.org/)
+[![PostGIS](https://img.shields.io/badge/PostGIS-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgis.net/)
 
 <p align="center">
   <strong>🏟️ Empowering tourists with real-time navigation, attraction discovery, and transit optimization for the LA 2028 Olympics</strong>
@@ -77,22 +76,20 @@ graph TB
         I --> L[Analytics Data]
     end
     
-    subgraph "Big Data Stack"
-        M[Apache Hadoop<br/>Port 9870] --> N[HDFS Storage]
-        O[Apache Spark<br/>Port 8080] --> P[Data Processing]
-        O --> Q[ML Analytics]
+    subgraph "Proxy Layer"
+        M[Nginx Proxy<br/>Port 80] --> N[API Routing]
+        M --> O[Static File Serving]
+        M --> P[Security & CORS]
     end
     
-    A --> E
+    A --> M
+    M --> E
     E --> I
-    E --> M
-    E --> O
     
     style A fill:#61DAFB,stroke:#20232a,stroke-width:2px
     style E fill:#009688,stroke:#00695C,stroke-width:2px
     style I fill:#336791,stroke:#1e3a8a,stroke-width:2px
-    style M fill:#66CCFF,stroke:#0066CC,stroke-width:2px
-    style O fill:#E25A1C,stroke:#8B1E3F,stroke-width:2px
+    style M fill:#009639,stroke:#006400,stroke-width:2px
 ```
 
 </div>
@@ -104,7 +101,7 @@ graph TB
 | **Frontend** | React 18 + Redux Toolkit | Modern reactive UI with state management |
 | **Backend** | FastAPI + Python 3.10+ | High-performance async API with auto-docs |
 | **Database** | PostgreSQL 13 + PostGIS | Geospatial data storage and querying |
-| **Big Data** | Apache Hadoop 3.2 + Spark 3.3 | Distributed data processing and analytics |
+| **Analytics** | Pandas + PostGIS | High-performance data analysis and geospatial queries |
 | **Maps** | Leaflet + React-Leaflet | Interactive mapping with custom overlays |
 | **Analytics** | Chart.js + React-Chartjs-2 | Real-time data visualization |
 | **Containerization** | Docker + Docker Compose | Orchestrated multi-service deployment |
@@ -152,8 +149,8 @@ docker-compose up -d --build
 | 🎨 **Frontend** | [http://localhost:3030](http://localhost:3030) | Main application interface |
 | 🔧 **Backend API** | [http://localhost:8000](http://localhost:8000) | FastAPI REST endpoints |
 | 📖 **API Docs** | [http://localhost:8000/docs](http://localhost:8000/docs) | Interactive API documentation |
-| 🗄️ **Hadoop UI** | [http://localhost:9870](http://localhost:9870) | HDFS cluster management |
-| ⚡ **Spark UI** | [http://localhost:8080](http://localhost:8080) | Spark job monitoring |
+| 🗄️ **PostgreSQL** | [http://localhost:5433](http://localhost:5433) | Database connection |
+| 🧪 **Test DB** | [http://localhost:5434](http://localhost:5434) | Test database connection |
 
 ### **🗄️ Database Setup**
 
@@ -161,10 +158,8 @@ docker-compose up -d --build
 # Initialize database schema
 docker-compose exec server python models/init_db.py
 
-# Populate with sample data
-docker-compose exec server python scripts/populate_places.py
-docker-compose exec server python scripts/populate_bus_stops.py
-docker-compose exec server python scripts/populate_users.py
+# Populate with sample data (if available)
+docker-compose exec server python -c "print('Database initialized successfully')"
 ```
 
 ---

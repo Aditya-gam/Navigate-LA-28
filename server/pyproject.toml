@@ -1,16 +1,15 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
-[project]
+[tool.poetry]
 name = "navigate-la-28-server"
 version = "1.0.0"
-description = "Geospatial navigation API for LA 2028 Olympics tourism"
-authors = [
-    {name = "Navigate LA 28 Team", email = "team@navigate-la28.com"}
-]
-license = {text = "MIT"}
+description = "Simplified geospatial navigation API for LA 2028 Olympics tourism using PostGIS"
+authors = ["Navigate LA 28 Team <team@navigate-la28.com>"]
+license = "MIT"
 readme = "README.md"
+packages = [{include = "server"}]
 requires-python = ">=3.10"
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -21,75 +20,88 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Framework :: FastAPI",
+    "Topic :: Scientific/Engineering :: GIS",
 ]
-keywords = ["fastapi", "geospatial", "navigation", "olympics", "la2028"]
+keywords = ["fastapi", "geospatial", "navigation", "olympics", "la2028", "postgis", "postgresql"]
 
-[project.optional-dependencies]
-dev = [
-    "black[jupyter]==24.10.0",
-    "isort==5.13.2",
-    "flake8==7.1.1",
-    "flake8-docstrings==1.7.0",
-    "flake8-import-order==0.18.2",
-    "flake8-annotations==3.1.1",
-    "mypy==1.13.0",
-    "pre-commit==4.0.1",
-    "bandit==1.8.0",
-    "safety==3.2.11",
-    "pytest-asyncio==0.25.0",
-    "pytest-cov==6.0.0",
-    "pytest-mock==3.14.0",
-    "httpx==0.28.1",
-    "factory-boy==3.3.1",
-    "faker==33.1.0",
-]
-test = [
-    "pytest==8.3.4",
-    "pytest-asyncio==0.25.0",
-    "pytest-cov==6.0.0",
-    "pytest-mock==3.14.0",
-    "httpx==0.28.1",
-    "factory-boy==3.3.1",
-    "faker==33.1.0",
-]
-lint = [
-    "black==24.10.0",
-    "isort==5.13.2",
-    "flake8==7.1.1",
-    "mypy==1.13.0",
-    "bandit==1.8.0",
-]
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "0.115.13"
+uvicorn = "0.34.0"
+sqlalchemy = "2.0.36"
+asyncpg = "0.30.0"
+pydantic = "2.10.3"
+pydantic-settings = "2.6.1"
+python-jose = "3.3.0"
+bcrypt = "4.2.1"
+passlib = "1.7.4"
+python-multipart = "0.0.20"
+python-dotenv = "1.0.1"
+alembic = "1.14.0"
+psycopg2-binary = "2.9.10"
+requests = "2.32.2"
+aiosqlite = "0.20.0"
 
-[tool.black]
+[tool.poetry.group.dev.dependencies]
+ruff = "0.6.9"
+mypy = "1.13.0"
+pre-commit = "4.0.1"
+bandit = "1.8.0"
+safety = "3.2.11"
+pytest = "8.3.4"
+pytest-asyncio = "0.25.0"
+pytest-cov = "6.0.0"
+pytest-mock = "3.14.0"
+httpx = "0.28.1"
+factory-boy = "3.3.1"
+faker = "33.1.0"
+
+[tool.ruff]
 line-length = 88
-target-version = ['py310', 'py311', 'py312']
-include = '\.pyi?$'
-extend-exclude = '''
-/(
-  # directories
-  \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | build
-  | dist
-  | migrations
-)/
-'''
+target-version = "py310"
+extend-exclude = [
+    ".eggs",
+    ".git",
+    ".hg",
+    ".mypy_cache",
+    ".tox",
+    ".venv",
+    "build",
+    "dist",
+    "migrations",
+    "tests/fixtures",
+]
 
-[tool.isort]
-profile = "black"
-line_length = 88
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
-skip_glob = ["*/migrations/*"]
-known_first_party = ["app", "config", "models", "routes", "services", "schemas"]
-sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # warnings
+    "I",    # import sorting
+    "D",    # pydocstyle
+    "N",    # pep8-naming
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "ANN",  # flake8-annotations
+    "S",    # flake8-bandit (security)
+]
+ignore = [
+    "D100", "D104", "D401",  # relax some strict docstring rules
+    "ANN101", "ANN102",       # allow missing self/cls annotations
+    "S101",                    # allow asserts in tests/dev
+]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "models", "routes", "services", "schemas"]
+lines-after-imports = 2
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "lf"
 
 [tool.mypy]
 python_version = "3.10"
@@ -108,7 +120,6 @@ warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 module = [
-    "pyspark.*",
     "leaflet.*",
     "yarl.*",
 ]

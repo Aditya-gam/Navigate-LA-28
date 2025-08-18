@@ -42,6 +42,7 @@ const MapContainerComponent: React.FC<MapContainerProps> = ({
 
   return (
     <MapContainer
+      data-testid="map-container"
       center={[34.0522, -118.2437]}
       zoom={13}
       style={{ height: "100%", width: "100%" }}

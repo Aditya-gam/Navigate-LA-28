@@ -23,7 +23,7 @@
 
 ## 📊 **Executive Summary**
 
-Navigate LA 28 is a modern, cloud-native geospatial navigation platform designed for the 2028 Los Angeles Olympics. The system employs a microservices-oriented architecture with containerized components, real-time data processing capabilities, and scalable big data infrastructure.
+Navigate LA 28 is a modern, cloud-native geospatial navigation platform designed for the 2028 Los Angeles Olympics. The system employs a simplified microservices architecture with containerized components, real-time data processing capabilities, and high-performance PostGIS-based analytics.
 
 ### **Key Architectural Decisions**
 
@@ -32,7 +32,7 @@ Navigate LA 28 is a modern, cloud-native geospatial navigation platform designed
 | **Microservices Architecture** | Scalability, maintainability, team autonomy | Enables independent deployment and scaling |
 | **Container-First Approach** | Consistency, portability, resource efficiency | Simplified deployment and environment parity |
 | **Event-Driven Communication** | Real-time updates, loose coupling | Enhanced responsiveness and system resilience |
-| **Big Data Integration** | Analytics requirements, Olympic scale | Supports million+ concurrent users and insights |
+| **PostGIS Integration** | Geospatial analytics requirements, Olympic scale | Supports million+ concurrent users with efficient spatial queries |
 
 ---
 
@@ -63,12 +63,12 @@ graph TB
         K[PostgreSQL<br/>Primary Database]
         L[PostGIS<br/>Geospatial Extension]
         M[Redis<br/>Cache + Sessions]
-        N[HDFS<br/>Big Data Storage]
+        N[File Storage<br/>Local + S3]
     end
     
-    subgraph "Big Data Stack"
-        O[Apache Spark<br/>Data Processing]
-        P[Apache Hadoop<br/>Distributed Storage]
+    subgraph "Analytics Stack"
+        O[Pandas<br/>Data Processing]
+        P[PostGIS<br/>Spatial Analytics]
         Q[ML Pipeline<br/>Recommendations]
     end
     

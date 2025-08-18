@@ -23,7 +23,7 @@
 
 ## 🌟 **Overview**
 
-This guide provides comprehensive instructions for deploying the Navigate LA 28 platform across different environments. The application uses a containerized microservices architecture with Docker and Docker Compose for orchestration.
+This guide provides comprehensive instructions for deploying the Navigate LA 28 platform across different environments. The application uses a simplified containerized microservices architecture with Docker and Docker Compose for orchestration, optimized for single VM deployment.
 
 ### **Deployment Environments**
 

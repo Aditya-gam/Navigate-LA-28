@@ -44,75 +44,10 @@ services:
         uvicorn main:app --host 0.0.0.0 --port 8000 --reload
       "
 
-  # Hadoop NameNode service for HDFS
-  hadoop:
-    container_name: hadoop  # Name of the Hadoop NameNode container
-    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8  # Hadoop image
-    environment:
-      - CLUSTER_NAME=test  # Name of the Hadoop cluster
-    ports:
-      - "9870:9870"  # Web UI port for the NameNode
-      - "9000:9000"  # Default FS port
-    volumes:
-      - hadoop_namenode:/hadoop/dfs/name  # Persist NameNode data
-      - ./hadoop/conf:/opt/hadoop-3.2.1/etc/hadoop  # Mount custom Hadoop configuration
-    networks:
-      - navigate_la_28  # Attach to the navigate_la_28 network
-
-  # Spark Master node service
-  spark:
-    container_name: spark_master  # Name of the Spark Master container
-    build:
-      context: ./spark  # Build the image from the spark directory
-      dockerfile: Dockerfile  # Specify the Dockerfile
-    environment:
-      - SPARK_MODE=master  # Set the Spark mode to master
-      - SPARK_MASTER_HOST=spark  # Set the Spark master host name
-      - SPARK_LOCAL_IP=spark  # Set the local IP for Spark
-      - SPARK_MASTER_PORT=7077  # Port for Spark master
-      - SPARK_MASTER_WEBUI_PORT=8080  # Web UI port for Spark master
-      - HADOOP_USER_NAME=root  # User for Hadoop integration
-      - SPARK_USER=root  # User for Spark
-    ports:
-      - "7077:7077"  # Spark master communication port
-      - "8080:8080"  # Spark master Web UI port
-    volumes:
-      - ./spark/conf:/opt/bitnami/spark/conf  # Mount custom Spark configuration
-    networks:
-      - navigate_la_28  # Attach to the navigate_la_28 network
-    command: >  # Command to start Spark Master
-      bash -c "
-        /opt/bitnami/spark/sbin/start-master.sh &&
-        tail -f /opt/bitnami/spark/logs/spark-*.out
-      "
-
-  # Spark Worker node service
-  spark-worker:
-    container_name: spark_worker  # Name of the Spark Worker container
-    image: bitnami/spark:3.3.0  # Spark Worker image
-    environment:
-      - SPARK_MODE=worker  # Set the Spark mode to worker
-      - SPARK_MASTER_URL=spark://spark:7077  # URL of the Spark master
-      - SPARK_WORKER_WEBUI_PORT=8081  # Web UI port for Spark worker
-      - SPARK_WORKER_PORT=8082  # Communication port for Spark worker
-      - SPARK_WORKER_HOST=spark-worker  # Host name for the worker
-      - HADOOP_USER_NAME=root  # User for Hadoop integration
-      - SPARK_USER=root  # User for Spark
-    depends_on:
-      - spark  # Ensure the Spark master is running
-    networks:
-      - navigate_la_28  # Attach to the navigate_la_28 network
-    ports:
-      - "8081:8081"  # Map the Spark worker Web UI port
-    command: >  # Command to start Spark Worker
-      bash -c "
-        /opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark:7077
-      "
-
-  # Main PostgreSQL database service
+  # Main PostgreSQL database service with PostGIS
   postgres:
     container_name: navigate_la_postgres  # Name of the main Postgres container
-    image: postgres:13  # Postgres version 13
+    image: postgis/postgis:13-3.1  # PostGIS version 13 with PostGIS 3.1
     environment:
       POSTGRES_USER: la28_user  # Database username
       POSTGRES_PASSWORD: bigdata_la28  # Database password
@@ -124,10 +59,10 @@ services:
     networks:
       - navigate_la_28  # Attach to the navigate_la_28 network
 
-  # Test PostgreSQL database service
+  # Test PostgreSQL database service with PostGIS
   postgres_test:
     container_name: navigate_la_postgres_test  # Name of the test Postgres container
-    image: postgres:13  # Postgres version 13
+    image: postgis/postgis:13-3.1  # PostGIS version 13 with PostGIS 3.1
     environment:
       POSTGRES_USER: la28_user  # Database username for testing
       POSTGRES_PASSWORD: bigdata_la28  # Database password for testing
@@ -139,28 +74,10 @@ services:
     networks:
       - navigate_la_28  # Attach to the navigate_la_28 network
 
-  # Hadoop DataNode service for HDFS
-  datanode:
-    container_name: hadoop_datanode  # Name of the Hadoop DataNode container
-    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8  # Hadoop DataNode image
-    environment:
-      - CORE_CONF_fs_defaultFS=hdfs://hadoop:9000  # HDFS configuration
-    ports:
-      - "9864:9864"  # Web UI port for the DataNode
-    volumes:
-      - hadoop_datanode:/hadoop/dfs/data  # Persist DataNode data
-      - ./hadoop/conf:/opt/hadoop-3.2.1/etc/hadoop  # Mount custom Hadoop configuration
-    networks:
-      - navigate_la_28  # Attach to the navigate_la_28 network
-    depends_on:
-      - hadoop  # Ensure the NameNode is running
-
 # Define persistent volumes for data storage
 volumes:
-  hadoop_namenode:  # Volume for Hadoop NameNode
   postgres_data:  # Volume for main Postgres
   postgres_test_data:  # Volume for test Postgres
-  hadoop_datanode:  # Volume for Hadoop DataNode
 
 # Define the network for container communication
 networks:

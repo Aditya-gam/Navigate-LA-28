@@ -113,8 +113,8 @@ Navigate-LA-28/
 │   └── main.py          # Application entry point
 ├── docs/                 # Documentation
 ├── scripts/              # Development scripts
-├── hadoop/               # Hadoop configuration
-├── spark/                # Spark configuration
+├── docs/                 # Documentation
+├── scripts/              # Utility scripts
 ├── docker-compose.yml    # Development orchestration
 └── README.md            # Project overview
 ```

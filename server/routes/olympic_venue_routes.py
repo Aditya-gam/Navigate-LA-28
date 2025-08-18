@@ -38,8 +38,8 @@ class VenueStatsResponse(BaseModel):
     sport_categories: List[dict]
 
 
-# Router setup
-router = APIRouter(prefix="/api/olympic-venues", tags=["Olympic Venues"])
+# Router setup (prefix only path segment; global settings add /api)
+router = APIRouter(prefix="/olympic-venues", tags=["Olympic Venues"])
 
 
 @router.get("/", response_model=List[OlympicVenueResponse])

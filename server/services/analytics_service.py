@@ -1,14 +1,5 @@
 # server/services/analytics_service.py
 
-# For Spark session management and window functions
-from pyspark.sql import SparkSession, Window
-from pyspark.sql.functions import (  # Common SQL functions used in Spark
-    avg, count, desc, dense_rank, col, round, year, current_date, when,
-    sum, size, countDistinct
-)
-from pyspark.sql.types import (  # For defining Spark DataFrame schemas
-    StructType, StructField, StringType, IntegerType, TimestampType, FloatType
-)
 import pandas as pd  # For handling dataframes
 import asyncio  # For asynchronous programming
 from sqlalchemy import text  # For raw SQL queries
@@ -25,39 +16,6 @@ load_dotenv()
 # Set up logging configuration
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Spark configuration constants
-SPARK_DRIVER_MEMORY = "spark.driver.memory"
-SPARK_EXECUTOR_MEMORY = "spark.executor.memory"
-SPARK_SQL_ADAPTIVE_ENABLED = "spark.sql.adaptive.enabled"
-SPARK_SQL_ADAPTIVE_COALESCE = "spark.sql.adaptive.coalescePartitions.enabled"
-
-# Check if we're in development mode (no HDFS)
-is_development = os.getenv('ENVIRONMENT', 'development') == 'development'
-
-if is_development:
-    # Use local Spark configuration for development
-    spark = (
-        SparkSession.builder.appName("NavigateLA-Analytics")
-        .config(SPARK_DRIVER_MEMORY, "1g")
-        .config(SPARK_EXECUTOR_MEMORY, "1g")
-        .config(SPARK_SQL_ADAPTIVE_ENABLED, "false")
-        .config(SPARK_SQL_ADAPTIVE_COALESCE, "false")
-        .master("local[*]")
-        .getOrCreate()
-    )
-else:
-    # Use HDFS configuration for production
-    spark = (
-        SparkSession.builder.appName("NavigateLA-Analytics")
-        .config(SPARK_DRIVER_MEMORY, "2g")
-        .config(SPARK_EXECUTOR_MEMORY, "2g")
-        .config("spark.hadoop.fs.defaultFS", "hdfs://hadoop:9000")
-        .config("spark.hadoop.fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem")
-        .config("spark.hadoop.fs.file.impl", "org.apache.hadoop.fs.LocalFileSystem")
-        .config("spark.jars.packages", "org.apache.hadoop:hadoop-client:3.3.1")
-        .getOrCreate()
-    )
 
 
 class DatabaseConfig:
@@ -107,48 +65,6 @@ class AnalyticsService:
             autoflush=False,
             expire_on_commit=False,
         )
-        self.spark = spark  # Use the existing spark session
-
-    def _get_spark(self):
-        """Get or create Spark session"""
-        if self.spark is None or self.spark._jsc.sc().isStopped():  # Check if stopped
-            self.spark = self._initialize_spark()
-        return self.spark
-
-    def _initialize_spark(self):
-        """Initialize Spark session"""
-        try:
-            # Set Java home if not set
-            if not os.getenv("JAVA_HOME"):
-                os.environ["JAVA_HOME"] = (
-                    "/usr/lib/jvm/java-11-openjdk-amd64"  # Adjust path as needed
-                )
-
-            return (
-                SparkSession.builder.appName("NavigateLA-Analytics")
-                .config(SPARK_DRIVER_MEMORY, "2g")
-                .config(SPARK_EXECUTOR_MEMORY, "2g")
-                .config("spark.driver.bindAddress", "0.0.0.0")
-                .config("spark.driver.host", "localhost")
-                .config("spark.sql.shuffle.partitions", "2")
-                .config(
-                    "spark.jars.packages", "org.postgresql:postgresql:42.2.18"
-                )  # Add PostgreSQL JDBC driver
-                .config(
-                    "spark.driver.extraJavaOptions", "-Xss4M"
-                )  # Increase stack size
-                .config("spark.executor.extraJavaOptions", "-Xss4M")
-                .config(
-                    "spark.sql.execution.arrow.pyspark.enabled", "true"
-                )  # Enable Arrow optimization
-                .master("local[*]")
-                .enableHiveSupport()  # Add Hive support
-                .getOrCreate()
-            )
-        except Exception as e:
-            logger.error(f"Failed to initialize Spark session: {str(e)}")
-            logger.error("Java Home: " + os.getenv("JAVA_HOME", "Not Set"))
-            raise
 
     async def _fetch_table_data(self, table_name: str) -> pd.DataFrame:
         """Fetch data from a table asynchronously"""
@@ -163,183 +79,156 @@ class AnalyticsService:
                 raise
 
     async def _load_data(self):
-        """Load data from database into Spark DataFrames"""
-        # Initialize Spark session first
-        self.spark = self._get_spark()
-
-        # Define schemas
-        user_schema = StructType(
-            [
-                StructField("id", IntegerType(), False),
-                StructField("username", StringType(), False),
-                StructField("password", StringType(), False),
-                StructField("dob", TimestampType(), True),
-                StructField("country", StringType(), True),
-            ]
-        )
-
-        review_schema = StructType(
-            [
-                StructField("id", IntegerType(), False),
-                StructField("user_id", IntegerType(), False),
-                StructField("place_id", IntegerType(), False),
-                StructField("rating", IntegerType(), False),
-                StructField("comment", StringType(), True),
-            ]
-        )
-
-        bus_route_usage_schema = StructType(
-            [
-                StructField("id", IntegerType(), False),
-                StructField("user_id", IntegerType(), False),
-                StructField("origin_stop_id", IntegerType(), False),
-                StructField("destination_stop_id", IntegerType(), False),
-            ]
-        )
-
-        bus_stop_schema = StructType(
-            [
-                StructField("id", IntegerType(), False),
-                StructField("stop_number", IntegerType(), False),
-                StructField("line", StringType(), False),
-                StructField("direction", StringType(), False),
-                StructField("stop_name", StringType(), False),
-                StructField("latitude", FloatType(), False),
-                StructField("longitude", FloatType(), False),
-                StructField("geometry", StringType(), False),
-            ]
-        )
-
-        place_schema = StructType(
-            [
-                StructField("id", IntegerType(), False),
-                StructField("name", StringType(), False),
-                StructField("category", StringType(), True),
-                StructField("latitude", FloatType(), False),
-                StructField("longitude", FloatType(), False),
-                StructField("description", StringType(), True),
-            ]
-        )
-
+        """Load data from database into Pandas DataFrames"""
         # Fetch all data concurrently
         tables = ["users", "reviews", "bus_route_usage", "bus_stops", "places"]
         data = await asyncio.gather(
             *[self._fetch_table_data(table) for table in tables]
         )
 
-        # Create Spark DataFrames with explicit schemas
-        self.users_df = self.spark.createDataFrame(data[0], schema=user_schema)
-        self.reviews_df = self.spark.createDataFrame(
-            data[1], schema=review_schema)
-        self.bus_route_usage_df = self.spark.createDataFrame(
-            data[2], schema=bus_route_usage_schema
-        )
-        self.bus_stops_df = self.spark.createDataFrame(
-            data[3], schema=bus_stop_schema)
-        self.places_df = self.spark.createDataFrame(
-            data[4], schema=place_schema)
+        # Create Pandas DataFrames
+        self.users_df = data[0]
+        self.reviews_df = data[1]
+        self.bus_route_usage_df = data[2]
+        self.bus_stops_df = data[3]
+        self.places_df = data[4]
 
-        # Cache DataFrames
-        self.users_df.cache()
-        self.reviews_df.cache()
-        self.bus_route_usage_df.cache()
-        self.bus_stops_df.cache()
-        self.places_df.cache()
+        # Convert date columns to datetime if they exist
+        if 'dob' in self.users_df.columns:
+            self.users_df['dob'] = pd.to_datetime(
+                self.users_df['dob'], errors='coerce')
 
     def analyze_top_attractions(self):
-        """Analyze most reviewed attractions"""
-        return (
-            self.reviews_df.join(
-                self.places_df, self.reviews_df.place_id == self.places_df.id, "inner"
-            )
-            .groupBy("place_id", "name", "category", "latitude", "longitude")
-            .agg(
-                count("*").alias("review_count"),
-                round(avg("rating"), 2).alias("avg_rating"),
-                round(avg(when(col("rating") >= 4, 1).otherwise(0)), 2).alias(
-                    "high_rating_ratio"
-                ),
-            )
-            .orderBy(desc("review_count"))
-            .withColumn("rank", dense_rank().over(Window.orderBy(desc("review_count"))))
+        """Analyze most reviewed attractions using pandas"""
+        # Merge reviews with places
+        merged_df = pd.merge(
+            self.reviews_df,
+            self.places_df,
+            left_on='place_id',
+            right_on='id',
+            how='inner'
         )
+
+        # Group by place and calculate metrics
+        result = merged_df.groupby(['place_id', 'name', 'category', 'latitude', 'longitude']).agg({
+            'id_x': 'count',  # review count
+            'rating': 'mean',  # average rating
+            'rating': lambda x: (x >= 4).mean()  # high rating ratio
+        }).reset_index()
+
+        # Rename columns
+        result.columns = ['place_id', 'name', 'category', 'latitude',
+                          'longitude', 'review_count', 'avg_rating', 'high_rating_ratio']
+
+        # Round values
+        result['avg_rating'] = result['avg_rating'].round(2)
+        result['high_rating_ratio'] = result['high_rating_ratio'].round(2)
+
+        # Sort by review count and add rank
+        result = result.sort_values(
+            'review_count', ascending=False).reset_index(drop=True)
+        result['rank'] = result.index + 1
+
+        return result
 
     def analyze_user_demographics(self):
-        """Analyze user demographics and their platform usage"""
-        users_with_age = self.users_df.withColumn(
-            "age", year(current_date()) - year("dob")
-        ).withColumn(
-            "age_group",
-            when(col("age") < 25, "18-24")
-            .when(col("age").between(25, 34), "25-34")
-            .when(col("age").between(35, 44), "35-44")
-            .when(col("age").between(45, 54), "45-54")
-            .otherwise("55+"),
-        )
+        """Analyze user demographics and their platform usage using pandas"""
+        # Calculate age from date of birth
+        if 'dob' in self.users_df.columns:
+            current_year = pd.Timestamp.now().year
+            self.users_df['age'] = current_year - \
+                pd.to_datetime(self.users_df['dob']).dt.year
+
+            # Create age groups
+            def get_age_group(age):
+                if pd.isna(age):
+                    return 'Unknown'
+                elif age < 25:
+                    return '18-24'
+                elif age < 35:
+                    return '25-34'
+                elif age < 45:
+                    return '35-44'
+                elif age < 55:
+                    return '45-54'
+                else:
+                    return '55+'
+
+            self.users_df['age_group'] = self.users_df['age'].apply(
+                get_age_group)
+        else:
+            self.users_df['age_group'] = 'Unknown'
 
         # Age-based analysis
-        age_reviews = (
-            users_with_age.join(
-                self.reviews_df, users_with_age.id == self.reviews_df.user_id, "left"
-            )
-            .groupBy("age_group")
-            .agg(
-                count("rating").alias("total_reviews"),
-                round(avg("rating"), 2).alias("avg_rating"),
-                countDistinct("user_id").alias("active_reviewers"),
-            )
-            .filter(col("total_reviews") > 0)
-            .orderBy(desc("total_reviews"))
-        )
+        age_reviews = pd.merge(
+            self.users_df,
+            self.reviews_df,
+            left_on='id',
+            right_on='user_id',
+            how='left'
+        ).groupby('age_group').agg({
+            'rating': ['count', 'mean'],
+            'user_id': 'nunique'
+        }).reset_index()
 
-        age_bus_usage = (
-            users_with_age.join(
-                self.bus_route_usage_df,
-                users_with_age.id == self.bus_route_usage_df.user_id,
-                "left",
-            )
-            .groupBy("age_group")
-            .agg(
-                count("*").alias("total_trips"),
-                countDistinct("user_id").alias("active_riders"),
-                round(count("*") / countDistinct("user_id"),
-                      1).alias("trips_per_user"),
-            )
-            .filter(col("active_riders") > 0)
-            .orderBy(desc("total_trips"))
-        )
+        # Flatten column names
+        age_reviews.columns = [
+            'age_group', 'total_reviews', 'avg_rating', 'active_reviewers']
+        age_reviews['avg_rating'] = age_reviews['avg_rating'].round(2)
+        age_reviews = age_reviews[age_reviews['total_reviews'] > 0].sort_values(
+            'total_reviews', ascending=False)
+
+        age_bus_usage = pd.merge(
+            self.users_df,
+            self.bus_route_usage_df,
+            left_on='id',
+            right_on='user_id',
+            how='left'
+        ).groupby('age_group').agg({
+            'id_x': 'count',
+            'user_id': 'nunique'
+        }).reset_index()
+
+        age_bus_usage.columns = ['age_group', 'total_trips', 'active_riders']
+        age_bus_usage['trips_per_user'] = (
+            age_bus_usage['total_trips'] / age_bus_usage['active_riders']).round(1)
+        age_bus_usage = age_bus_usage[age_bus_usage['active_riders'] > 0].sort_values(
+            'total_trips', ascending=False)
 
         # Country-based analysis
-        country_reviews = (
-            self.users_df.join(
-                self.reviews_df, self.users_df.id == self.reviews_df.user_id, "left"
-            )
-            .groupBy("country")
-            .agg(
-                count("rating").alias("total_reviews"),
-                round(avg("rating"), 2).alias("avg_rating"),
-                countDistinct("user_id").alias("active_reviewers"),
-            )
-            .filter(col("total_reviews") > 0)
-            .orderBy(desc("total_reviews"))
-        )
+        country_reviews = pd.merge(
+            self.users_df,
+            self.reviews_df,
+            left_on='id',
+            right_on='user_id',
+            how='left'
+        ).groupby('country').agg({
+            'rating': ['count', 'mean'],
+            'user_id': 'nunique'
+        }).reset_index()
 
-        country_bus_usage = (
-            self.users_df.join(
-                self.bus_route_usage_df,
-                self.users_df.id == self.bus_route_usage_df.user_id,
-                "left",
-            )
-            .groupBy("country")
-            .agg(
-                count("*").alias("total_trips"),
-                countDistinct("user_id").alias("active_riders"),
-                round(count("*") / countDistinct("user_id"),
-                      1).alias("trips_per_user"),
-            )
-            .filter(col("active_riders") > 0)
-            .orderBy(desc("total_trips"))
-        )
+        country_reviews.columns = [
+            'country', 'total_reviews', 'avg_rating', 'active_reviewers']
+        country_reviews['avg_rating'] = country_reviews['avg_rating'].round(2)
+        country_reviews = country_reviews[country_reviews['total_reviews'] > 0].sort_values(
+            'total_reviews', ascending=False)
+
+        country_bus_usage = pd.merge(
+            self.users_df,
+            self.bus_route_usage_df,
+            left_on='id',
+            right_on='user_id',
+            how='left'
+        ).groupby('country').agg({
+            'id_x': 'count',
+            'user_id': 'nunique'
+        }).reset_index()
+
+        country_bus_usage.columns = ['country', 'total_trips', 'active_riders']
+        country_bus_usage['trips_per_user'] = (
+            country_bus_usage['total_trips'] / country_bus_usage['active_riders']).round(1)
+        country_bus_usage = country_bus_usage[country_bus_usage['active_riders'] > 0].sort_values(
+            'total_trips', ascending=False)
 
         return {
             "age": {"reviews": age_reviews, "bus_usage": age_bus_usage},
@@ -347,202 +236,191 @@ class AnalyticsService:
         }
 
     def analyze_bus_patterns(self):
-        """Analyze bus usage patterns"""
+        """Analyze bus usage patterns using pandas"""
         # Most frequent routes
-        frequent_routes = (
-            self.bus_route_usage_df.join(
-                self.bus_stops_df.alias("origin"),
-                self.bus_route_usage_df.origin_stop_id == col("origin.id"),
-            )
-            .join(
-                self.bus_stops_df.alias("destination"),
-                self.bus_route_usage_df.destination_stop_id == col(
-                    "destination.id"),
-            )
-            .groupBy("origin.line", "origin.stop_name", "destination.stop_name")
-            .agg(
-                count("*").alias("trip_count"),
-                countDistinct("user_id").alias("unique_users"),
-            )
-            .orderBy(desc("trip_count"))
-        )
+        frequent_routes = pd.merge(
+            self.bus_route_usage_df,
+            self.bus_stops_df,
+            left_on='origin_stop_id',
+            right_on='id',
+            how='inner'
+        ).merge(
+            self.bus_stops_df,
+            left_on='destination_stop_id',
+            right_on='id',
+            how='inner',
+            suffixes=('_origin', '_destination')
+        ).groupby(['line', 'stop_name_origin', 'stop_name_destination']).agg({
+            'id_x': 'count',
+            'user_id': 'nunique'
+        }).reset_index()
+
+        frequent_routes.columns = ['line', 'origin_stop_name',
+                                   'destination_stop_name', 'trip_count', 'unique_users']
+        frequent_routes = frequent_routes.sort_values(
+            'trip_count', ascending=False)
 
         # Line popularity
-        line_popularity = (
-            self.bus_route_usage_df.join(
-                self.bus_stops_df,
-                self.bus_route_usage_df.origin_stop_id == self.bus_stops_df.id,
-            )
-            .groupBy("line")
-            .agg(
-                count("*").alias("total_trips"),
-                countDistinct("user_id").alias("unique_users"),
-                countDistinct("origin_stop_id").alias("stops_used"),
-            )
-            .orderBy(desc("total_trips"))
-        )
+        line_popularity = pd.merge(
+            self.bus_route_usage_df,
+            self.bus_stops_df,
+            left_on='origin_stop_id',
+            right_on='id',
+            how='inner'
+        ).groupby('line').agg({
+            'id_x': 'count',
+            'user_id': 'nunique',
+            'origin_stop_id': 'nunique'
+        }).reset_index()
+
+        line_popularity.columns = [
+            'line', 'total_trips', 'unique_users', 'stops_used']
+        line_popularity = line_popularity.sort_values(
+            'total_trips', ascending=False)
 
         return frequent_routes, line_popularity
 
     def analyze_geographic_distribution(self):
-        """Analyze geographic distribution"""
+        """Analyze geographic distribution using pandas"""
         # User distribution by country with review counts
-        user_distribution = (
-            self.users_df.join(
-                self.reviews_df.select(
-                    col("id").alias("review_id"), col("user_id"), col("rating")
-                ),
-                self.users_df.id == col("user_id"),
-                "left",
-            )
-            .groupBy("country")
-            .agg(
-                countDistinct(col("id")).alias(
-                    "user_count"),  # Count distinct users
-                countDistinct(col("review_id")).alias(
-                    "active_users"
-                ),  # Count distinct reviews
-                round(avg(when(col("rating").isNotNull(), 1).otherwise(0)), 2).alias(
-                    "avg_reviews_per_user"
-                ),
-            )
-            .orderBy(desc("user_count"))
-        )
+        user_distribution = pd.merge(
+            self.users_df,
+            self.reviews_df[['id', 'user_id', 'rating']].rename(
+                columns={'id': 'review_id'}),
+            left_on='id',
+            right_on='user_id',
+            how='left'
+        ).groupby('country').agg({
+            'id': 'nunique',  # Count distinct users
+            'review_id': 'nunique',  # Count distinct reviews
+            'rating': lambda x: x.notna().mean()  # Average reviews per user
+        }).reset_index()
+
+        user_distribution.columns = [
+            'country', 'user_count', 'active_users', 'avg_reviews_per_user']
+        user_distribution['avg_reviews_per_user'] = user_distribution['avg_reviews_per_user'].round(
+            2)
+        user_distribution = user_distribution.sort_values(
+            'user_count', ascending=False)
 
         # Popular bus stops
-        popular_stops = (
-            self.bus_route_usage_df.join(
-                self.bus_stops_df.select(
-                    col("id").alias("stop_id"),
-                    col("stop_name"),
-                    col("line"),
-                    col("latitude"),
-                    col("longitude"),
-                ),
-                self.bus_route_usage_df.origin_stop_id == col("stop_id"),
-            )
-            .groupBy("stop_name", "line", "latitude", "longitude")
-            .agg(
-                count("*").alias("usage_count"),
-                countDistinct("user_id").alias("unique_users"),
-            )
-            .orderBy(desc("usage_count"))
-        )
+        popular_stops = pd.merge(
+            self.bus_route_usage_df,
+            self.bus_stops_df[['id', 'stop_name', 'line', 'latitude', 'longitude']].rename(
+                columns={'id': 'stop_id'}),
+            left_on='origin_stop_id',
+            right_on='stop_id',
+            how='inner'
+        ).groupby(['stop_name', 'line', 'latitude', 'longitude']).agg({
+            'id_x': 'count',
+            'user_id': 'nunique'
+        }).reset_index()
+
+        popular_stops.columns = [
+            'stop_name', 'line', 'latitude', 'longitude', 'usage_count', 'unique_users']
+        popular_stops = popular_stops.sort_values(
+            'usage_count', ascending=False)
 
         return user_distribution, popular_stops
 
     async def get_top_attractions(self, min_rating=None, category=None, limit=10):
         """Get top attractions with optional filters"""
         try:
-            self.spark = self._get_spark()  # Get or create spark session
             await self._load_data()
             query = self.analyze_top_attractions()
 
-            if min_rating:
-                query = query.filter(col("avg_rating") >= min_rating)
+            if min_rating is not None:
+                query = query[query['avg_rating'] >= min_rating]
             if category:
-                query = query.filter(col("category") == category)
+                query = query[query['category'] == category]
 
-            result_df = query.limit(limit).toPandas()
+            result_df = query.head(limit)
             return self._convert_to_json_serializable(result_df)
-        finally:
-            if self.spark:
-                self.spark.stop()
-                self.spark = None
+        except Exception as e:
+            logger.error(f"Error in get_top_attractions: {str(e)}")
+            raise
 
     async def get_user_demographics(self):
         """Get user demographics analysis"""
         try:
-            self.spark = self._get_spark()
             await self._load_data()
             demographics = self.analyze_user_demographics()
 
             return {
                 "age": {
                     "reviews": self._convert_to_json_serializable(
-                        demographics["age"]["reviews"].toPandas()
+                        demographics["age"]["reviews"]
                     ),
                     "bus_usage": self._convert_to_json_serializable(
-                        demographics["age"]["bus_usage"].toPandas()
+                        demographics["age"]["bus_usage"]
                     ),
                 },
                 "country": {
                     "reviews": self._convert_to_json_serializable(
-                        demographics["country"]["reviews"].toPandas()
+                        demographics["country"]["reviews"]
                     ),
                     "bus_usage": self._convert_to_json_serializable(
-                        demographics["country"]["bus_usage"].toPandas()
+                        demographics["country"]["bus_usage"]
                     ),
                 },
             }
-        finally:
-            if self.spark:
-                self.spark.stop()
-                self.spark = None
+        except Exception as e:
+            logger.error(f"Error in get_user_demographics: {str(e)}")
+            raise
 
     async def get_bus_routes_analysis(self, min_trips=None, limit=10):
         """Get bus routes analysis with optional filters"""
         try:
-            self.spark = self._get_spark()
             await self._load_data()
             frequent_routes, line_popularity = self.analyze_bus_patterns()
 
-            if min_trips:
-                frequent_routes = frequent_routes.filter(
-                    col("trip_count") >= min_trips)
-                line_popularity = line_popularity.filter(
-                    col("total_trips") >= min_trips
-                )
+            if min_trips is not None:
+                frequent_routes = frequent_routes[frequent_routes['trip_count'] >= min_trips]
+                line_popularity = line_popularity[line_popularity['total_trips'] >= min_trips]
 
             return {
                 "frequent_routes": self._convert_to_json_serializable(
-                    frequent_routes.limit(limit).toPandas()
+                    frequent_routes.head(limit)
                 ),
                 "line_popularity": self._convert_to_json_serializable(
-                    line_popularity.limit(limit).toPandas()
+                    line_popularity.head(limit)
                 ),
             }
-        finally:
-            if self.spark:
-                self.spark.stop()
-                self.spark = None
+        except Exception as e:
+            logger.error(f"Error in get_bus_routes_analysis: {str(e)}")
+            raise
 
     async def get_popular_stops(self, min_usage=None, line=None, limit=10):
         """Get popular bus stops with optional filters"""
         try:
-            self.spark = self._get_spark()
             await self._load_data()
             _, popular_stops = self.analyze_geographic_distribution()
 
-            if min_usage:
-                popular_stops = popular_stops.filter(
-                    col("usage_count") >= min_usage)
+            if min_usage is not None:
+                popular_stops = popular_stops[popular_stops['usage_count'] >= min_usage]
             if line:
-                popular_stops = popular_stops.filter(col("line") == line)
+                popular_stops = popular_stops[popular_stops['line'] == line]
 
-            result_df = popular_stops.limit(limit).toPandas()
+            result_df = popular_stops.head(limit)
             return self._convert_to_json_serializable(result_df)
-        finally:
-            if self.spark:
-                self.spark.stop()
-                self.spark = None
+        except Exception as e:
+            logger.error(f"Error in get_popular_stops: {str(e)}")
+            raise
 
     async def get_geographic_distribution(self):
         """Get geographic distribution of users"""
         try:
-            self.spark = self._get_spark()
             await self._load_data()
             user_distribution, _ = self.analyze_geographic_distribution()
-            return self._convert_to_json_serializable(user_distribution.toPandas())
-        finally:
-            if self.spark:
-                self.spark.stop()
-                self.spark = None
+            return self._convert_to_json_serializable(user_distribution)
+        except Exception as e:
+            logger.error(f"Error in get_geographic_distribution: {str(e)}")
+            raise
 
     def _convert_to_json_serializable(self, df):
         """Convert Pandas DataFrame to JSON serializable format"""
-        if df is None:
-            return None
+        if df is None or df.empty:
+            return []
 
         # Convert DataFrame to records and handle numpy types
         return df.astype(object).to_dict(orient="records")

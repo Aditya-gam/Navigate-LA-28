@@ -15,6 +15,7 @@ from routes.customer_usage_routes import router as customer_usage_router
 from routes.geo_routes import router as geo_router
 # Routes related to analytics and insights
 from routes.analytics_routes import router as analytics_router
+from routes.olympic_venue_routes import router as olympic_venue_router
 
 # Create a main router instance to include all other routers
 api_router = APIRouter()
@@ -62,4 +63,11 @@ api_router.include_router(
     prefix="/analytics",  # Prefix for all analytics-related endpoints
     # Tag for categorizing analytics endpoints in the API docs
     tags=["Analytics"],
+)
+
+# Include the olympic venues routes
+api_router.include_router(
+    olympic_venue_router,  # Router instance for olympic venues
+    prefix="/olympic-venues",  # Prefix within /api
+    tags=["Olympic Venues"],
 )
